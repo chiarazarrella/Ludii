@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="Chiara"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry excluding="random_trials/" kind="src" path="res"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Language"/>
@@ -44,5 +45,6 @@
 	<classpathentry kind="lib" path="/Common/lib/Trove4j_ApacheCommonsRNG.jar" sourcepath="/Common/lib/Trove4j_ApacheCommonsRNG-sources.jar"/>
 	<classpathentry kind="lib" path="/Common/lib/jfreesvg-3.4.jar"/>
 	<classpathentry kind="lib" path="lib/batik-codec-1.14.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

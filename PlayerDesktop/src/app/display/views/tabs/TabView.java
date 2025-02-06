@@ -15,6 +15,7 @@ import app.display.views.tabs.pages.LudemePage;
 import app.display.views.tabs.pages.MovesPage;
 import app.display.views.tabs.pages.RulesPage;
 import app.display.views.tabs.pages.StatusPage;
+import app.display.views.tabs.pages.TestsPage;
 import app.display.views.tabs.pages.TurnsPage;
 import app.utils.SettingsExhibition;
 import app.views.View;
@@ -43,6 +44,7 @@ public class TabView extends View
 	public static final int PanelLudeme = 4;
 	public static final int PanelRules = 5;
 	public static final int PanelInfo = 6;
+	public static final int PanelTests = 7;
 	
 	//-------------------------------------------------------------------------
 
@@ -98,6 +100,7 @@ public class TabView extends View
 		final TabPage ludemePage   = new LudemePage(app, tabPagePlacement, " Ludeme  ",  "", PanelLudeme, this);
 		final TabPage rulesPage    = new RulesPage(app, tabPagePlacement, " Rules ",    "", PanelRules, this);
 		final TabPage infoPage     = new InfoPage(app, tabPagePlacement, " Info  ",    "", PanelInfo, this);
+		final TabPage testsPage    = new TestsPage(app, tabPagePlacement, " Tests  ",    "", PanelTests, this);
 		pages.add(statusPage);
 		pages.add(movesPage);
 		pages.add(turnsPage);
@@ -105,6 +108,7 @@ public class TabView extends View
 		pages.add(ludemePage);
 		pages.add(rulesPage);
 		pages.add(infoPage);	
+		pages.add(testsPage);
 		
 		resetTabs();
 		
