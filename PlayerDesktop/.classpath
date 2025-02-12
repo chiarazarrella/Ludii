@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Core"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Player"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Manager"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Evaluation"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/AI"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Features"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Language"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Mining"/>

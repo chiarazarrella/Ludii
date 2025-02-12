@@ -1,12 +1,13 @@
 package app.display.views.tabs.pages;
 
+import board.BoardTest;
+import launcher.TestLauncher;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.LayoutManager;
 import java.awt.Rectangle;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -41,25 +42,23 @@ public class TestsPage extends TabPage
 
 		JPanel testsPanel = new JPanel();
 		testsPanel.setLayout(new BorderLayout());
-		testsPanel.setBackground(Color.WHITE); // Set background for main panel
+		testsPanel.setBackground(Color.WHITE);
 
 		JButton runButton = new JButton("Run Tests");
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		buttonPanel.add(runButton);
 		buttonPanel.setBackground(Color.WHITE);
-		buttonPanel.setOpaque(true); // Ensure background applies
+		buttonPanel.setOpaque(true);
 
-		// Create panel for the two columns
 		JPanel checkBoxPanel = new JPanel();
-		checkBoxPanel.setLayout(new GridLayout(0, 2, 20, 5)); // Two columns with spacing
+		checkBoxPanel.setLayout(new GridLayout(0, 2, 20, 5));
 		checkBoxPanel.setBackground(Color.WHITE);
 		checkBoxPanel.setOpaque(true);
 
-		// Static Column (Left)
 		JPanel staticPanel = new JPanel();
 		staticPanel.setLayout(new BoxLayout(staticPanel, BoxLayout.Y_AXIS));
 		staticPanel.setBackground(Color.WHITE);
-		staticPanel.setOpaque(true); // Ensures background is applied
+		staticPanel.setOpaque(true); 
 
 		staticPanel.add(new JLabel("Static"));
 		JCheckBox staticCheck1 = new JCheckBox("Static Test 1");
@@ -72,7 +71,7 @@ public class TestsPage extends TabPage
 		staticPanel.add(staticCheck2);
 		staticPanel.add(staticCheck3);
 
-		// Dynamic Column (Right)
+		
 		JPanel dynamicPanel = new JPanel();
 		dynamicPanel.setLayout(new BoxLayout(dynamicPanel, BoxLayout.Y_AXIS));
 		dynamicPanel.setBackground(Color.WHITE);
@@ -89,20 +88,24 @@ public class TestsPage extends TabPage
 		dynamicPanel.add(dynamicCheck2);
 		dynamicPanel.add(dynamicCheck3);
 
-		// Add both panels to the grid panel
 		checkBoxPanel.add(staticPanel);
 		checkBoxPanel.add(dynamicPanel);
 
-		// Add to main panel
 		testsPanel.add(checkBoxPanel, BorderLayout.CENTER);
 		testsPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-		// Add to scroll pane
 		super.scrollPane().setViewportView(testsPanel);
 		super.scrollPane().setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		super.scrollPane().validate();
 		super.scrollPane().repaint();
-
+		
+		//BoardTest test = new BoardTest();
+		//test.LineLessOrEqualThanBoardSide(2, "Tic-Tac-Toe.lud");
+		
+		//String game = "Tic-Tac-Toe.lud";
+		//TestLauncher launcher = new TestLauncher();
+		//launcher.run(game, 3);
+		
 	}
 
 
