@@ -50,6 +50,7 @@ public class BoardTest {
 		/// VERIFY THERE IS THE LINE LUDEME
 		boolean lineConcept = concepts.get(Concept.Line.id());
 		if (!lineConcept) {
+			System.out.println("Line concept is NOT present");
 			fail("Line concept is not present");
 		} else {
 			System.out.println("Line concept is present");
