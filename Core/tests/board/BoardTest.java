@@ -19,7 +19,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 
 import game.Game;
-
+import game.players.Players;
 import game.types.board.SiteType;
 import other.GameLoader;
 import other.concept.Concept;
@@ -40,7 +40,6 @@ public class BoardTest {
     @TestTemplate
 	public void lineLessOrEqualThanBoardSide(String gameName, int lineLength) {
     	
-    	
         // GAME LOADING
 		Game game = GameLoader.loadGameFromName(gameName);
 		
@@ -52,19 +51,11 @@ public class BoardTest {
 		if (!lineConcept) {
 			System.out.println("Line concept is NOT present");
 			fail("Line concept is not present");
-		} else {
-			System.out.println("Line concept is present");
 		}
 		
 		/// RETRIEVE THE LENTGH OF ONE SIDE OF THE BOARD
-		Topology top = game.board().topology();
-		List<TopologyElement> listLeft = top.left(SiteType.Vertex);
-		List<TopologyElement> listRight = top.right(SiteType.Vertex);
-		Vertex left = (Vertex) listLeft.get(0);
-		Vertex right = (Vertex) listRight.get(0);
-		int side = right.index() - left.index();
+		int side = game.board().graph().maxDim();
 		
-        //System.out.println("Line: " + lineLength + ", Board Side Length: " + side);
         assertTrue(lineLength <= side, "Line should be less than or equal to board side");
 	}
     

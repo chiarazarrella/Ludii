@@ -91,7 +91,6 @@ public class TestsPage extends TabPage
 		}
 		catch (ClassNotFoundException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -104,7 +103,13 @@ public class TestsPage extends TabPage
 		mainPanel.setBackground(Color.WHITE);
 
 		JButton runButton = new JButton("Run Tests");
-		runButton.addActionListener(e -> saveSelectedTests());
+		
+		runButton.addActionListener(e -> 
+							{
+									saveSelectedTests();
+									launchTests();
+							});
+		
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		buttonPanel.add(runButton);
 		buttonPanel.setBackground(Color.WHITE);
@@ -242,7 +247,9 @@ public class TestsPage extends TabPage
 
 	
 	private void launchTests() {
+		TestLauncher launcher = new TestLauncher();
 		
+		launcher.run(gameName, testsToLaunch);
 	}
 
 
