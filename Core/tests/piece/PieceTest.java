@@ -16,16 +16,19 @@ import org.junit.jupiter.params.provider.ValueSource;
 import game.Game;
 import game.equipment.component.Component;
 import game.equipment.component.Piece;
+import game.rules.Rules;
+import game.rules.phase.Phase;
+import game.rules.play.moves.Moves;
+import game.types.board.SiteType;
 import game.types.play.RoleType;
 import other.GameLoader;
 import other.concept.Concept;
+import other.move.Move;
+import other.topology.Topology;
 
 
 public class PieceTest {
 	
-	private static final int ArrayList = 0;
-
-
 	/**
 	 * @param gameName
 	 */
@@ -80,9 +83,6 @@ public class PieceTest {
 	public void pieceDeclaredAsShared(String gameName) {
 		
 		Game game = init(gameName);
-
-	
-		//System.out.println(game.description().rawGameDescription());
 		
 		Component[] components = game.equipment().components();
 		
@@ -104,15 +104,13 @@ public class PieceTest {
 			
 			int firstIndex = description.indexOf(piece);
 		    int secondIndex = description.indexOf(piece, firstIndex + 1); 
-
+		    
+		    // one call when it is declared as Piece and the second in the rules usually
 		    if (firstIndex == -1 || secondIndex == -1) {
 		        fail("A Shared Piece must appear at least twice in the description");
 		    }
 			
 		}
-		
-		
-		
 		
 	}
 	 
@@ -120,7 +118,7 @@ public class PieceTest {
 	/**
 	 * @param gameName
 	 */
-	
+	@ParameterizedTest
 	@ValueSource(strings = { "Amazons.lud" })
 	public void pieceDeclaredAsNeutral(String gameName) {
 		
@@ -147,6 +145,7 @@ public class PieceTest {
 		String description = game.description().rawGameDescription();
 		
 		for(String piece : pieces) {
+		
 			if(!description.contains(piece + '0')) {
 				System.out.println("Error on: " + piece);
 				System.out.println("A piece declared Neutral must be called as piece0");
@@ -172,5 +171,40 @@ public class PieceTest {
 		return game;
 	}
 	
+	// the flip values of each face of the piece have to be given
+	/**
+	 * @param gameName
+	 */
+	/*@ParameterizedTest
+	@ValueSource(strings = { "Reversi.lud" })
+	public void flipHasValidState(String gameName) {
+		
+		Game game = init(gameName); // loading and checking for Piece Ludeme
+		
+		BitSet concepts = game.computeBooleanConcepts();
+		boolean flipConcept = concepts.get(Concept.Flip.id());
+		if(!flipConcept) {
+			fail("Flip concept is not present");
+		}
+		
+		boolean siteStateConcept = concepts.get(Concept.SiteState.id());
+		if(!siteStateConcept) {
+			fail("SiteState concept is not present");
+		}
+		
+		Rules rules = game.rules();
+		Phase[] phases = rules.phases();
+		System.out.println(phases.length);
+		for(Phase phase: phases) {
+			Moves moves = phase.play().moves();
+			System.out.print(moves.toString());
+			for(Move m: moves.moves()) {
+				int n = m.state();
+				System.out.print(n);
+			}
+			
+		}
+		
+	}*/
 
 }

@@ -1,6 +1,5 @@
 package app.display.views.tabs.pages;
 
-import board.BoardTest;
 import launcher.TestLauncher;
 
 import java.awt.BorderLayout;
@@ -10,15 +9,13 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -31,6 +28,8 @@ import app.PlayerApp;
 import app.display.views.tabs.TabPage;
 import app.display.views.tabs.TabView;
 import other.context.Context;
+import util.TestClass;
+import util.TestMethod;
 public class TestsPage extends TabPage
 {
 	
@@ -55,27 +54,90 @@ public class TestsPage extends TabPage
 	@Override
 	public void reset() {
 		
-		
+		// DYN HARDCODED
 		List<String> dynTestName = new ArrayList<String>();
 		dynTestName.add("Dynamic Test 1");
 		dynTestName.add("Dynamic Test 2");
 		dynTestName.add("Dynamic Test 3");
-		
-		//List<String> paramsName = new ArrayList<String>();
-		
+				
 		List<String> dynParams = new ArrayList<String>();
 		dynParams.add("param 1");
 		dynParams.add("param 2");
 		dynParams.add("param 3");
 		
 	
-		Map<String, List<String>> methodSignature = new HashMap<>();	
+		//Map<String, List<String>> methodSignature = new HashMap<>();
+		//Map<String, Method[]> tests = new HashMap<>();
+		
+		TestClass board = new TestClass("Board");
+		TestClass player = new TestClass("Player");
+		TestClass piece = new TestClass("Piece");
+		
 		try
 		{
-			Class<?> testClass = Class.forName("board.BoardTest"); // -- at the moment only one test from class BoardTest
-			Method[] testMethods = testClass.getDeclaredMethods();
 			
-			for(var m : testMethods) {
+			
+
+			// METHODS OF TEST CLASSES
+			Method[] boardTestMethods = Class.forName("board.BoardTest").getDeclaredMethods();
+			Method[] playerTestMethods = Class.forName("player.PlayerTest").getDeclaredMethods();
+			Method[] pieceTestMethods = Class.forName("piece.PieceTest").getDeclaredMethods();
+			
+			// BOARD METHOD CLASS
+			for(Method m: boardTestMethods) {
+				
+				if(m.getModifiers() != Modifier.PUBLIC) continue;
+				
+				List<String> params = new ArrayList<>();
+				
+				for(Parameter p: m.getParameters()) {
+					
+					params.add(p.getName());
+				}
+				
+				TestMethod method = new TestMethod(m.getName(), params);
+				board.addMethod(method);
+			}
+			
+			// PLAYER METHOD CLASS
+			for(Method m: playerTestMethods) {
+				
+				if(m.getModifiers() != Modifier.PUBLIC) continue;
+				
+				List<String> params = new ArrayList<>();
+				
+				for(Parameter p: m.getParameters()) {
+					
+					params.add(p.getName());
+				}
+				
+				TestMethod method = new TestMethod(m.getName(), params);
+				player.addMethod(method);
+			}
+			
+			// PIECE METHOD CLASS
+			for(Method m: pieceTestMethods) {
+				
+				if(m.getModifiers() != Modifier.PUBLIC) continue;
+				
+				List<String> params = new ArrayList<>();
+				
+				for(Parameter p: m.getParameters()) {
+					
+					params.add(p.getName());
+				}
+				
+				TestMethod method = new TestMethod(m.getName(), params);
+				piece.addMethod(method);
+			}
+			
+			
+			
+			/*tests.put(board.getName(), boardTestMethods);
+			tests.put(player.getName(), playerTestMethods);
+			tests.put(piece.getName(), pieceTestMethods);
+			
+			for(var m : boardTestMethods) {
 								
 				List<String> params = new ArrayList<>();
 				
@@ -86,7 +148,7 @@ public class TestsPage extends TabPage
 				
 				methodSignature.put(m.getName(), params);
 			
-			}
+			}*/
 			
 		}
 		catch (ClassNotFoundException e)
@@ -130,9 +192,25 @@ public class TestsPage extends TabPage
 		dynamicTestPanel = createSectionTestPanel("Dynamic");
 		
 		// static tests
-		for(String s : methodSignature.keySet()) {
-			createTestRow(staticTestPanel, s, methodSignature.get(s));
+		for(TestMethod method : board.getMethods().values()) {
+			String nameMethod = method.getName();
+			List<String> parameters = method.getParameters();
+			createTestRow(staticTestPanel, nameMethod, parameters);
 		}
+		
+		for(TestMethod method : piece.getMethods().values()) {
+			String nameMethod = method.getName();
+			List<String> parameters = method.getParameters();
+			createTestRow(staticTestPanel, nameMethod, parameters);
+		}
+		
+		for(TestMethod method : player.getMethods().values()) {
+			String nameMethod = method.getName();
+			List<String> parameters = method.getParameters();
+			createTestRow(staticTestPanel, nameMethod, parameters);
+		}
+		
+		
 		
 		//dynamic tests
 		for(String s : dynTestName) {
