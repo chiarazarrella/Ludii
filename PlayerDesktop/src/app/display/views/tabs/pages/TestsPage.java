@@ -4,21 +4,26 @@ import launcher.TestLauncher;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -65,10 +70,14 @@ public class TestsPage extends TabPage
 		dynParams.add("param 2");
 		dynParams.add("param 3");
 		
-	
-		//Map<String, List<String>> methodSignature = new HashMap<>();
-		//Map<String, Method[]> tests = new HashMap<>();
+		List<TestMethod> dynMethods = new ArrayList<TestMethod>();
 		
+		for(String dyn: dynTestName) {
+			TestMethod method = new TestMethod(dyn, dynParams);
+			dynMethods.add(method);
+		}
+		
+ 
 		TestClass board = new TestClass("Board");
 		TestClass player = new TestClass("Player");
 		TestClass piece = new TestClass("Piece");
@@ -76,8 +85,6 @@ public class TestsPage extends TabPage
 		try
 		{
 			
-			
-
 			// METHODS OF TEST CLASSES
 			Method[] boardTestMethods = Class.forName("board.BoardTest").getDeclaredMethods();
 			Method[] playerTestMethods = Class.forName("player.PlayerTest").getDeclaredMethods();
@@ -91,6 +98,8 @@ public class TestsPage extends TabPage
 				List<String> params = new ArrayList<>();
 				
 				for(Parameter p: m.getParameters()) {
+					
+					if(p.getName().equals("gameName")) continue;
 					
 					params.add(p.getName());
 				}
@@ -107,7 +116,8 @@ public class TestsPage extends TabPage
 				List<String> params = new ArrayList<>();
 				
 				for(Parameter p: m.getParameters()) {
-					
+					if(p.getName().equals("gameName")) continue;
+
 					params.add(p.getName());
 				}
 				
@@ -124,6 +134,8 @@ public class TestsPage extends TabPage
 				
 				for(Parameter p: m.getParameters()) {
 					
+					if(p.getName().equals("gameName")) continue;
+
 					params.add(p.getName());
 				}
 				
@@ -131,24 +143,6 @@ public class TestsPage extends TabPage
 				piece.addMethod(method);
 			}
 			
-			
-			
-			/*tests.put(board.getName(), boardTestMethods);
-			tests.put(player.getName(), playerTestMethods);
-			tests.put(piece.getName(), pieceTestMethods);
-			
-			for(var m : boardTestMethods) {
-								
-				List<String> params = new ArrayList<>();
-				
-				for(Parameter p: m.getParameters()) {
-					
-					params.add(p.getName());
-				}
-				
-				methodSignature.put(m.getName(), params);
-			
-			}*/
 			
 		}
 		catch (ClassNotFoundException e)
@@ -191,30 +185,14 @@ public class TestsPage extends TabPage
 		staticTestPanel = createSectionTestPanel("Static");
 		dynamicTestPanel = createSectionTestPanel("Dynamic");
 		
-		// static tests
-		for(TestMethod method : board.getMethods().values()) {
-			String nameMethod = method.getName();
-			List<String> parameters = method.getParameters();
-			createTestRow(staticTestPanel, nameMethod, parameters);
-		}
 		
-		for(TestMethod method : piece.getMethods().values()) {
-			String nameMethod = method.getName();
-			List<String> parameters = method.getParameters();
-			createTestRow(staticTestPanel, nameMethod, parameters);
-		}
-		
-		for(TestMethod method : player.getMethods().values()) {
-			String nameMethod = method.getName();
-			List<String> parameters = method.getParameters();
-			createTestRow(staticTestPanel, nameMethod, parameters);
-		}
-		
-		
-		
+		createTestSection(staticTestPanel, "Board", board.getMethods().values());
+		createTestSection(staticTestPanel, "Piece", piece.getMethods().values());
+		createTestSection(staticTestPanel, "Player", player.getMethods().values());
+
 		//dynamic tests
-		for(String s : dynTestName) {
-			createTestRow(dynamicTestPanel, s, dynParams);
+		for(TestMethod s : dynMethods) {
+			createTestSection(dynamicTestPanel, s.getName(), dynMethods);
 		}
 
 		testPanel.add(staticTestPanel);
@@ -226,79 +204,140 @@ public class TestsPage extends TabPage
 		super.scrollPane().repaint();
 		
 		
-		
-		//TestLauncher launcher = new TestLauncher();
-		//launcher.run(gameName, 3);
-		
 	}
 	
-	// create the space for tests
+	// create the panel for tests - Static / Dynamic
 	private JPanel createSectionTestPanel(String sectionName) {
         JPanel sectionPanel = new JPanel();
         sectionPanel.setLayout(new BoxLayout(sectionPanel, BoxLayout.Y_AXIS));
         sectionPanel.setBackground(Color.WHITE);
         sectionPanel.add(new JLabel(sectionName));
-
        
         return sectionPanel;
     }
 	
 	// create row for test (checkbox + downslide window)
-	private void createTestRow(JPanel parent, String testName, List<String> params) {
+	private void createTestRow(JPanel parent, TestMethod method) {
+		JPanel rowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	    rowPanel.setBackground(Color.WHITE);
+
+	    JCheckBox checkBox = new JCheckBox(method.getName());
+	    checkBox.setBackground(Color.WHITE);
+	    
+	    // Store parameters for this test
 	    List<JTextField> paramFields = new ArrayList<>();
-		
-		JPanel rowPanel = new JPanel(new BorderLayout());
-        rowPanel.setBackground(Color.WHITE);
+	    testCheckboxes.put(checkBox, paramFields);
+	    
+	    // If parameters exist, show a button to open the modal
+	    if (!method.getParameters().isEmpty()) {
+	        JButton paramButton = new JButton("⚙️");
+	        paramButton.addActionListener(e -> openParameterModal(method, paramFields));
 
-        JCheckBox checkBox = new JCheckBox(testName);
-        checkBox.setBackground(Color.WHITE);
+	        rowPanel.add(checkBox);
+	        rowPanel.add(paramButton);
+	    } else {
+	        rowPanel.add(checkBox);
+	    }
 
-        JButton toggleButton = new JButton("▼"); 
-        toggleButton.setBorderPainted(false);
-        toggleButton.setFocusPainted(false);
-        toggleButton.setContentAreaFilled(false);
+	    parent.add(rowPanel);
         
-        JPanel formPanel = createFormPanel(params, paramFields);
-        formPanel.setVisible(false);
-
-        toggleButton.addActionListener(e -> formPanel.setVisible(!formPanel.isVisible()));
-
-        JPanel checkBoxContainer = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        checkBoxContainer.setBackground(Color.WHITE);
-        checkBoxContainer.add(checkBox);
-        checkBoxContainer.add(toggleButton);
-
-        rowPanel.add(checkBoxContainer, BorderLayout.NORTH);
-        rowPanel.add(formPanel, BorderLayout.CENTER);
-
-        parent.add(rowPanel);
-        
-        testCheckboxes.put(checkBox, paramFields); // save reference to checkbox and text fields
+        //testCheckboxes.put(checkBox, paramFields); // save reference to checkbox and text fields
     }
 	
-	// create downslide window for parameter
-	private JPanel createFormPanel(List<String> paramsName, List<JTextField> paramFields) {
-	    JPanel formPanel = new JPanel();
-	    formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
-	    formPanel.setBackground(new Color(240, 240, 240)); 
+	
+	private void openParameterModal(TestMethod method, List<JTextField> paramFields) {
+	    JDialog dialog = new JDialog();
+	    dialog.setTitle("Enter Parameters for " + method.getName());
+	    dialog.setSize(300, 200);
+	    dialog.setModal(true);
+	    
+	    JPanel panel = new JPanel();
+	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-	    for (String p : paramsName) {
-	    	
-	    	if(p.equals("gameName")) continue;
-	    	
-	        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
-	        JLabel label = new JLabel(p);
-	        JTextField textField = new JTextField(10);
-	        textField.setMaximumSize(new Dimension(200, 25));
-	        row.add(label);
-	        row.add(textField);
-	        formPanel.add(row);
-	        
+	    
+	    paramFields.clear();
+	    
+	    for (String param : method.getParameters()) {
+	        JPanel paramRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	        JLabel label = new JLabel(param);
+	        JTextField textField = new JTextField(15);
 	        paramFields.add(textField);
-
+	        
+	        paramRow.add(label);
+	        paramRow.add(textField);
+	        panel.add(paramRow);
 	    }
 	    
-	    return formPanel; 	
+	    JButton submitButton = new JButton("Save");
+	    submitButton.addActionListener(e -> {
+	        dialog.dispose();
+	    });
+
+	    panel.add(submitButton);
+	    dialog.add(panel);
+	    dialog.setLocationRelativeTo(null);
+	    dialog.setVisible(true);
+	}
+
+	
+	private void createTestSection(JPanel parent, String category, Collection<TestMethod> methods) {
+	    // Create section panel with minimal vertical space when collapsed
+	    JPanel sectionPanel = new JPanel(new BorderLayout(0, 0));
+	    sectionPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // Remove all border padding
+	    
+	    // Create header panel
+	    JPanel headerPanel = new JPanel(new BorderLayout(0, 0));
+	    headerPanel.setBorder(BorderFactory.createEmptyBorder(1, 5, 1, 5)); // Minimal vertical padding
+	    
+	    JLabel titleLabel = new JLabel(category);
+	    JButton toggleButton = new JButton("▼");
+	    toggleButton.setBorderPainted(false);
+	    toggleButton.setFocusPainted(false);
+	    toggleButton.setContentAreaFilled(false);
+	    toggleButton.setMargin(new Insets(0, 0, 0, 0));
+	    
+	    headerPanel.add(titleLabel, BorderLayout.WEST);
+	    headerPanel.add(toggleButton, BorderLayout.EAST);
+	    
+	    // Tests container
+	    JPanel testsContainer = new JPanel();
+	    testsContainer.setLayout(new BoxLayout(testsContainer, BoxLayout.Y_AXIS));
+	    testsContainer.setVisible(false); // Initially collapsed
+	    
+	    // Add tests
+	    for (TestMethod method : methods) {
+	        createTestRow(testsContainer, method);
+	    }
+	    
+	    // Toggle action
+	    toggleButton.addActionListener(e -> {
+	        boolean isVisible = testsContainer.isVisible();
+	        testsContainer.setVisible(!isVisible);
+	        toggleButton.setText(!isVisible ? "▲" : "▼");
+	        // Critical - update maximum size constraint when collapsed
+	        if (!isVisible) {
+	            // When expanded, remove size constraints
+	        	 int contentHeight = testsContainer.getPreferredSize().height;
+	             int headerHeight = headerPanel.getPreferredSize().height;
+	             sectionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, headerHeight + contentHeight));	        
+	             } else {
+	            // When collapsed, constrain height to just the header
+	            sectionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, headerPanel.getPreferredSize().height));
+	        }
+	        
+	        parent.revalidate();
+	        parent.repaint();
+	    });
+	    
+	    // Add components to section panel
+	    sectionPanel.add(headerPanel, BorderLayout.NORTH);
+	    sectionPanel.add(testsContainer, BorderLayout.CENTER);
+	    
+	    // IMPORTANT - set maximum size constraint initially (when collapsed)
+	    sectionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, headerPanel.getPreferredSize().height));
+	    
+	    // Add to parent
+	    parent.add(sectionPanel);
 	}
 	
 	
@@ -326,7 +365,6 @@ public class TestsPage extends TabPage
 	
 	private void launchTests() {
 		TestLauncher launcher = new TestLauncher();
-		
 		launcher.run(gameName, testsToLaunch);
 	}
 
