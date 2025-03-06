@@ -118,7 +118,7 @@ public class TestLauncher{
 
 		// FAILED TESTS
 		for (TestExecutionSummary.Failure failure : summary.getFailures()) {
-		    String methodName = CustomSummaryListener.extractTestMethodName(failure.getTestIdentifier().getUniqueId());
+		    String methodName = CustomSummaryListener.extractTestMethodName(failure.getTestIdentifier().getUniqueIdObject());
 		    Long duration = testDurations.getOrDefault(methodName, 0L);
 		    String failureMessage = failureMessages.getOrDefault(methodName, "Unknown failure");
 		    failedTests.add(methodName);

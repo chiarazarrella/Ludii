@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.platform.engine.TestExecutionResult;
+import org.junit.platform.engine.UniqueId;
+import org.junit.platform.engine.UniqueId.Segment;
 import org.junit.platform.launcher.TestIdentifier;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 
@@ -27,13 +29,13 @@ public class CustomSummaryListener extends SummaryGeneratingListener {
 
         if (startTime != null) {
             long duration = endTime - startTime; // Calculate duration in milliseconds
-            testDurations.put(extractTestMethodName(testIdentifier.getUniqueId()), duration);
+            testDurations.put(extractTestMethodName(testIdentifier.getUniqueIdObject()), duration);
         }
-
+        
         if (testExecutionResult.getStatus() == TestExecutionResult.Status.FAILED) {
             Optional<Throwable> throwable = testExecutionResult.getThrowable();
             System.out.println(testIdentifier.getUniqueId());
-            throwable.ifPresent(ex -> failureMessages.put(extractTestMethodName(testIdentifier.getUniqueId()), ex.getMessage()));
+            throwable.ifPresent(ex -> failureMessages.put(extractTestMethodName(testIdentifier.getUniqueIdObject()), ex.getMessage()));
         }
 
         super.executionFinished(testIdentifier, testExecutionResult);
@@ -47,9 +49,21 @@ public class CustomSummaryListener extends SummaryGeneratingListener {
         return failureMessages;
     }
 
-    public static String extractTestMethodName(String uniqueId) {
-        return uniqueId.replaceAll(".*/\\[test-template:([^\\(]+)\\(.*", "$1");
+    
+    public static String extractTestMethodName(UniqueId uniqueId) {
+    	String methodName = null;
+    	
+    	for(Segment s: uniqueId.getSegments()) {
+            if(s.getType() == "test-template") {
+            	int initParameters = s.getValue().indexOf("(");
+            	methodName = s.getValue().substring(0, initParameters);
+            }
+        }
+    	
+        return methodName;
     }
+    
+  
 }
     
    

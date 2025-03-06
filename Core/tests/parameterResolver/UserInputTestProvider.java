@@ -23,7 +23,7 @@ public class UserInputTestProvider implements TestTemplateInvocationContextProvi
         String testMethodName = context.getTestMethod().map(method -> method.getName()).orElse("");
         boolean hasInputs = testInputs.containsKey(testMethodName);
 
-        System.out.println(">> supportsTestTemplate called for " + testMethodName + ", has inputs: " + hasInputs);
+        //System.out.println(">> supportsTestTemplate called for " + testMethodName + ", has inputs: " + hasInputs);
         return hasInputs; // Ensure inputs exist for this specific test
     }
 
@@ -31,7 +31,7 @@ public class UserInputTestProvider implements TestTemplateInvocationContextProvi
     public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(ExtensionContext context) {
         String testMethodName = context.getTestMethod().map(method -> method.getName()).orElse("");
 
-        System.out.println(">> provideTestTemplateInvocationContexts called for " + testMethodName);
+        //System.out.println(">> provideTestTemplateInvocationContexts called for " + testMethodName);
         
         if(testInputs.get(testMethodName).isEmpty()) System.out.println("this is empty");
         

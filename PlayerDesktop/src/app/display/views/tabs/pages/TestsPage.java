@@ -376,9 +376,9 @@ public class TestsPage extends TabPage
 	        }
 	    }
 		
-		for(String t: testsToLaunch.keySet()) {
-			System.out.println("This is what the user has chosen: " + t + "\n values: " + testsToLaunch.get(t).toString());
-		}
+		//for(String t: testsToLaunch.keySet()) {
+			//System.out.println("This is what the user has chosen: " + t + "\n values: " + testsToLaunch.get(t).toString());
+		//}
 	}
 
 	
