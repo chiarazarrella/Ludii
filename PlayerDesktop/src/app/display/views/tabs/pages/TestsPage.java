@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -33,6 +34,7 @@ import app.PlayerApp;
 import app.display.views.tabs.TabPage;
 import app.display.views.tabs.TabView;
 import other.context.Context;
+import util.Pair;
 import util.TestClass;
 import util.TestMethod;
 public class TestsPage extends TabPage
@@ -40,8 +42,9 @@ public class TestsPage extends TabPage
 	
 	private static String gameName;
 	private final Map<JCheckBox, List<JTextField>> testCheckboxes = new HashMap<>();
-	private Map<String, List<String>> testsToLaunch = new HashMap<>();
-
+	private Map<String, List<String>> testsToLaunch = new HashMap<>(); 
+	private List<TestClass> testClass = new ArrayList<TestClass>(); // used for later improvement of the framework
+	
 
 	public TestsPage(PlayerApp app, Rectangle rect, String title, String text, int pageIndex, TabView parent)
 	{
@@ -65,22 +68,28 @@ public class TestsPage extends TabPage
 		dynTestName.add("Dynamic Test 2");
 		dynTestName.add("Dynamic Test 3");
 				
-		List<String> dynParams = new ArrayList<String>();
-		dynParams.add("param 1");
-		dynParams.add("param 2");
-		dynParams.add("param 3");
+		
 		
 		List<TestMethod> dynMethods = new ArrayList<TestMethod>();
+		List<Pair<String, Class<?>>> dynParams = new ArrayList<>();
+		dynParams.add(new Pair<String, Class<?>>("param 1", String.class));
+		dynParams.add(new Pair<String, Class<?>>("param 2", String.class));
+		dynParams.add(new Pair<String, Class<?>>("param 3", String.class));
 		
 		for(String dyn: dynTestName) {
 			TestMethod method = new TestMethod(dyn, dynParams);
 			dynMethods.add(method);
 		}
 		
- 
+		
+		// STATIC 
 		TestClass board = new TestClass("Board");
 		TestClass player = new TestClass("Player");
 		TestClass piece = new TestClass("Piece");
+		
+		testClass.add(board);
+		testClass.add(player);
+		testClass.add(piece);
 		
 		try
 		{
@@ -95,13 +104,14 @@ public class TestsPage extends TabPage
 				
 				if(m.getModifiers() != Modifier.PUBLIC) continue;
 				
-				List<String> params = new ArrayList<>();
+				List<Pair<String, Class<?>>> params = new ArrayList<>();
 				
 				for(Parameter p: m.getParameters()) {
 					
 					if(p.getName().equals("gameName")) continue;
 					
-					params.add(p.getName());
+					params.add(new Pair<String, Class<?>>(p.getName(), p.getType()));
+					//System.out.println("this is baord " + params.getLast().toString());
 				}
 				
 				TestMethod method = new TestMethod(m.getName(), params);
@@ -113,15 +123,18 @@ public class TestsPage extends TabPage
 				
 				if(m.getModifiers() != Modifier.PUBLIC) continue;
 				
-				List<String> params = new ArrayList<>();
+				List<Pair<String, Class<?>>> params = new ArrayList<>();
 				
 				for(Parameter p: m.getParameters()) {
+					
 					if(p.getName().equals("gameName")) continue;
-
-					params.add(p.getName());
+					
+					params.add(new Pair<String, Class<?>>(p.getName(), p.getType().getClass()));
+					//System.out.println(params.getLast().toString());
 				}
 				
 				TestMethod method = new TestMethod(m.getName(), params);
+				
 				player.addMethod(method);
 			}
 			
@@ -130,13 +143,14 @@ public class TestsPage extends TabPage
 				
 				if(m.getModifiers() != Modifier.PUBLIC) continue;
 				
-				List<String> params = new ArrayList<>();
+				List<Pair<String, Class<?>>> params = new ArrayList<>();
 				
 				for(Parameter p: m.getParameters()) {
 					
 					if(p.getName().equals("gameName")) continue;
-
-					params.add(p.getName());
+					
+					params.add(new Pair<String, Class<?>>(p.getName(), p.getType().getClass()));
+					//System.out.println(params.getLast().toString());
 				}
 				
 				TestMethod method = new TestMethod(m.getName(), params);
@@ -241,7 +255,6 @@ public class TestsPage extends TabPage
 
 	    parent.add(rowPanel);
         
-        //testCheckboxes.put(checkBox, paramFields); // save reference to checkbox and text fields
     }
 	
 	
@@ -257,7 +270,13 @@ public class TestsPage extends TabPage
 	    
 	    paramFields.clear();
 	    
-	    for (String param : method.getParameters()) {
+	    List<String> parametersName = new ArrayList<String>();
+	    
+	    for(Pair<String, Class<?>> pair: method.getParameters()) {
+	    	parametersName.add(pair.getFirst());
+	    }
+	    
+	    for (String param : parametersName) {
 	        JPanel paramRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
 	        JLabel label = new JLabel(param);
 	        JTextField textField = new JTextField(15);
@@ -314,7 +333,7 @@ public class TestsPage extends TabPage
 	        boolean isVisible = testsContainer.isVisible();
 	        testsContainer.setVisible(!isVisible);
 	        toggleButton.setText(!isVisible ? "▲" : "▼");
-	        // Critical - update maximum size constraint when collapsed
+	       
 	        if (!isVisible) {
 	            // When expanded, remove size constraints
 	        	 int contentHeight = testsContainer.getPreferredSize().height;
@@ -364,9 +383,40 @@ public class TestsPage extends TabPage
 
 	
 	private void launchTests() {
-		TestLauncher launcher = new TestLauncher();
-		launcher.run(gameName, testsToLaunch);
+
+	    TestLauncher launcher = new TestLauncher();
+	    Map<String, Pair<String, String>> results = launcher.run(gameName, testsToLaunch);
+
+	    for (Entry<JCheckBox, List<JTextField>> entry : testCheckboxes.entrySet()) {
+	        JCheckBox checkBox = entry.getKey();
+	        String testName = checkBox.getText();
+	        
+	        if (!checkBox.isSelected()) continue;
+
+	        // Get the result for the test
+	        Pair<String, String> testResult = results.get(testName);
+	        String duration = testResult != null ? testResult.getFirst() : "N/A"; // Duration as String
+	        String reason = testResult != null && testResult.getSecond() != null ? testResult.getSecond() : "null"; // Reason or "null" for passed tests
+
+	        // test failed
+	        if (reason != null && !reason.equals("null")) {
+	            // Test failed
+	            checkBox.setBackground(Color.RED);
+		        checkBox.setToolTipText("Duration: " + duration + "ms \n Reason: " + reason);
+
+	        } else {
+	            // Test passed
+	            checkBox.setBackground(Color.GREEN);
+		        checkBox.setToolTipText("Duration: " + duration + "ms");
+
+	        }
+
+	        // Ensure the color is visible
+	        checkBox.setOpaque(true);
+	        checkBox.repaint();
+	    }
 	}
+
 
 
 

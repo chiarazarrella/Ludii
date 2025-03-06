@@ -2,24 +2,25 @@ package player;
 
 import static org.junit.Assert.fail;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
 import game.Game;
 import other.GameLoader;
-
+import parameterResolver.UserInputTestProvider;
+@ExtendWith(UserInputTestProvider.class)
 public class PlayerTest {
 	
 	/**
 	 * @param gameName
 	 */
-	@ParameterizedTest
-	@ValueSource(strings = { "Tic-Tac-Toe.lud" })
+    @TestTemplate
 	public void playerNotDeclared(String gameName) {
 		
 		Game game = GameLoader.loadGameFromName(gameName);

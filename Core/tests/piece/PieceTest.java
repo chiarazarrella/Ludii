@@ -10,6 +10,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -25,15 +28,23 @@ import other.GameLoader;
 import other.concept.Concept;
 import other.move.Move;
 import other.topology.Topology;
+import parameterResolver.UserInputTestProvider;
 
-
+@ExtendWith(UserInputTestProvider.class)
 public class PieceTest {
 	
 	/**
-	 * @param gameName
+	 * Verifies that a game correctly uses the "Each" ludeme for its pieces.
+	 * <p>
+	 * The test checks if non-neutral, non-shared pieces are defined for at least one player
+	 * (i.e., their name appears in the game description with a player number). 
+	 * Fails if any required piece definition is missing.
+	 * 
+	 * @param gameName The name of the game being tested.
 	 */
-	@ParameterizedTest
-	@ValueSource(strings = { "Amazons.lud" })
+	//@ParameterizedTest
+	//@ValueSource(strings = { "Amazons.lud" })
+    @TestTemplate
 	public void pieceDeclaredAsEach(String gameName) {
 		
 		Game game = init(gameName);
@@ -49,20 +60,26 @@ public class PieceTest {
 		}
 		
 		if (pieces.isEmpty()) {
+			System.out.println("The game does not have any piece declared as Each");
 		    return; 
 		}
 		
 		String description = game.description().rawGameDescription();
+
 		int numPlayers = game.players().count();
-		boolean eachDeclared = true;
+		boolean eachDeclared;
 		
 		for(String piece: pieces) {
+			
+			eachDeclared = false;
+			
 			for (int i = 1; i <= numPlayers; i++) {
 				// if there is at least one pieceN, with 0 < N <= numPlayers -> OK
-			    if (!description.contains(piece + i)) {
-			    	eachDeclared = false;
-			        break;
+			    if (description.contains(piece + i)) {
+			    	eachDeclared = true;
+			    	break;
 			    }
+			    
 			}
 			
 			if(!eachDeclared)
@@ -70,17 +87,24 @@ public class PieceTest {
 		}
 		
 		
-		
+		System.out.println("The game correctly use Each Ludeme");
 		
 	}
 	
 	
-	/**
-	 * @param gameName
-	 */
-	@ParameterizedTest
-	@ValueSource(strings = { "Amazons.lud" })
-	public void pieceDeclaredAsShared(String gameName) {
+    /**
+     * Verifies that a game correctly uses the "Shared" ludeme for its pieces.
+     * <p>
+     * The test checks if shared pieces are declared and ensures that each appears 
+     * at least twice in the game description (once in the definition and once in the rules).
+     * Fails if a shared piece is missing or incorrectly declared.
+     * 
+     * @param gameName The name of the game being tested.
+     */
+	//@ParameterizedTest
+	//@ValueSource(strings = { "Amazons.lud" })
+    @TestTemplate
+    public void pieceDeclaredAsShared(String gameName) {
 		
 		Game game = init(gameName);
 		
@@ -95,6 +119,7 @@ public class PieceTest {
 		}
 		
 		if (pieces.isEmpty()) {
+			fail("The game does not have any piece declared as Shared");
 		    return; 
 		}
 		
@@ -112,30 +137,41 @@ public class PieceTest {
 			
 		}
 		
+		System.out.println("The game correctly use Shared Ludeme");
+		
 	}
 	 
 	
-	/**
-	 * @param gameName
-	 */
-	@ParameterizedTest
-	@ValueSource(strings = { "Amazons.lud" })
+    /**
+     * Verifies that a game correctly uses the "Neutral" ludeme for its pieces.
+     * <p>
+     * The test checks if neutral pieces are declared and ensures each is referenced 
+     * as "piece0" in the game description. Fails if a neutral piece is missing or incorrectly named.
+     * 
+     * @param gameName The name of the game being tested.
+     */
+	//@ParameterizedTest
+	//@ValueSource(strings = { "Amazons.lud" })
+	@TestTemplate
 	public void pieceDeclaredAsNeutral(String gameName) {
 		
 		Game game = init(gameName); // loading and checking for Piece Ludeme
-		
-		
-		System.out.println(game.description().rawGameDescription());
-		
+		int counterBasePiece = 0;
+				
 		Component[] components = game.equipment().components();
 		
 		List<String> pieces = new ArrayList<>();
 		
 		for(Component c : components) {
+			
 			if (c instanceof Piece && c.role() == RoleType.Neutral) {
+					if(counterBasePiece == 0) {
+						counterBasePiece++;
+						continue;
+					}
 					pieces.add(c.getNameWithoutNumber());
-					System.out.println("Piece: 	" + c.getNameWithoutNumber());
 			}
+			
 		}
 		
 		if (pieces.isEmpty()) {
@@ -147,11 +183,12 @@ public class PieceTest {
 		for(String piece : pieces) {
 		
 			if(!description.contains(piece + '0')) {
-				System.out.println("Error on: " + piece);
-				System.out.println("A piece declared Neutral must be called as piece0");
-				//fail("A piece declared Neutral must be called as piece0");
+				fail("A piece declared Neutral must be called as piece0");
 			}	
 		}
+		
+		System.out.println("The game correctly use Neutral Ludeme");
+
 	}
 	
 	
@@ -161,50 +198,15 @@ public class PieceTest {
 		// CONCEPTS LOADING
 		BitSet concepts = game.computeBooleanConcepts();
 				
-		/// VERIFY THERE IS THE PIECE LUDEME - can I have a game without PIECE?
+		/// VERIFY THERE IS THE PIECE LUDEME - can I have a game without PIECE? NO. Because there is an implicity piece (DISC neutral) in every game
 		boolean pieceConcept = concepts.get(Concept.Piece.id());
 		if (!pieceConcept) {
-			//System.out.println("Piece concept is NOT present");
 			fail("Piece concept is not present");
 		}
 		
 		return game;
 	}
 	
-	// the flip values of each face of the piece have to be given
-	/**
-	 * @param gameName
-	 */
-	/*@ParameterizedTest
-	@ValueSource(strings = { "Reversi.lud" })
-	public void flipHasValidState(String gameName) {
-		
-		Game game = init(gameName); // loading and checking for Piece Ludeme
-		
-		BitSet concepts = game.computeBooleanConcepts();
-		boolean flipConcept = concepts.get(Concept.Flip.id());
-		if(!flipConcept) {
-			fail("Flip concept is not present");
-		}
-		
-		boolean siteStateConcept = concepts.get(Concept.SiteState.id());
-		if(!siteStateConcept) {
-			fail("SiteState concept is not present");
-		}
-		
-		Rules rules = game.rules();
-		Phase[] phases = rules.phases();
-		System.out.println(phases.length);
-		for(Phase phase: phases) {
-			Moves moves = phase.play().moves();
-			System.out.print(moves.toString());
-			for(Move m: moves.moves()) {
-				int n = m.state();
-				System.out.print(n);
-			}
-			
-		}
-		
-	}*/
+	
 
 }

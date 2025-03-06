@@ -6,11 +6,12 @@ public class TestMethod {
 	
 	private static int id = -1;
 	private String name;
-	private List<String> parameters;
+	private List<Pair<String, Class<?>>> parameters;
 	private boolean isChecked;
 	private boolean isPassed;
 	
-	public TestMethod(String name, List<String> parameters) {
+	@SuppressWarnings("javadoc")
+	public TestMethod(String name, List<Pair<String, Class<?>>> parameters) {
 		TestMethod.id = id + 1;
 		this.name = name;
 		this.parameters = parameters;
@@ -26,15 +27,11 @@ public class TestMethod {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public List<String> getParameters() {
+	public List<Pair<String, Class<?>>> getParameters() {
 		return parameters;
 	}
 
-	public void setParameters(List<String> parameters) {
+	public void setParameters(List<Pair<String, Class<?>>> parameters) {
 		this.parameters = parameters;
 	}
 

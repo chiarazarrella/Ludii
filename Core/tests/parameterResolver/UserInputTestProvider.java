@@ -1,40 +1,50 @@
 package parameterResolver;
 
 import org.junit.jupiter.api.extension.*;
+import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class UserInputTestProvider implements TestTemplateInvocationContextProvider {
 
-    private static List<Object> userInputs; // Store the list of (gameName, lineLength) pairs
+    private static Map<String, List<Object>> testInputs = new HashMap<>(); // Store test-specific inputs
 
     // Method to set user inputs before running tests
-    public static void setUserInputs(List<Object> inputs) {
-        userInputs = inputs;
+    /**
+     * @param inputs
+     */
+    public static void setUserInputs(Map<String, List<Object>> inputs) {
+        testInputs = inputs;
     }
 
     @Override
     public boolean supportsTestTemplate(ExtensionContext context) {
-    	 System.out.println(">> supportsTestTemplate called, userInputs size: " + userInputs.size());
-         return !userInputs.isEmpty(); // Ensure inputs exist    
+        String testMethodName = context.getTestMethod().map(method -> method.getName()).orElse("");
+        boolean hasInputs = testInputs.containsKey(testMethodName);
+
+        System.out.println(">> supportsTestTemplate called for " + testMethodName + ", has inputs: " + hasInputs);
+        return hasInputs; // Ensure inputs exist for this specific test
     }
 
-       
     @Override
-     public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(ExtensionContext context) {
-          System.out.println(">> provideTestTemplateInvocationContexts called");
+    public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(ExtensionContext context) {
+        String testMethodName = context.getTestMethod().map(method -> method.getName()).orElse("");
 
-          return Stream.of(new TestTemplateInvocationContext() {
-                 @Override
-                 public List<Extension> getAdditionalExtensions() {
-                	 List<Extension> resolvers = new ArrayList<>();
-                	 resolvers.add(new DynamicParameterResolver(userInputs));
-                     return resolvers;
-                 }
-             });
-       }
+        System.out.println(">> provideTestTemplateInvocationContexts called for " + testMethodName);
+        
+        if(testInputs.get(testMethodName).isEmpty()) System.out.println("this is empty");
+        
+        
+        List<Object> parameters = testInputs.getOrDefault(testMethodName, Collections.emptyList()); 
 
-   
+        return Stream.of(new TestTemplateInvocationContext() {
+            @Override
+            public List<Extension> getAdditionalExtensions() {
+           	 List<Extension> resolvers = new ArrayList<>();
+           	 resolvers.add(new DynamicParameterResolver(parameters));
+                return resolvers;
+            }
+        });
+    }
 }

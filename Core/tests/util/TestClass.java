@@ -13,6 +13,7 @@ public class TestClass {
 	private HashMap<Integer, TestMethod> methods;
 	
 	
+	
 	public TestClass(String name) {
 		this.name = name;
 		this.methods = new HashMap<Integer, TestMethod>();
