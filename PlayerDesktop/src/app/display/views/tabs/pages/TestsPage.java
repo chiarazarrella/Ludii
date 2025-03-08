@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import annotation.DefaultParameter;
 import app.PlayerApp;
 import app.display.views.tabs.TabPage;
 import app.display.views.tabs.TabView;
@@ -43,7 +44,7 @@ public class TestsPage extends TabPage
 	private static String gameName;
 	private final Map<JCheckBox, List<JTextField>> testCheckboxes = new HashMap<>();
 	private Map<String, List<String>> testsToLaunch = new HashMap<>(); 
-	private List<TestClass> testClass = new ArrayList<TestClass>(); // used for later improvement of the framework
+	private List<TestClass> testClasses = new ArrayList<TestClass>(); // used for later improvement of the framework
 	
 
 	public TestsPage(PlayerApp app, Rectangle rect, String title, String text, int pageIndex, TabView parent)
@@ -72,12 +73,13 @@ public class TestsPage extends TabPage
 		
 		List<TestMethod> dynMethods = new ArrayList<TestMethod>();
 		List<Pair<String, Class<?>>> dynParams = new ArrayList<>();
+		List<Pair<String, Object>> dynParamsValues = new ArrayList<>();
 		dynParams.add(new Pair<String, Class<?>>("param 1", String.class));
 		dynParams.add(new Pair<String, Class<?>>("param 2", String.class));
 		dynParams.add(new Pair<String, Class<?>>("param 3", String.class));
 		
 		for(String dyn: dynTestName) {
-			TestMethod method = new TestMethod(dyn, dynParams);
+			TestMethod method = new TestMethod(dyn, dynParams, dynParamsValues);
 			dynMethods.add(method);
 		}
 		
@@ -87,74 +89,46 @@ public class TestsPage extends TabPage
 		TestClass player = new TestClass("Player");
 		TestClass piece = new TestClass("Piece");
 		
-		testClass.add(board);
-		testClass.add(player);
-		testClass.add(piece);
+		testClasses.add(board);
+		testClasses.add(player);
+		testClasses.add(piece);
+		
 		
 		try
 		{
 			
-			// METHODS OF TEST CLASSES
-			Method[] boardTestMethods = Class.forName("board.BoardTest").getDeclaredMethods();
-			Method[] playerTestMethods = Class.forName("player.PlayerTest").getDeclaredMethods();
-			Method[] pieceTestMethods = Class.forName("piece.PieceTest").getDeclaredMethods();
-			
-			// BOARD METHOD CLASS
-			for(Method m: boardTestMethods) {
+			for(TestClass testClass: testClasses) {
 				
-				if(m.getModifiers() != Modifier.PUBLIC) continue;
+				Method[] methods = Class.forName(testClass.getClassName()).getDeclaredMethods();
 				
-				List<Pair<String, Class<?>>> params = new ArrayList<>();
-				
-				for(Parameter p: m.getParameters()) {
+				for(Method m: methods) {
 					
-					if(p.getName().equals("gameName")) continue;
+					if(m.getModifiers() != Modifier.PUBLIC) continue;
 					
-					params.add(new Pair<String, Class<?>>(p.getName(), p.getType()));
-					//System.out.println("this is baord " + params.getLast().toString());
+					List<Pair<String, Class<?>>> paramTypes = new ArrayList<>();
+					List<Pair<String, Object>> paramValues = new ArrayList<>();
+
+					for(Parameter p: m.getParameters()) {
+						
+						if(p.getName().equals("gameName")) continue;
+						
+						String value = null;
+						
+						if(p.isAnnotationPresent(DefaultParameter.class)) {
+							value = p.getAnnotation(DefaultParameter.class).value();
+						}
+						
+						paramTypes.add(new Pair<String, Class<?>>(p.getName(), p.getType()));
+						paramValues.add(new Pair<String, Object>(p.getName(), value));
+						
+					
+					}
+					
+					TestMethod method = new TestMethod(m.getName(), paramTypes, paramValues);
+					testClass.addMethod(method);
 				}
 				
-				TestMethod method = new TestMethod(m.getName(), params);
-				board.addMethod(method);
-			}
-			
-			// PLAYER METHOD CLASS
-			for(Method m: playerTestMethods) {
 				
-				if(m.getModifiers() != Modifier.PUBLIC) continue;
-				
-				List<Pair<String, Class<?>>> params = new ArrayList<>();
-				
-				for(Parameter p: m.getParameters()) {
-					
-					if(p.getName().equals("gameName")) continue;
-					
-					params.add(new Pair<String, Class<?>>(p.getName(), p.getType().getClass()));
-					//System.out.println(params.getLast().toString());
-				}
-				
-				TestMethod method = new TestMethod(m.getName(), params);
-				
-				player.addMethod(method);
-			}
-			
-			// PIECE METHOD CLASS
-			for(Method m: pieceTestMethods) {
-				
-				if(m.getModifiers() != Modifier.PUBLIC) continue;
-				
-				List<Pair<String, Class<?>>> params = new ArrayList<>();
-				
-				for(Parameter p: m.getParameters()) {
-					
-					if(p.getName().equals("gameName")) continue;
-					
-					params.add(new Pair<String, Class<?>>(p.getName(), p.getType().getClass()));
-					//System.out.println(params.getLast().toString());
-				}
-				
-				TestMethod method = new TestMethod(m.getName(), params);
-				piece.addMethod(method);
 			}
 			
 			
@@ -200,9 +174,10 @@ public class TestsPage extends TabPage
 		dynamicTestPanel = createSectionTestPanel("Dynamic");
 		
 		
-		createTestSection(staticTestPanel, "Board", board.getMethods().values());
-		createTestSection(staticTestPanel, "Piece", piece.getMethods().values());
-		createTestSection(staticTestPanel, "Player", player.getMethods().values());
+		// creation test class section - STATIC
+		for(TestClass testClass: testClasses) {
+			createTestSection(staticTestPanel, testClass.getName(), testClass.getMethods().values());
+		}
 
 		//dynamic tests
 		for(TestMethod s : dynMethods) {
@@ -243,8 +218,8 @@ public class TestsPage extends TabPage
 	    testCheckboxes.put(checkBox, paramFields);
 	    
 	    // If parameters exist, show a button to open the modal
-	    if (!method.getParameters().isEmpty()) {
-	        JButton paramButton = new JButton("⚙️");
+	    if (!method.getParamTypes().isEmpty()) {
+	        JButton paramButton = new JButton(" ⚙️");
 	        paramButton.addActionListener(e -> openParameterModal(method, paramFields));
 
 	        rowPanel.add(checkBox);
@@ -272,7 +247,7 @@ public class TestsPage extends TabPage
 	    
 	    List<String> parametersName = new ArrayList<String>();
 	    
-	    for(Pair<String, Class<?>> pair: method.getParameters()) {
+	    for(Pair<String, Class<?>> pair: method.getParamTypes()) {
 	    	parametersName.add(pair.getFirst());
 	    }
 	    
@@ -373,12 +348,12 @@ public class TestsPage extends TabPage
 	            }
 
 	            testsToLaunch.put(checkBox.getText(), paramValues);
+	            System.out.println("text and value " + checkBox.getText() + " " + paramValues);
 	        }
 	    }
 		
-		//for(String t: testsToLaunch.keySet()) {
-			//System.out.println("This is what the user has chosen: " + t + "\n values: " + testsToLaunch.get(t).toString());
-		//}
+		
+		
 	}
 
 	

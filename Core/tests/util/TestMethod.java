@@ -6,15 +6,17 @@ public class TestMethod {
 	
 	private static int id = -1;
 	private String name;
-	private List<Pair<String, Class<?>>> parameters;
+	private List<Pair<String, Class<?>>> paramTypes;
+	private List<Pair<String, Object>> paramValue;
 	private boolean isChecked;
 	private boolean isPassed;
 	
 	@SuppressWarnings("javadoc")
-	public TestMethod(String name, List<Pair<String, Class<?>>> parameters) {
+	public TestMethod(String name, List<Pair<String, Class<?>>> paramTypes, List<Pair<String, Object>> paramValue) {
 		TestMethod.id = id + 1;
 		this.name = name;
-		this.parameters = parameters;
+		this.paramTypes = paramTypes;
+		this.paramValue = paramValue;
 		this.isChecked = false;
 		this.isPassed = false;
 	}
@@ -27,12 +29,12 @@ public class TestMethod {
 		return name;
 	}
 
-	public List<Pair<String, Class<?>>> getParameters() {
-		return parameters;
+	public List<Pair<String, Class<?>>> getParamTypes() {
+		return paramTypes;
 	}
 
-	public void setParameters(List<Pair<String, Class<?>>> parameters) {
-		this.parameters = parameters;
+	public void setParamTypes(List<Pair<String, Class<?>>> paramTypes) {
+		this.paramTypes = paramTypes;
 	}
 
 	public boolean isChecked() {

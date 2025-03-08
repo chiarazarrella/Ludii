@@ -31,8 +31,8 @@ public class TestLauncher{
 		launcher = LauncherFactory.create();
 	}
 	
-	// run will have as params a data structure containing info about tests and parameters (prob an hashmap)
 	
+	// change parameters as String game, List<TestClasses>
 	public Map<String, Pair<String, String>> run(String game, Map<String, List<String>> tests) { // K -> name of the method V -> parameters
 		
 	    Map<String, List<Object>> testInputs = new HashMap<>(); // Store test-specific inputs

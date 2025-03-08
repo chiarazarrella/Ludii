@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-
+import annotation.DefaultParameter;
 import game.Game;
 import game.players.Players;
 import game.types.board.SiteType;
@@ -37,8 +37,10 @@ public class BoardTest {
      * @param lineLength
      * @param gameName
      */
-    @TestTemplate
-	public void lineLessOrEqualThanBoardSide(String gameName, int lineLength) {
+	@CsvSource({"test.lud, 3"})
+	@TestTemplate
+	public void lineLessOrEqualThanBoardSide(String gameName, 
+			@DefaultParameter("3") int lineLength) {
     	
         // GAME LOADING
 		Game game = GameLoader.loadGameFromName(gameName);

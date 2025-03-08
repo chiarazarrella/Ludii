@@ -36,4 +36,10 @@ public class TestClass {
 		return this.methods;
 	}
 	
+	public String getClassName() {
+	    String name = getName();
+	    String formattedName = Character.toUpperCase(name.charAt(0)) + name.substring(1).toLowerCase();
+	    return name.toLowerCase() + "." + formattedName + "Test";
+	}
+
 }
