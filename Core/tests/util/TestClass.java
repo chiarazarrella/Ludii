@@ -36,10 +36,29 @@ public class TestClass {
 		return this.methods;
 	}
 	
+	// if the module organization is to be change, then this need to be modified !!!!!!
 	public String getClassName() {
 	    String name = getName();
 	    String formattedName = Character.toUpperCase(name.charAt(0)) + name.substring(1).toLowerCase();
 	    return name.toLowerCase() + "." + formattedName + "Test";
+	}
+	
+	public boolean hasAtLeastOneMethodChecked() {
+		
+		for(TestMethod method: methods.values()) {
+			
+			if(method.isChecked())
+				return true;
+		}
+		
+		return false;
+		
+	}
+	
+	public String getFullyQualifiedNameForMethod(int id) {
+		
+		TestMethod method = this.getMethod(id);
+		return this.getClassName() + "#" + method.getQualifiedName();
 	}
 
 }

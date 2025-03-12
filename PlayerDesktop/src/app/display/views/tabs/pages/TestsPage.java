@@ -38,6 +38,7 @@ import other.context.Context;
 import util.Pair;
 import util.TestClass;
 import util.TestMethod;
+import util.TestParameter;
 public class TestsPage extends TabPage
 {
 	
@@ -64,7 +65,7 @@ public class TestsPage extends TabPage
 	public void reset() {
 		
 		// DYN HARDCODED
-		List<String> dynTestName = new ArrayList<String>();
+		/*List<String> dynTestName = new ArrayList<String>();
 		dynTestName.add("Dynamic Test 1");
 		dynTestName.add("Dynamic Test 2");
 		dynTestName.add("Dynamic Test 3");
@@ -78,10 +79,14 @@ public class TestsPage extends TabPage
 		dynParams.add(new Pair<String, Class<?>>("param 2", String.class));
 		dynParams.add(new Pair<String, Class<?>>("param 3", String.class));
 		
-		for(String dyn: dynTestName) {
+		TestClass mockDynamic = new TestClass("Board");
+		Method[] mockMethods = Class.forName(mockDynamic.getClassName()).getDeclaredMethods();
+		
+		for(Method method: methods) {
+			
 			TestMethod method = new TestMethod(dyn, dynParams, dynParamsValues);
 			dynMethods.add(method);
-		}
+		}*/
 		
 		
 		// STATIC 
@@ -101,31 +106,15 @@ public class TestsPage extends TabPage
 				
 				Method[] methods = Class.forName(testClass.getClassName()).getDeclaredMethods();
 				
-				for(Method m: methods) {
+				for(Method method: methods) {
 					
-					if(m.getModifiers() != Modifier.PUBLIC) continue;
+					if(method.getModifiers() != Modifier.PUBLIC) continue;
 					
-					List<Pair<String, Class<?>>> paramTypes = new ArrayList<>();
-					List<Pair<String, Object>> paramValues = new ArrayList<>();
-
-					for(Parameter p: m.getParameters()) {
-						
-						if(p.getName().equals("gameName")) continue;
-						
-						String value = null;
-						
-						if(p.isAnnotationPresent(DefaultParameter.class)) {
-							value = p.getAnnotation(DefaultParameter.class).value();
-						}
-						
-						paramTypes.add(new Pair<String, Class<?>>(p.getName(), p.getType()));
-						paramValues.add(new Pair<String, Object>(p.getName(), value));
-						
+					TestMethod testMethod = new TestMethod(method);
+					testClass.addMethod(testMethod);
 					
-					}
-					
-					TestMethod method = new TestMethod(m.getName(), paramTypes, paramValues);
-					testClass.addMethod(method);
+					// print to show if the complete method signature is correct
+					System.out.println(testClass.getFullyQualifiedNameForMethod(testMethod.getId()));
 				}
 				
 				
@@ -150,7 +139,6 @@ public class TestsPage extends TabPage
 		
 		runButton.addActionListener(e -> 
 							{
-									saveSelectedTests();
 									launchTests();
 							});
 		
@@ -180,9 +168,9 @@ public class TestsPage extends TabPage
 		}
 
 		//dynamic tests
-		for(TestMethod s : dynMethods) {
+		/*for(TestMethod s : dynMethods) {
 			createTestSection(dynamicTestPanel, s.getName(), dynMethods);
-		}
+		}*/
 
 		testPanel.add(staticTestPanel);
 		testPanel.add(dynamicTestPanel);
@@ -213,14 +201,18 @@ public class TestsPage extends TabPage
 	    JCheckBox checkBox = new JCheckBox(method.getName());
 	    checkBox.setBackground(Color.WHITE);
 	    
-	    // Store parameters for this test
-	    List<JTextField> paramFields = new ArrayList<>();
-	    testCheckboxes.put(checkBox, paramFields);
+	    checkBox.setSelected(method.isChecked());
+	    
+	    checkBox.addActionListener(e -> {
+	    	
+	        method.setChecked(checkBox.isSelected());
+	        
+	    });
 	    
 	    // If parameters exist, show a button to open the modal
-	    if (!method.getParamTypes().isEmpty()) {
+	    if (method.hasDefaultParameters()) {
 	        JButton paramButton = new JButton(" ⚙️");
-	        paramButton.addActionListener(e -> openParameterModal(method, paramFields));
+	        paramButton.addActionListener(e -> openParameterModal(method));
 
 	        rowPanel.add(checkBox);
 	        rowPanel.add(paramButton);
@@ -233,37 +225,49 @@ public class TestsPage extends TabPage
     }
 	
 	
-	private void openParameterModal(TestMethod method, List<JTextField> paramFields) {
+	private void openParameterModal(TestMethod method) {
 	    JDialog dialog = new JDialog();
-	    dialog.setTitle("Enter Parameters for " + method.getName());
+	    
+	    dialog.setTitle("Set Parameters for " + method.getName());
 	    dialog.setSize(300, 200);
 	    dialog.setModal(true);
 	    
 	    JPanel panel = new JPanel();
 	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-	    
-	    paramFields.clear();
-	    
-	    List<String> parametersName = new ArrayList<String>();
-	    
-	    for(Pair<String, Class<?>> pair: method.getParamTypes()) {
-	    	parametersName.add(pair.getFirst());
-	    }
-	    
-	    for (String param : parametersName) {
+	    	    
+	    Map<String, JTextField> fieldsForParameters = new HashMap<>();
+
+	    for (Map.Entry<String, TestParameter> entry : method.getParameters().entrySet()) {
+	    	
+	    	if(entry.getKey().equals("gameName")) continue;
+	    	
 	        JPanel paramRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
-	        JLabel label = new JLabel(param);
+
+	        JLabel label = new JLabel(entry.getKey() + ": ");
 	        JTextField textField = new JTextField(15);
-	        paramFields.add(textField);
-	        
+
+	        String defaultValue = entry.getValue().getValue();
+	        textField.setText(defaultValue);
+
 	        paramRow.add(label);
 	        paramRow.add(textField);
 	        panel.add(paramRow);
+
+	        // Store reference to the field
+	        fieldsForParameters.put(entry.getKey(), textField);
 	    }
-	    
+
 	    JButton submitButton = new JButton("Save");
 	    submitButton.addActionListener(e -> {
+	        // Update method parameters with user input
+	        for (Map.Entry<String, JTextField> entry : fieldsForParameters.entrySet()) {
+	            String paramName = entry.getKey();
+	            String newValue = entry.getValue().getText();
+
+	            method.setValue(paramName, newValue);
+	        }
+
 	        dialog.dispose();
 	    });
 
@@ -334,32 +338,23 @@ public class TestsPage extends TabPage
 	    parent.add(sectionPanel);
 	}
 	
-	
-	private void saveSelectedTests() {
-	   
-		for (Map.Entry<JCheckBox, List<JTextField>> entry : testCheckboxes.entrySet()) {
-	        JCheckBox checkBox = entry.getKey();
-	        List<JTextField> paramFields = entry.getValue();
-
-	        if (checkBox.isSelected()) {  
-	            List<String> paramValues = new ArrayList<>();
-	            for (JTextField field : paramFields) {
-	                paramValues.add(field.getText().trim());
-	            }
-
-	            testsToLaunch.put(checkBox.getText(), paramValues);
-	            System.out.println("text and value " + checkBox.getText() + " " + paramValues);
-	        }
-	    }
+	private List<TestClass> filterCheckedTests() {
+		List<TestClass> tests = new ArrayList<>();
 		
-		
-		
+		for(TestClass testClass: testClasses) {
+			if(testClass.hasAtLeastOneMethodChecked()) {
+				tests.add(testClass);
+			}
+		}
+		return tests;
 	}
-
+	
 	
 	private void launchTests() {
 
 	    TestLauncher launcher = new TestLauncher();
+	    List<String> param = new ArrayList<>();
+	    testsToLaunch.put("playerNotDeclared", param);
 	    Map<String, Pair<String, String>> results = launcher.run(gameName, testsToLaunch);
 
 	    for (Entry<JCheckBox, List<JTextField>> entry : testCheckboxes.entrySet()) {
