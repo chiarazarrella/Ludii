@@ -42,9 +42,8 @@ import util.TestParameter;
 public class TestsPage extends TabPage
 {
 	
-	private static String gameName;
-	private final Map<JCheckBox, List<JTextField>> testCheckboxes = new HashMap<>();
-	private Map<String, List<String>> testsToLaunch = new HashMap<>(); 
+	private static String gameName = null;
+	private final Map<Integer, JCheckBox> testCheckBoxes = new HashMap<>();
 	private List<TestClass> testClasses = new ArrayList<TestClass>(); // used for later improvement of the framework
 	
 
@@ -98,7 +97,6 @@ public class TestsPage extends TabPage
 		testClasses.add(player);
 		testClasses.add(piece);
 		
-		
 		try
 		{
 			
@@ -111,14 +109,15 @@ public class TestsPage extends TabPage
 					if(method.getModifiers() != Modifier.PUBLIC) continue;
 					
 					TestMethod testMethod = new TestMethod(method);
-					testClass.addMethod(testMethod);
 					
+					testClass.addMethod(testMethod);
+					//System.out.println("id: " + testMethod.getId());
 					// print to show if the complete method signature is correct
-					System.out.println(testClass.getFullyQualifiedNameForMethod(testMethod.getId()));
+					//System.out.println(testClass.getFullyQualifiedNameForMethod(testMethod.getId()));
 				}
 				
-				
 			}
+			
 			
 			
 		}
@@ -199,6 +198,7 @@ public class TestsPage extends TabPage
 	    rowPanel.setBackground(Color.WHITE);
 
 	    JCheckBox checkBox = new JCheckBox(method.getName());
+	    testCheckBoxes.put(method.getId(), checkBox);
 	    checkBox.setBackground(Color.WHITE);
 	    
 	    checkBox.setSelected(method.isChecked());
@@ -349,41 +349,55 @@ public class TestsPage extends TabPage
 		return tests;
 	}
 	
+	private void addGameNameParameter() {
+		
+		for(TestClass testClass: testClasses) {
+			for(TestMethod method: testClass.getMethods().values()) {
+				method.setValue("gameName", gameName);
+			}
+		}
+		
+	}
 	
 	private void launchTests() {
+		addGameNameParameter();
+	    TestLauncher launcher = new TestLauncher();	    
+	    launcher.run(filterCheckedTests());
 
-	    TestLauncher launcher = new TestLauncher();
-	    List<String> param = new ArrayList<>();
-	    testsToLaunch.put("playerNotDeclared", param);
-	    Map<String, Pair<String, String>> results = launcher.run(gameName, testsToLaunch);
-
-	    for (Entry<JCheckBox, List<JTextField>> entry : testCheckboxes.entrySet()) {
-	        JCheckBox checkBox = entry.getKey();
+	    for (Entry<Integer, JCheckBox> entry : testCheckBoxes.entrySet()) {
+	        JCheckBox checkBox = entry.getValue();
 	        String testName = checkBox.getText();
 	        
 	        if (!checkBox.isSelected()) continue;
+	        
+	        for(TestClass tC: testClasses) {
+	        	
+	        	TestMethod m = tC.getMethod(testName.hashCode()); // CHANGE THIS I DO NOT LIKE IT
+	        	if(m == null) continue;
+	 	        String duration = m.getDuration();
+		        
 
-	        // Get the result for the test
-	        Pair<String, String> testResult = results.get(testName);
-	        String duration = testResult != null ? testResult.getFirst() : "N/A"; // Duration as String
-	        String reason = testResult != null && testResult.getSecond() != null ? testResult.getSecond() : "null"; // Reason or "null" for passed tests
+		        // test failed
+		        if (!m.isPassed()) {
+		            // Test failed
+		            checkBox.setBackground(Color.RED);
+		            
+		            String reason = m.getFailureMessage();
+			        checkBox.setToolTipText("Duration: " + duration + "ms \n Reason: " + reason);
 
-	        // test failed
-	        if (reason != null && !reason.equals("null")) {
-	            // Test failed
-	            checkBox.setBackground(Color.RED);
-		        checkBox.setToolTipText("Duration: " + duration + "ms \n Reason: " + reason);
+		        } else {
+		            // Test passed
+		            checkBox.setBackground(Color.GREEN);
+			        checkBox.setToolTipText("Duration: " + duration + "ms");
 
-	        } else {
-	            // Test passed
-	            checkBox.setBackground(Color.GREEN);
-		        checkBox.setToolTipText("Duration: " + duration + "ms");
+		        }
 
+		        // Ensure the color is visible
+		        checkBox.setOpaque(true);
+		        checkBox.repaint();
 	        }
-
-	        // Ensure the color is visible
-	        checkBox.setOpaque(true);
-	        checkBox.repaint();
+	        
+	       
 	    }
 	}
 
@@ -391,3 +405,4 @@ public class TestsPage extends TabPage
 
 
 }
+;

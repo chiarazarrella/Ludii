@@ -32,6 +32,8 @@ public class TestClass {
 		methods.put(method.getId(), method);
 	}
 	
+	
+	
 	public HashMap<Integer, TestMethod> getMethods(){
 		return this.methods;
 	}

@@ -11,21 +11,22 @@ import annotation.DefaultParameter;
 
 public class TestMethod {
 	
-	private static int id = -1;
+	private int id;
 	private String name;
 	private final Map<String, TestParameter> parameters;
-	
 	private boolean isChecked;
 	private boolean isPassed;
-	
-	
+	private String failureMessage;
+	private String duration;
 	
 	public TestMethod(Method method) {
 		
-		TestMethod.id = id + 1;
 		this.name = method.getName();
+		this.id = name.hashCode();
 		this.isChecked = false;
 		this.isPassed = false;
+		this.failureMessage = null;
+		this.duration = null;
 		this.parameters = new HashMap<String, TestParameter>();
 		
 		for(Parameter p: method.getParameters()) {
@@ -70,12 +71,27 @@ public class TestMethod {
 	public void setPassed(boolean isPassed) {
 		this.isPassed = isPassed;
 	}
+	
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
 
+	public String getDuration() {
+		return this.duration;
+	}
+	
+	public void setFailureMessage(String message) {
+		this.failureMessage = message;
+	}
+	
+	public String getFailureMessage() {
+		return this.failureMessage;
+	}
+	
 	// used when the user wants to change the default parameter
 	public void setValue(String parameter, String value) {
 		parameters.get(parameter).setValue(value);
 	}
-	
 	
 	public boolean hasDefaultParameters() {
 		return parameters.size() > 1;

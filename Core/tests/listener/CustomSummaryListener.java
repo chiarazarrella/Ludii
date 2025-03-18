@@ -26,24 +26,26 @@ public class CustomSummaryListener extends SummaryGeneratingListener {
     public void executionFinished(TestIdentifier testIdentifier, TestExecutionResult testExecutionResult) {
         long endTime = System.currentTimeMillis();
         Long startTime = testStartTimes.get(testIdentifier.getUniqueId());
-
-        if (startTime != null) {
+        String nameMethod = extractTestMethodName(testIdentifier.getUniqueIdObject());
+        
+        // I check on the nameMethod bc this method executionFinished is executed for every segment of the UNIQUE ID
+        if (startTime != null && nameMethod != null) {
             long duration = endTime - startTime; // Calculate duration in milliseconds
-            testDurations.put(extractTestMethodName(testIdentifier.getUniqueIdObject()), duration);
+            testDurations.put(nameMethod, duration);
         }
         
         
-        System.out.println("UNIQUE ID");
+        /*System.out.println("UNIQUE ID");
         System.out.println(testIdentifier.getUniqueId());
         
         for(Segment segment: testIdentifier.getUniqueIdObject().getSegments()) {
         	System.out.println("####");
         	System.out.println(segment.toString());
-        }
+        }*/
         
-        if (testExecutionResult.getStatus() == TestExecutionResult.Status.FAILED) {
+        if (nameMethod != null && testExecutionResult.getStatus() == TestExecutionResult.Status.FAILED) {
             Optional<Throwable> throwable = testExecutionResult.getThrowable();
-            throwable.ifPresent(ex -> failureMessages.put(extractTestMethodName(testIdentifier.getUniqueIdObject()), ex.getMessage()));
+            throwable.ifPresent(ex -> failureMessages.put(nameMethod, ex.getMessage()));
         }
 
         super.executionFinished(testIdentifier, testExecutionResult);
