@@ -106,7 +106,13 @@ public class TestLauncher{
 					
 					for(TestParameter param: method.getParameters().values()) {
 						
-						paramValues.add(param.getValue());
+						// parse the parameter
+						if(param.getType() != String.class) {
+							
+							paramValues.add(Integer.parseInt(param.getValue())); // TODO: make this generic
+						}else {
+							paramValues.add(param.getValue());
+						}
 						
 						testInputs.put(method.getName(), paramValues);
 						
@@ -169,7 +175,6 @@ public class TestLauncher{
 		    System.out.println("❌ Failed: " + methodName + " (Time: " + duration + "ms)");
 		    System.out.println("   Reason: " + failureMessage);
 		    
-		    results.put(methodName, new Pair<String, String>(duration.toString(), failureMessage));
 		    
 		}
 

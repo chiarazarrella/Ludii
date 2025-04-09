@@ -13,11 +13,13 @@ public class TestMethod {
 	
 	private int id;
 	private String name;
-	private final Map<String, TestParameter> parameters;
+	private Map<String, TestParameter> parameters;
+	private final Map<String, TestParameter> defaultParameters;
 	private boolean isChecked;
 	private boolean isPassed;
 	private String failureMessage;
 	private String duration;
+	
 	
 	public TestMethod(Method method) {
 		
@@ -28,6 +30,7 @@ public class TestMethod {
 		this.failureMessage = null;
 		this.duration = null;
 		this.parameters = new HashMap<String, TestParameter>();
+		this.defaultParameters = new HashMap<String, TestParameter>();
 		
 		for(Parameter p: method.getParameters()) {
 						
@@ -36,12 +39,12 @@ public class TestMethod {
 			if(p.isAnnotationPresent(DefaultParameter.class)) {
 				
 				value = p.getAnnotation(DefaultParameter.class).value();
-				
+				System.out.println("this is value: " + value);
 			}
 			
-			parameters.put(p.getName(), new TestParameter(p.getType(), value));
-			
-			
+			parameters.put(p.getName(), new TestParameter(p.getType(), value)); 
+			defaultParameters.put(p.getName(), new TestParameter(p.getType(), value));
+
 		}
 		
 		
@@ -90,16 +93,17 @@ public class TestMethod {
 	
 	// used when the user wants to change the default parameter
 	public void setValue(String parameter, String value) {
-		parameters.get(parameter).setValue(value);
+		this.parameters.get(parameter).setValue(value);
 	}
 	
 	public boolean hasDefaultParameters() {
-		return parameters.size() > 1;
+		return defaultParameters.size() > 1;
 	}
 	
 	public Map<String, TestParameter> getParameters(){
 		return parameters;
 	}
+	
 	
 	public String getQualifiedName() {
 	    StringBuilder qName = new StringBuilder(getName());
@@ -114,6 +118,18 @@ public class TestMethod {
 	    }
 
 	    return qName.toString();
+	}
+	
+	public void reset() {
+		
+		setDuration(null);
+		setFailureMessage(null);
+		setPassed(false);
+		setChecked(false);
+		this.parameters.clear();
+		for(Map.Entry<String, TestParameter> entry: defaultParameters.entrySet()){
+			parameters.put(entry.getKey(), new TestParameter(entry.getValue().getType(), entry.getValue().getValue()));
+		}
 	}
 	
 }

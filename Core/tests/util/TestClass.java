@@ -62,5 +62,11 @@ public class TestClass {
 		TestMethod method = this.getMethod(id);
 		return this.getClassName() + "#" + method.getQualifiedName();
 	}
+	
+	public void reset() {
+		for(TestMethod m: this.methods.values()) {
+			m.reset();
+		}
+	}
 
 }

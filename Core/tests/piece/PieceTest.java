@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,6 +46,7 @@ public class PieceTest {
 	//@ParameterizedTest
 	//@ValueSource(strings = { "Amazons.lud" })
     @TestTemplate
+    @Tag("Static")
 	public void pieceDeclaredAsEach(String gameName) {
 		
 		Game game = init(gameName);
@@ -104,6 +106,7 @@ public class PieceTest {
 	//@ParameterizedTest
 	//@ValueSource(strings = { "Amazons.lud" })
     @TestTemplate
+    @Tag("Static")
     public void pieceDeclaredAsShared(String gameName) {
 		
 		Game game = init(gameName);
@@ -207,6 +210,7 @@ public class PieceTest {
 		return game;
 	}
 	
+
 	
 
 }

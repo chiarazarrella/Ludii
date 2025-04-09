@@ -57,7 +57,7 @@ public class TestsPage extends TabPage
 	{
 		
 		gameName = context.game().name() + ".lud";
-		
+		//System.out.println("gameName");
 	}
 
 	@Override
@@ -92,10 +92,12 @@ public class TestsPage extends TabPage
 		TestClass board = new TestClass("Board");
 		TestClass player = new TestClass("Player");
 		TestClass piece = new TestClass("Piece");
+		TestClass track = new TestClass("Track");
 		
 		testClasses.add(board);
 		testClasses.add(player);
 		testClasses.add(piece);
+		testClasses.add(track);
 		
 		try
 		{
@@ -139,12 +141,27 @@ public class TestsPage extends TabPage
 		runButton.addActionListener(e -> 
 							{
 									launchTests();
+									runButton.setEnabled(false);
 							});
 		
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		
+		JButton resetButton = new JButton("Reset");
+		
+		resetButton.addActionListener(e -> 
+								{	
+									resetTests(); 
+									runButton.setEnabled(true);
+								});
+		
+		
+		buttonPanel.add(resetButton);
 		buttonPanel.add(runButton);
 		buttonPanel.setBackground(Color.WHITE);
 		buttonPanel.setOpaque(true);
+		
+	
+		
 
 		JPanel testPanel = new JPanel();
 		testPanel.setLayout(new GridLayout(0, 2, 20, 5));
@@ -379,7 +396,7 @@ public class TestsPage extends TabPage
 
 		        // test failed
 		        if (!m.isPassed()) {
-		            // Test failed
+		           
 		            checkBox.setBackground(Color.RED);
 		            
 		            String reason = m.getFailureMessage();
@@ -400,7 +417,20 @@ public class TestsPage extends TabPage
 	       
 	    }
 	}
-
+	
+	private void resetTests() {
+		
+		for(TestClass tC: testClasses) {
+			tC.reset();
+		}
+		
+		for(JCheckBox cB : testCheckBoxes.values()) {
+			cB.setBackground(Color.white);
+			cB.setToolTipText(null);
+			cB.setSelected(false);
+		}
+		
+	}
 
 
 

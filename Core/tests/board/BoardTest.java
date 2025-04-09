@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import annotation.DefaultParameter;
 import game.Game;
+import game.equipment.container.board.Board;
+import game.equipment.container.board.Track;
+import game.equipment.container.board.Track.Elem;
 import game.players.Players;
 import game.types.board.SiteType;
 import other.GameLoader;
@@ -39,6 +43,7 @@ public class BoardTest {
      */
 	@CsvSource({"test.lud, 3"})
 	@TestTemplate
+	@Tag("Static")
 	public void lineLessOrEqualThanBoardSide(String gameName, 
 			@DefaultParameter("3") int lineLength) {
     	
@@ -60,6 +65,8 @@ public class BoardTest {
 		
         assertTrue(lineLength <= side, "Line should be less than or equal to board side");
 	}
+	
+
     
     
     
