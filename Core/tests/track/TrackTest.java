@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 import java.util.BitSet;
 import java.util.List;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import game.Game;
@@ -17,7 +18,7 @@ import parameterResolver.UserInputTestProvider;
 @ExtendWith(UserInputTestProvider.class)
 public class TrackTest {
 	
-	
+	@Tag("Static")
 	public void sizeTrack(String gameName, int size) {
 		
 		 // GAME LOADING

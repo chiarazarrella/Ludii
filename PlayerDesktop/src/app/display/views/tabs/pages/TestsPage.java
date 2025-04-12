@@ -1,10 +1,12 @@
 package app.display.views.tabs.pages;
 
 import launcher.TestLauncher;
+import model.TestClass;
+import model.TestMethod;
+import model.TestParameter;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -12,7 +14,6 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,22 +31,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import annotation.DefaultParameter;
 import app.PlayerApp;
 import app.display.views.tabs.TabPage;
 import app.display.views.tabs.TabView;
 import other.context.Context;
-import util.Pair;
-import util.TestClass;
-import util.TestMethod;
-import util.TestParameter;
+import testCollector.TestCollector;
+
 public class TestsPage extends TabPage
 {
 	
 	private static String gameName = null;
 	private final Map<Integer, JCheckBox> testCheckBoxes = new HashMap<>();
-	private List<TestClass> testClasses = new ArrayList<TestClass>(); // used for later improvement of the framework
-	
+	private List<TestClass> testClasses = TestCollector.discoverTestPackages();	
 
 	public TestsPage(PlayerApp app, Rectangle rect, String title, String text, int pageIndex, TabView parent)
 	{
@@ -55,41 +52,17 @@ public class TestsPage extends TabPage
 	@Override
 	public void updatePage(Context context)
 	{
-		
 		gameName = context.game().name() + ".lud";
-		//System.out.println("gameName");
 	}
 
 	@Override
 	public void reset() {
 		
-		// DYN HARDCODED
-		/*List<String> dynTestName = new ArrayList<String>();
-		dynTestName.add("Dynamic Test 1");
-		dynTestName.add("Dynamic Test 2");
-		dynTestName.add("Dynamic Test 3");
-				
 		
-		
-		List<TestMethod> dynMethods = new ArrayList<TestMethod>();
-		List<Pair<String, Class<?>>> dynParams = new ArrayList<>();
-		List<Pair<String, Object>> dynParamsValues = new ArrayList<>();
-		dynParams.add(new Pair<String, Class<?>>("param 1", String.class));
-		dynParams.add(new Pair<String, Class<?>>("param 2", String.class));
-		dynParams.add(new Pair<String, Class<?>>("param 3", String.class));
-		
-		TestClass mockDynamic = new TestClass("Board");
-		Method[] mockMethods = Class.forName(mockDynamic.getClassName()).getDeclaredMethods();
-		
-		for(Method method: methods) {
-			
-			TestMethod method = new TestMethod(dyn, dynParams, dynParamsValues);
-			dynMethods.add(method);
-		}*/
-		
+        //List<TestClass> testClasses = TestCollector.discoverTestPackages();		
 		
 		// STATIC 
-		TestClass board = new TestClass("Board");
+		/*TestClass board = new TestClass("Board");
 		TestClass player = new TestClass("Player");
 		TestClass piece = new TestClass("Piece");
 		TestClass track = new TestClass("Track");
@@ -97,7 +70,7 @@ public class TestsPage extends TabPage
 		testClasses.add(board);
 		testClasses.add(player);
 		testClasses.add(piece);
-		testClasses.add(track);
+		testClasses.add(track);*/
 		
 		try
 		{

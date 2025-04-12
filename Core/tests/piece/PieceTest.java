@@ -156,6 +156,7 @@ public class PieceTest {
 	//@ParameterizedTest
 	//@ValueSource(strings = { "Amazons.lud" })
 	@TestTemplate
+	@Tag("Static")
 	public void pieceDeclaredAsNeutral(String gameName) {
 		
 		Game game = init(gameName); // loading and checking for Piece Ludeme
@@ -201,7 +202,7 @@ public class PieceTest {
 		// CONCEPTS LOADING
 		BitSet concepts = game.computeBooleanConcepts();
 				
-		/// VERIFY THERE IS THE PIECE LUDEME - can I have a game without PIECE? NO. Because there is an implicity piece (DISC neutral) in every game
+		/// VERIFY THERE IS THE PIECE LUDEME - can I have a game without PIECE? NO. Because there is an implicit piece (DISC neutral) in every game
 		boolean pieceConcept = concepts.get(Concept.Piece.id());
 		if (!pieceConcept) {
 			fail("Piece concept is not present");

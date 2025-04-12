@@ -1,13 +1,13 @@
-package util;
+package model;
 
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
+import java.util.Optional;
 import java.lang.reflect.Method;
 
 import annotation.DefaultParameter;
+import org.junit.jupiter.api.Tag;
 
 public class TestMethod {
 	
@@ -17,8 +17,10 @@ public class TestMethod {
 	private final Map<String, TestParameter> defaultParameters;
 	private boolean isChecked;
 	private boolean isPassed;
+	private boolean isStatic;
 	private String failureMessage;
 	private String duration;
+	
 	
 	
 	public TestMethod(Method method) {
@@ -32,14 +34,21 @@ public class TestMethod {
 		this.parameters = new HashMap<String, TestParameter>();
 		this.defaultParameters = new HashMap<String, TestParameter>();
 		
+		
+		this.isStatic = Optional.ofNullable(method.getAnnotation(Tag.class))
+                .map(Tag::value)
+                .map("Static"::equals)
+                .orElse(false);
+		
+					
 		for(Parameter p: method.getParameters()) {
 						
 			String value = null;
 			
+			// DEFAULT PARAMETER
 			if(p.isAnnotationPresent(DefaultParameter.class)) {
 				
 				value = p.getAnnotation(DefaultParameter.class).value();
-				System.out.println("this is value: " + value);
 			}
 			
 			parameters.put(p.getName(), new TestParameter(p.getType(), value)); 
@@ -89,6 +98,10 @@ public class TestMethod {
 	
 	public String getFailureMessage() {
 		return this.failureMessage;
+	}
+	
+	public boolean isStatic() {
+		return isStatic;
 	}
 	
 	// used when the user wants to change the default parameter

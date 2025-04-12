@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -27,6 +28,7 @@ public class PlayerTest {
 	 * @param gameName
 	 */
     @TestTemplate
+    @Tag("Static")
 	public void playerNotDeclared(String gameName) {
 		
 		Game game = GameLoader.loadGameFromName(gameName);

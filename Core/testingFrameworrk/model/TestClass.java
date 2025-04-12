@@ -1,4 +1,4 @@
-package util;
+package model;
 
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +67,18 @@ public class TestClass {
 		for(TestMethod m: this.methods.values()) {
 			m.reset();
 		}
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("TestClass: ").append(this.name).append("\n");
+		sb.append("Methods:\n");
+
+		for (TestMethod m : this.methods.values()) {
+			sb.append(m.toString()).append("\n");
+		}
+
+		return sb.toString();
 	}
 
 }

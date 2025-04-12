@@ -11,7 +11,7 @@ import org.junit.platform.engine.UniqueId.Segment;
 import org.junit.platform.launcher.TestIdentifier;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 
-public class CustomSummaryListener extends SummaryGeneratingListener {
+public class TestSummaryListener extends SummaryGeneratingListener {
     private final Map<String, Long> testStartTimes = new ConcurrentHashMap<>();
     private final Map<String, Long> testDurations = new HashMap<>();
     private final Map<String, String> failureMessages = new HashMap<>();

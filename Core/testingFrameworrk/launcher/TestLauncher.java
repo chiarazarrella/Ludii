@@ -19,11 +19,10 @@ import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
 import board.BoardTest;
 import parameterResolver.UserInputTestProvider;
-import util.Pair;
-import util.TestClass;
-import util.TestMethod;
-import util.TestParameter;
-import listener.CustomSummaryListener;
+import listener.TestSummaryListener;
+import model.TestClass;
+import model.TestMethod;
+import model.TestParameter;
 
 public class TestLauncher{
 	Launcher launcher;
@@ -41,57 +40,6 @@ public class TestLauncher{
 	    Map<String, List<Object>> testInputs = new HashMap<>(); // Store test-specific inputs
 	    List<MethodSelector> selectorsList = new ArrayList<>();
 		
-		// TEST BOARD
-		/*List<String> boardTest = tests.get("lineLessOrEqualThanBoardSide");
-		if(boardTest != null) {
-			ArrayList<Object> paramsboardTest1 = new ArrayList<>();
-			paramsboardTest1.add(game);
-			String lineString = boardTest.get(0);
-			int line = Integer.parseInt(lineString);
-			
-			paramsboardTest1.add(line);
-			//testInputs.put("lineLessOrEqualThanBoardSide", paramsboardTest1);
-			//selectorsList.add(DiscoverySelectors.selectMethod("board.BoardTest#lineLessOrEqualThanBoardSide(java.lang.String, int)"));
-		}
-		
-		
-		// TEST PLAYER
-		List<String> playerTest = tests.get("playerNotDeclared");
-		if(playerTest != null) {
-			ArrayList<Object> playerTestParam = new ArrayList<>();
-			playerTestParam.add(game);
-			//testInputs.put("playerNotDeclared", playerTestParam);
-			//selectorsList.add(DiscoverySelectors.selectMethod("player.PlayerTest#playerNotDeclared(java.lang.String)"));
-		}
-		
-		// TESTS PIECE
-		
-		// TEST PIECE pieceDeclaredAsEach
-		List<String> pieceTest1 = tests.get("pieceDeclaredAsEach");
-		if(pieceTest1 != null) {
-			ArrayList<Object> pieceTest1Param = new ArrayList<>();
-			pieceTest1Param.add(game);
-			//testInputs.put("pieceDeclaredAsEach", pieceTest1Param);
-			//selectorsList.add(DiscoverySelectors.selectMethod("piece.PieceTest#pieceDeclaredAsEach(java.lang.String)"));
-		}
-		
-		// TEST PIECE pieceDeclaredAsShared
-		List<String> pieceTest2 = tests.get("pieceDeclaredAsShared");
-		if(pieceTest2 != null) {
-			ArrayList<Object> pieceTest2Param = new ArrayList<>();
-			pieceTest2Param.add(game);
-			//testInputs.put("pieceDeclaredAsShared", pieceTest2Param);
-			//selectorsList.add(DiscoverySelectors.selectMethod("piece.PieceTest#pieceDeclaredAsShared(java.lang.String)"));
-		}
-		
-		// TEST PIECE pieceDeclaredAsNeutral
-		List<String> pieceTest3 = tests.get("pieceDeclaredAsNeutral");
-		if(pieceTest3 != null) {
-			ArrayList<Object> pieceTest3Param = new ArrayList<>();
-			pieceTest3Param.add(game);
-			//testInputs.put("pieceDeclaredAsNeutral", pieceTest3Param);
-			//selectorsList.add(DiscoverySelectors.selectMethod("piece.PieceTest#pieceDeclaredAsNeutral(java.lang.String)"));
-		}*/
 		
 	    List<TestMethod> testMethods = new ArrayList<TestMethod>();
 	    
@@ -130,7 +78,7 @@ public class TestLauncher{
 		
 		// LAUNCH TESTS
 		// K: name of method - Pair<Duration, Reason (if failed)>
-		Map<String, Pair<String, String>> results = new HashMap<>();
+		//Map<String, Pair<String, String>> results = new HashMap<>();
 		
 		UserInputTestProvider.setUserInputs(testInputs);
 		
@@ -145,7 +93,7 @@ public class TestLauncher{
 		List<String> passedTests = new ArrayList<String>();
 		List<String> failedTests = new ArrayList<String>();
 		
-		CustomSummaryListener listener = new CustomSummaryListener();
+		TestSummaryListener listener = new TestSummaryListener();
 		launcher.execute(request, listener);
 
 		TestExecutionSummary summary = listener.getSummary();
@@ -158,7 +106,7 @@ public class TestLauncher{
 
 		// FAILED TESTS
 		for (TestExecutionSummary.Failure failure : summary.getFailures()) {
-		    String methodName = CustomSummaryListener.extractTestMethodName(failure.getTestIdentifier().getUniqueIdObject());
+		    String methodName = TestSummaryListener.extractTestMethodName(failure.getTestIdentifier().getUniqueIdObject());
 		    Long duration = testDurations.getOrDefault(methodName, 0L);
 		    String failureMessage = failureMessages.getOrDefault(methodName, "Unknown failure");
 		    
