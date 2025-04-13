@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Tag;
 
 public class TestMethod {
 	
-	private int id;
+	private static int id;
 	private String name;
 	private Map<String, TestParameter> parameters;
 	private final Map<String, TestParameter> defaultParameters;
@@ -26,7 +26,7 @@ public class TestMethod {
 	public TestMethod(Method method) {
 		
 		this.name = method.getName();
-		this.id = name.hashCode();
+		setId(name);
 		this.isChecked = false;
 		this.isPassed = false;
 		this.failureMessage = null;
@@ -45,7 +45,7 @@ public class TestMethod {
 						
 			String value = null;
 			
-			// DEFAULT PARAMETER
+			
 			if(p.isAnnotationPresent(DefaultParameter.class)) {
 				
 				value = p.getAnnotation(DefaultParameter.class).value();
@@ -59,8 +59,13 @@ public class TestMethod {
 		
 	}
 	
-	public int getId() {
-		return id;
+	
+	private static int setId(String name) {
+		return id = name.hashCode();
+	}
+	
+	public static int getId(String name) {
+		return setId(name);
 	}
 
 	public String getName() {
@@ -104,7 +109,6 @@ public class TestMethod {
 		return isStatic;
 	}
 	
-	// used when the user wants to change the default parameter
 	public void setValue(String parameter, String value) {
 		this.parameters.get(parameter).setValue(value);
 	}

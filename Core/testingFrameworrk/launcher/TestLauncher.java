@@ -34,8 +34,7 @@ public class TestLauncher{
 	}
 	
 	
-	// change parameters as String game, List<TestClasses>
-	public void run(List<TestClass> testClasses) { // K -> name of the method V -> parameters
+	public void run(List<TestClass> testClasses) { 
 		
 	    Map<String, List<Object>> testInputs = new HashMap<>(); // Store test-specific inputs
 	    List<MethodSelector> selectorsList = new ArrayList<>();
@@ -66,8 +65,7 @@ public class TestLauncher{
 						
 					}
 					
-					System.out.println("this is the method: " + testClass.getFullyQualifiedNameForMethod(method.getId()));
-					selectorsList.add(DiscoverySelectors.selectMethod(testClass.getFullyQualifiedNameForMethod(method.getId())));
+					selectorsList.add(DiscoverySelectors.selectMethod(testClass.getFullyQualifiedNameForMethod(TestMethod.getId(method.getName()))));
 					testMethods.add(method);
 				}
 				
@@ -97,7 +95,6 @@ public class TestLauncher{
 		launcher.execute(request, listener);
 
 		TestExecutionSummary summary = listener.getSummary();
-		//summary.printTo(new PrintWriter(System.out, true)); 
 
 		Map<String, Long> testDurations = listener.getTestDurations();
 		Map<String, String> failureMessages = listener.getFailureMessages();

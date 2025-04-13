@@ -116,6 +116,8 @@ public class TestsPage extends TabPage
 			}
 		}
 		
+		
+		// creation test class section - DYN
 		for(TestClass testClass: testClasses) {
 			if (testClass.hasDynamicTest(testClass.getPackageName()))
 			{
@@ -134,7 +136,6 @@ public class TestsPage extends TabPage
 		
 	}
 	
-	// create the panel for tests - Static / Dynamic
 	private JPanel createSectionTestPanel(String sectionName) {
         JPanel sectionPanel = new JPanel();
         sectionPanel.setLayout(new BoxLayout(sectionPanel, BoxLayout.Y_AXIS));
@@ -144,13 +145,13 @@ public class TestsPage extends TabPage
         return sectionPanel;
     }
 	
-	// create row for test (checkbox + downslide window)
 	private void createTestRow(JPanel parent, TestMethod method) {
 		JPanel rowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 	    rowPanel.setBackground(Color.WHITE);
 
 	    JCheckBox checkBox = new JCheckBox(method.getName());
-	    testCheckBoxes.put(method.getId(), checkBox);
+	    int methodId = TestMethod.getId(method.getName());
+	    testCheckBoxes.put(methodId, checkBox);
 	    checkBox.setBackground(Color.WHITE);
 	    
 	    checkBox.setSelected(method.isChecked());
@@ -165,7 +166,6 @@ public class TestsPage extends TabPage
 	    if (method.hasDefaultParameters()) {
 	        JButton paramButton = new JButton(" ⚙️");
 	        paramButton.addActionListener(e -> openParameterModal(method));
-
 	        rowPanel.add(checkBox);
 	        rowPanel.add(paramButton);
 	    } else {
@@ -304,6 +304,11 @@ public class TestsPage extends TabPage
 		return tests;
 	}
 	
+	/**
+	 * Adds the game name parameter to each test method.
+	 * This is necessary because when the TestMethod is created, the value of the gameName parameter is null, to isolate the instance when created.
+	 * Otherwise, when the testCollector is called, the name of the game should be passed.
+	 */
 	private void addGameNameParameter() {
 		
 		for(TestClass testClass: testClasses) {
@@ -327,7 +332,7 @@ public class TestsPage extends TabPage
 	        
 	        for(TestClass tC: testClasses) {
 	        	
-	        	TestMethod m = tC.getMethod(testName.hashCode()); // CHANGE THIS I DO NOT LIKE IT
+	        	TestMethod m = tC.getMethod(TestMethod.getId(testName)); 
 	        	if(m == null) continue;
 	 	        String duration = m.getDuration();
 		        

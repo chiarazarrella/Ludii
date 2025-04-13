@@ -29,7 +29,7 @@ public class TestClass {
 	}
 	
 	public void addMethod(TestMethod method) {
-		methods.put(method.getId(), method);
+		methods.put(TestMethod.getId(method.getName()), method);
 	}
 	
 	
@@ -82,6 +82,7 @@ public class TestClass {
 	}
 	
 	public boolean hasStaticTest(String category) {
+		
 		for (TestMethod m : this.methods.values()) {
 			if (m.isStatic() && packageName.equals(category))
 				return true;
@@ -91,10 +92,12 @@ public class TestClass {
 	}
 	
 	public boolean hasDynamicTest(String category) {
+
 		for (TestMethod m : this.methods.values()) {
 			if (!m.isStatic() && packageName.equals(category))
 				return true;
 		}
+
 		return false;
 	}
 
