@@ -41,7 +41,7 @@ public class BoardTest {
      * @param lineLength
      * @param gameName
      */
-	@CsvSource({"test.lud, 3"})
+	//@CsvSource({"test.lud, 3"})
 	@TestTemplate
 	@Tag("Static")
 	public void lineLessOrEqualThanBoardSide(String gameName, 
@@ -64,6 +64,15 @@ public class BoardTest {
 		int side = game.board().graph().maxDim();
 		
         assertTrue(lineLength <= side, "Line should be less than or equal to board side");
+	}
+	
+	@TestTemplate
+	@Tag("Dynamic")
+	public void dynTest(String gameName) throws InterruptedException {
+		Thread.sleep(2000);
+		
+		assertTrue(true);
+		
 	}
 	
 

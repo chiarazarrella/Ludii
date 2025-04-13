@@ -42,8 +42,8 @@ public class TestsPage extends TabPage
 	
 	private static String gameName = null;
 	private final Map<Integer, JCheckBox> testCheckBoxes = new HashMap<>();
-	private List<TestClass> testClasses = TestCollector.discoverTestPackages();	
-
+	private final List<TestClass> testClasses = TestCollector.collectTestClasses();		
+	
 	public TestsPage(PlayerApp app, Rectangle rect, String title, String text, int pageIndex, TabView parent)
 	{
 		super(app, rect, title, text, pageIndex, parent);
@@ -57,49 +57,6 @@ public class TestsPage extends TabPage
 
 	@Override
 	public void reset() {
-		
-		
-        //List<TestClass> testClasses = TestCollector.discoverTestPackages();		
-		
-		// STATIC 
-		/*TestClass board = new TestClass("Board");
-		TestClass player = new TestClass("Player");
-		TestClass piece = new TestClass("Piece");
-		TestClass track = new TestClass("Track");
-		
-		testClasses.add(board);
-		testClasses.add(player);
-		testClasses.add(piece);
-		testClasses.add(track);*/
-		
-		try
-		{
-			
-			for(TestClass testClass: testClasses) {
-				
-				Method[] methods = Class.forName(testClass.getClassName()).getDeclaredMethods();
-				
-				for(Method method: methods) {
-					
-					if(method.getModifiers() != Modifier.PUBLIC) continue;
-					
-					TestMethod testMethod = new TestMethod(method);
-					
-					testClass.addMethod(testMethod);
-					//System.out.println("id: " + testMethod.getId());
-					// print to show if the complete method signature is correct
-					//System.out.println(testClass.getFullyQualifiedNameForMethod(testMethod.getId()));
-				}
-				
-			}
-			
-			
-			
-		}
-		catch (ClassNotFoundException e)
-		{
-			e.printStackTrace();
-		}
 		
 		
 		// need to became a method
@@ -153,13 +110,20 @@ public class TestsPage extends TabPage
 		
 		// creation test class section - STATIC
 		for(TestClass testClass: testClasses) {
-			createTestSection(staticTestPanel, testClass.getName(), testClass.getMethods().values());
+			if (testClass.hasStaticTest(testClass.getPackageName()))
+			{
+				createTestSection(staticTestPanel, testClass.getPackageName(), testClass.getMethods().values(), true);
+			}
+		}
+		
+		for(TestClass testClass: testClasses) {
+			if (testClass.hasDynamicTest(testClass.getPackageName()))
+			{
+				createTestSection(dynamicTestPanel, testClass.getPackageName(), testClass.getMethods().values(), false);
+			}
 		}
 
-		//dynamic tests
-		/*for(TestMethod s : dynMethods) {
-			createTestSection(dynamicTestPanel, s.getName(), dynMethods);
-		}*/
+	
 
 		testPanel.add(staticTestPanel);
 		testPanel.add(dynamicTestPanel);
@@ -268,7 +232,7 @@ public class TestsPage extends TabPage
 	}
 
 	
-	private void createTestSection(JPanel parent, String category, Collection<TestMethod> methods) {
+	private void createTestSection(JPanel parent, String category, Collection<TestMethod> methods, boolean isStatic) {
 	    // Create section panel with minimal vertical space when collapsed
 	    JPanel sectionPanel = new JPanel(new BorderLayout(0, 0));
 	    sectionPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // Remove all border padding
@@ -294,7 +258,10 @@ public class TestsPage extends TabPage
 	    
 	    // Add tests
 	    for (TestMethod method : methods) {
-	        createTestRow(testsContainer, method);
+			if (method.isStatic() == isStatic)
+			{
+				createTestRow(testsContainer, method);
+			}
 	    }
 	    
 	    // Toggle action
