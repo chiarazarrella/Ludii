@@ -5,7 +5,11 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,7 +43,7 @@ public class PieceTest {
 	 * <p>
 	 * The test checks if non-neutral, non-shared pieces are defined for at least one player
 	 * (i.e., their name appears in the game description with a player number). 
-	 * Fails if any required piece definition is missing.
+	 * Fails if any required piece definition is <missing.
 	 * 
 	 * @param gameName The name of the game being tested.
 	 */
@@ -62,11 +66,11 @@ public class PieceTest {
 		}
 		
 		if (pieces.isEmpty()) {
-			System.out.println("The game does not have any piece declared as Each");
-		    return; 
+			fail("The game does not have any piece declared as Each");
+			return;
 		}
 		
-		String description = game.description().rawGameDescription();
+		String description = game.description().expanded();
 
 		int numPlayers = game.players().count();
 		boolean eachDeclared;
@@ -126,7 +130,7 @@ public class PieceTest {
 		    return; 
 		}
 		
-		String description = game.description().rawGameDescription();
+		String description = game.description().expanded();
 		
 		for(String piece: pieces) {
 			
@@ -182,7 +186,7 @@ public class PieceTest {
 		    return; 
 		}
 		
-		String description = game.description().rawGameDescription();
+		String description = game.description().expanded();
 		
 		for(String piece : pieces) {
 		
@@ -191,8 +195,50 @@ public class PieceTest {
 			}	
 		}
 		
-		System.out.println("The game correctly use Neutral Ludeme");
 
+	}
+	
+	//@ParameterizedTest
+	//@ValueSource(strings = { "Amazons.lud" })
+	@TestTemplate
+	@Tag("Static")
+	public void eachPieceReferenceNotDuplicated(String gameName) {
+	    Game game = init(gameName); // loading and checking for Piece Ludeme
+	    
+	    Component[] components = game.equipment().components();
+	    
+	    List<String> pieces = new ArrayList<String>();
+	    
+	    for(Component c : components) {
+	        if (c instanceof Piece && c.role() != RoleType.Neutral && c.role() != RoleType.Shared) {
+	            pieces.add(c.name()); // Piece1
+	        }
+	    }
+	    
+	    if (pieces.isEmpty()) {
+	        fail("The game does not have any piece declared as Each");
+	        return;
+	    }
+	    
+	    String description = game.description().expanded();
+	    
+	    Map<String, Integer> pieceCounts = new HashMap<>();
+	    
+	    for (String piece : pieces) {
+	    	
+	        pieceCounts.put(piece, 0);
+	        
+	        Pattern pattern = Pattern.compile("\\b" + piece + "\\b"); // to find exact word e.g."Piece1"
+	        Matcher matcher = pattern.matcher(description);
+	        
+	        while (matcher.find()) {
+	            pieceCounts.put(piece, pieceCounts.get(piece) + 1);
+	        }
+	        
+	        if (pieceCounts.get(piece) > 1) {
+	            fail("Ludeme Each for a Piece requires that the reference to " + piece + " is not duplicated. Found " + pieceCounts.get(piece) + " occurrences.");
+	        }
+	    }
 	}
 	
 	
@@ -205,7 +251,7 @@ public class PieceTest {
 		/// VERIFY THERE IS THE PIECE LUDEME - can I have a game without PIECE? NO. Because there is an implicit piece (DISC neutral) in every game
 		boolean pieceConcept = concepts.get(Concept.Piece.id());
 		if (!pieceConcept) {
-			fail("Piece concept is not present");
+			fail("Piece concept is not present"); // this will NEVER fail
 		}
 		
 		return game;

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * 
  */
@@ -39,7 +40,8 @@ public class TestClass {
 	}
 	
 	// if the module organization is to be change, then this need to be modified !!!!!!
-	public String getClassName() {
+	// retrieval example: board.BoardTest
+	public String getFullyClassName() {
 	    String name = getPackageName();
 	    String formattedName = Character.toUpperCase(name.charAt(0)) + name.substring(1).toLowerCase();
 	    return name.toLowerCase() + "." + formattedName + "Test";
@@ -60,7 +62,7 @@ public class TestClass {
 	public String getFullyQualifiedNameForMethod(int id) {
 		
 		TestMethod method = this.getMethod(id);
-		return this.getClassName() + "#" + method.getQualifiedName();
+		return this.getFullyClassName() + "#" + method.getQualifiedName();
 	}
 	
 	public void reset() {

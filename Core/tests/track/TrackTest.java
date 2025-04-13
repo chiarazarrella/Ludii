@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import game.Game;
 import game.equipment.container.board.Board;
@@ -15,9 +16,9 @@ import other.GameLoader;
 import other.concept.Concept;
 import parameterResolver.UserInputTestProvider;
 
-@ExtendWith(UserInputTestProvider.class)
 public class TrackTest {
 	
+	@CsvSource({"test.lud, 3"})
 	@Tag("Static")
 	public void sizeTrack(String gameName, int size) {
 		

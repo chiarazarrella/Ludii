@@ -63,14 +63,14 @@ public class TestCollector {
     private static void addTestMethods(List<TestClass> testClasses) {
         for (TestClass testClass : testClasses) {
             try {
-                Class<?> clazz = Class.forName(testClass.getClassName());
+                Class<?> clazz = Class.forName(testClass.getFullyClassName());
                 for (Method method : clazz.getDeclaredMethods()) {
                     if (Modifier.isPublic(method.getModifiers())) {
                         testClass.addMethod(new TestMethod(method));
                     }
                 }
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException("Test class not found: " + testClass.getClassName(), e);
+                throw new RuntimeException("Test class not found: " + testClass.getFullyClassName(), e);
             }
         }
     }

@@ -42,7 +42,6 @@ public class TestLauncher{
 		
 	    List<TestMethod> testMethods = new ArrayList<TestMethod>();
 	    
-		// with classes - REFACTOR
 		for(TestClass testClass: testClasses) {
 			
 			for(TestMethod method: testClass.getMethods().values()) {
@@ -74,9 +73,7 @@ public class TestLauncher{
 		}
 		
 		
-		// LAUNCH TESTS
-		// K: name of method - Pair<Duration, Reason (if failed)>
-		//Map<String, Pair<String, String>> results = new HashMap<>();
+		
 		
 		UserInputTestProvider.setUserInputs(testInputs);
 		
@@ -87,10 +84,6 @@ public class TestLauncher{
 		            .build();
 		
 		
-		
-		List<String> passedTests = new ArrayList<String>();
-		List<String> failedTests = new ArrayList<String>();
-		
 		TestSummaryListener listener = new TestSummaryListener();
 		launcher.execute(request, listener);
 
@@ -99,7 +92,6 @@ public class TestLauncher{
 		Map<String, Long> testDurations = listener.getTestDurations();
 		Map<String, String> failureMessages = listener.getFailureMessages();
 
-		System.out.println("\n--- Test Results ---");
 
 		// FAILED TESTS
 		for (TestExecutionSummary.Failure failure : summary.getFailures()) {
@@ -116,11 +108,6 @@ public class TestLauncher{
 		    	}
 		    }
 		    		    
-		    
-		    System.out.println("❌ Failed: " + methodName + " (Time: " + duration + "ms)");
-		    System.out.println("   Reason: " + failureMessage);
-		    
-		    
 		}
 
 		// PASSED TESTS
