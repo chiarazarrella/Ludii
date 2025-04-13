@@ -123,8 +123,6 @@ public class TestsPage extends TabPage
 			}
 		}
 
-	
-
 		testPanel.add(staticTestPanel);
 		testPanel.add(dynamicTestPanel);
 		
