@@ -3,6 +3,7 @@ package testCollector;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,7 @@ public class TestCollector {
             try {
                 Class<?> clazz = Class.forName(testClass.getFullyClassName());
                 for (Method method : clazz.getDeclaredMethods()) {
+                	
                     if (Modifier.isPublic(method.getModifiers())) {
                         testClass.addMethod(new TestMethod(method));
                     }

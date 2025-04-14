@@ -52,10 +52,10 @@ public class TestLauncher{
 					
 					for(TestParameter param: method.getParameters().values()) {
 						
-						// parse the parameter
+						// parse the parameter - TODO: make this generic
 						if(param.getType() != String.class) {
 							
-							paramValues.add(Integer.parseInt(param.getValue())); // TODO: make this generic
+							paramValues.add(Integer.parseInt(param.getValue())); 
 						}else {
 							paramValues.add(param.getValue());
 						}

@@ -2,6 +2,7 @@ package model;
 
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.lang.reflect.Method;
@@ -31,8 +32,8 @@ public class TestMethod {
 		this.isPassed = false;
 		this.failureMessage = null;
 		this.duration = null;
-		this.parameters = new HashMap<String, TestParameter>();
-		this.defaultParameters = new HashMap<String, TestParameter>();
+		this.parameters = new LinkedHashMap<String, TestParameter>(); // Preserve insertion order, important for order of parameters !
+		this.defaultParameters = new LinkedHashMap<String, TestParameter>();
 		
 		
 		this.isStatic = Optional.ofNullable(method.getAnnotation(Tag.class))
@@ -44,7 +45,6 @@ public class TestMethod {
 		for(Parameter p: method.getParameters()) {
 						
 			String value = null;
-			
 			
 			if(p.isAnnotationPresent(DefaultParameter.class)) {
 				

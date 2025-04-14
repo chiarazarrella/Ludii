@@ -20,6 +20,7 @@ public class DynamicParameterResolver implements ParameterResolver {
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
         int index = parameterContext.getIndex(); // Get parameter index
+        //System.out.println(">> resolveParameter called for index " + index);
         
         if (index >= parameters.size()) {
             throw new IllegalArgumentException("No parameter available for index " + index);
