@@ -24,14 +24,21 @@ import org.junit.jupiter.params.provider.ValueSource;
 import game.Game;
 import game.equipment.component.Component;
 import game.equipment.component.Piece;
+import game.equipment.container.board.Board;
+import game.players.Player;
+import game.players.Players;
 import game.rules.Rules;
 import game.rules.phase.Phase;
 import game.rules.play.moves.Moves;
 import game.types.board.SiteType;
 import game.types.play.RoleType;
+import main.collections.ChunkSet;
 import other.GameLoader;
 import other.concept.Concept;
 import other.move.Move;
+import other.state.State;
+import other.state.container.ContainerState;
+import other.topology.Cell;
 import other.topology.Topology;
 import parameterResolver.UserInputTestProvider;
 
@@ -239,6 +246,53 @@ public class PieceTest {
 	            fail("Ludeme Each for a Piece requires that the reference to " + piece + " is not duplicated. Found " + pieceCounts.get(piece) + " occurrences.");
 	        }
 	    }
+	}
+	
+	@ParameterizedTest
+	@ValueSource(strings = { "Amazons.lud" })
+	@Tag("Static")
+	public void equalNumberOfPieces(String gameName) {
+		
+		Game game = init(gameName);
+		Topology topology = game.board().topology();
+		Players players = game.players();
+		
+		
+		
+		List<Cell> cells = game.board().topology().cells();
+		State state = game.stateReference();
+	    
+		ContainerState[] containerState = state.containerStates();
+		
+		int i;
+		for(ContainerState cs: containerState) {
+			
+			for (i = 0; i < cells.size(); i++) {
+				
+				Cell c = cells.get(i);
+				System.out.println(c.index());
+				System.out.println(i);
+				System.out.println("index component: " + cs.whatCell(i) + " owner: " + cs.whoCell(i));
+				
+			}
+			
+		}
+		
+		
+		Component[] components = game.equipment().components();
+		
+		for (Component c : components) {
+			
+			if(c instanceof Piece) {
+				
+			}
+		}
+		
+		
+		
+		
+		
+		
 	}
 	
 	

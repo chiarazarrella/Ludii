@@ -3,6 +3,7 @@ package app.display.views.tabs.pages;
 import launcher.TestLauncher;
 import model.TestClass;
 import model.TestMethod;
+import model.TestsModel;
 import model.TestParameter;
 
 import java.awt.BorderLayout;
@@ -31,6 +32,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import Controller.TestsController;
+import View.TestsView;
 import app.PlayerApp;
 import app.display.views.tabs.TabPage;
 import app.display.views.tabs.TabView;
@@ -43,19 +46,36 @@ public class TestsPage extends TabPage
 	private static String gameName = null;
 	private final Map<Integer, JCheckBox> testCheckBoxes = new HashMap<>();
 	private final List<TestClass> testClasses = TestCollector.collectTestClasses();		
+	private TestsModel model;
+    private TestsController controller;
+    private TestsView view;
 	
 	public TestsPage(PlayerApp app, Rectangle rect, String title, String text, int pageIndex, TabView parent)
 	{
 		super(app, rect, title, text, pageIndex, parent);
+		 // Initialize MVC components
+        this.model = new TestsModel();
+        this.controller = new TestsController(model);
+        this.view = new TestsView(super.scrollPane(), controller);
 	}
 
 	@Override
 	public void updatePage(Context context)
 	{
-		gameName = context.game().name() + ".lud";
+		//gameName = context.game().name() + ".lud";
+		controller.updateGameName(context);
 	}
 
 	@Override
+	public void reset()
+	{
+		// TODO Auto-generated method stub
+		view.refreshView();
+        super.scrollPane().validate();
+        super.scrollPane().repaint();
+	}
+
+	/*@Override
 	public void reset() {
 		
 		
@@ -309,7 +329,7 @@ public class TestsPage extends TabPage
 	 * This is necessary because when the TestMethod is created, the value of the gameName parameter is null, to isolate the instance when created.
 	 * Otherwise, when the testCollector is called, the name of the game should be passed.
 	 */
-	private void addGameNameParameter() {
+	/*private void addGameNameParameter() {
 		
 		for(TestClass testClass: testClasses) {
 			for(TestMethod method: testClass.getMethods().values()) {
@@ -373,9 +393,8 @@ public class TestsPage extends TabPage
 			cB.setSelected(false);
 		}
 		
-	}
+	}*/
 
 
 
-}
-;
+};

@@ -1,12 +1,9 @@
 package launcher;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.engine.discovery.MethodSelector;
@@ -14,118 +11,113 @@ import org.junit.platform.launcher.Launcher;
 import org.junit.platform.launcher.LauncherDiscoveryRequest;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
-import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
-import board.BoardTest;
-import parameterResolver.UserInputTestProvider;
 import listener.TestSummaryListener;
 import model.TestClass;
 import model.TestMethod;
 import model.TestParameter;
+import parameterResolver.UserInputTestProvider;
 
-public class TestLauncher{
-	Launcher launcher;
-	
-	
-	
-	public TestLauncher() {
-		launcher = LauncherFactory.create();
-	}
-	
-	
-	public void run(List<TestClass> testClasses) { 
-		
-	    Map<String, List<Object>> testInputs = new HashMap<>(); // Store test-specific inputs
-	    List<MethodSelector> selectorsList = new ArrayList<>();
-		
-		
-	    List<TestMethod> testMethods = new ArrayList<TestMethod>();
-	    
-		for(TestClass testClass: testClasses) {
-			
-			for(TestMethod method: testClass.getMethods().values()) {
-				
-				if(method.isChecked()) {
-					
-					List<Object> paramValues = new ArrayList<>(method.getParameters().size());
-					
-					for(TestParameter param: method.getParameters().values()) {
-						
-						// parse the parameter - TODO: make this generic
-						if(param.getType() != String.class) {
-							
-							paramValues.add(Integer.parseInt(param.getValue())); 
-						}else {
-							paramValues.add(param.getValue());
-						}
-						
-						testInputs.put(method.getName(), paramValues);
-						
-					}
-					
-					selectorsList.add(DiscoverySelectors.selectMethod(testClass.getFullyQualifiedNameForMethod(TestMethod.getId(method.getName()))));
-					testMethods.add(method);
-				}
-				
-			}
-			
-		}
-		
-		
-		
-		
-		UserInputTestProvider.setUserInputs(testInputs);
-		
-		MethodSelector[] selectors = selectorsList.toArray(new MethodSelector[0]);
-		LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder
-					.request()
-		            .selectors(selectors)
-		            .build();
-		
-		
-		TestSummaryListener listener = new TestSummaryListener();
-		launcher.execute(request, listener);
+public class TestLauncher {
 
-		TestExecutionSummary summary = listener.getSummary();
+    private final Launcher launcher;
 
-		Map<String, Long> testDurations = listener.getTestDurations();
-		Map<String, String> failureMessages = listener.getFailureMessages();
+    public TestLauncher() {
+        this.launcher = LauncherFactory.create();
+    }
 
+    public void run(List<TestClass> testClasses) {
+        Map<String, List<Object>> testInputs = new HashMap<>();
+        List<MethodSelector> selectorsList = new ArrayList<>();
+        List<TestMethod> selectedMethods = new ArrayList<>();
 
-		// FAILED TESTS
-		for (TestExecutionSummary.Failure failure : summary.getFailures()) {
-		    String methodName = TestSummaryListener.extractTestMethodName(failure.getTestIdentifier().getUniqueIdObject());
-		    Long duration = testDurations.getOrDefault(methodName, 0L);
-		    String failureMessage = failureMessages.getOrDefault(methodName, "Unknown failure");
-		    
-		    for(TestMethod method: testMethods) {
-		    	
-		    	if(method.getName().equals(methodName)) {
-		    		method.setDuration(duration.toString());
-		    		method.setFailureMessage(failureMessage);
-		    		
-		    	}
-		    }
-		    		    
-		}
+        collectTestMethods(testClasses, testInputs, selectorsList, selectedMethods);
 
-		// PASSED TESTS
-		for(TestMethod method: testMethods) {
-			String name = method.getName();
-		    Long duration = testDurations.getOrDefault(name, 0L);
-		    
-		    if(method.getFailureMessage() != null) continue; // failed method 
-		    
-	    	if(method.getName().equals(name)) {
-	    		method.setDuration(duration.toString());
-	    		method.setPassed(true);
-	    	}
-	    }
-		
-		
-	}
-	
+        UserInputTestProvider.setUserInputs(testInputs);
 
-	
+        LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
+                .selectors(selectorsList)
+                .build();
+
+        TestSummaryListener listener = new TestSummaryListener();
+        launcher.execute(request, listener);
+
+        updateTestResults(selectedMethods, listener);
+    }
+
+    private void collectTestMethods(
+            List<TestClass> testClasses,
+            Map<String, List<Object>> testInputs,
+            List<MethodSelector> selectors,
+            List<TestMethod> selectedMethods
+    ) {
+        for (TestClass testClass : testClasses) {
+            for (TestMethod method : testClass.getMethods().values()) {
+                if (!method.isChecked()) continue;
+
+                List<Object> paramValues = parseMethodParameters(method);
+                testInputs.put(method.getName(), paramValues);
+
+                int methodId = TestMethod.getId(method.getName());
+                String fqMethodName = testClass.getFullyQualifiedNameForMethod(methodId);
+                selectors.add(DiscoverySelectors.selectMethod(fqMethodName));
+
+                selectedMethods.add(method);
+            }
+        }
+    }
+
+    private List<Object> parseMethodParameters(TestMethod method) {
+        List<Object> paramValues = new ArrayList<>();
+
+        for (TestParameter param : method.getParameters().values()) {
+            Object parsedValue = parseValue(param.getValue(), param.getType());
+            paramValues.add(parsedValue);
+        }
+
+        return paramValues;
+    }
+
+    private Object parseValue(String value, Class<?> type) {
+        // TODO: make this more generic if needed
+        if (type == String.class) {
+            return value;
+        }
+        if (type == int.class || type == Integer.class) {
+            return Integer.parseInt(value);
+        }
+        // Extend this for more types (e.g., boolean, double, etc.)
+        throw new IllegalArgumentException("Unsupported parameter type: " + type);
+    }
+
+    private void updateTestResults(List<TestMethod> methods, TestSummaryListener listener) {
+        Map<String, Long> durations = listener.getTestDurations();
+        Map<String, String> failures = listener.getFailureMessages();
+
+        // First, mark failures
+        for (TestExecutionSummary.Failure failure : listener.getSummary().getFailures()) {
+            String methodName = TestSummaryListener.extractTestMethodName(failure.getTestIdentifier().getUniqueIdObject());
+            updateFailure(methods, methodName, durations, failures);
+        }
+
+        // Then, mark successes
+        for (TestMethod method : methods) {
+            if (method.getFailureMessage() != null) continue;
+
+            String name = method.getName();
+            method.setDuration(durations.getOrDefault(name, 0L).toString());
+            method.setPassed(true);
+        }
+    }
+
+    private void updateFailure(List<TestMethod> methods, String methodName, Map<String, Long> durations, Map<String, String> failures) {
+        for (TestMethod method : methods) {
+            if (!method.getName().equals(methodName)) continue;
+
+            method.setDuration(durations.getOrDefault(methodName, 0L).toString());
+            method.setFailureMessage(failures.getOrDefault(methodName, "Unknown failure"));
+            break;
+        }
+    }
 }

@@ -22,6 +22,8 @@ import game.types.board.SiteType;
 import game.util.graph.GraphElement;
 import other.GameLoader;
 import other.concept.Concept;
+import other.topology.Cell;
+import other.topology.Topology;
 import parameterResolver.UserInputTestProvider;
 
 @ExtendWith(UserInputTestProvider.class)
@@ -53,10 +55,15 @@ public class TrackTest {
 		}
 		
 		// INDEX OF THE BOARD
-		List<? extends GraphElement> cells = game.board().graph().elements(SiteType.Cell);
+		List<Cell> cells = game.board().topology().cells();
+		
+		if (cells.isEmpty()) {
+			fail("No cells in the topology");
+		}
+		
 		List<Integer> cellIds = new ArrayList<>();
-		for (GraphElement cell : cells) {
-			cellIds.add(cell.id());
+		for (Cell cell : cells) {
+			cellIds.add(cell.index());
 		}
 		
 		// TRACK TO CONSIDER BASED ON THE OWNER

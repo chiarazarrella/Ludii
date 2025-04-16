@@ -64,21 +64,6 @@ public class PlayerTest {
 	}
     
     
-    @CsvSource({"test.lud"})
-    public void equalNumberOfPieces(String gameName) {
-		
-		Game game = GameLoader.loadGameFromName(gameName);
-		
-		// CONCEPTS LOADING
-		BitSet concepts = game.computeBooleanConcepts();
-				
-		List<Player> players = game.players().players();
-		int numPlayers = players.size();
-		System.out.println("players " + numPlayers);
-		game.noPieceOwnedBySpecificPlayer(); // this means that there is no way to calculate the number of pieces outside the description
-		
-		
-		
-	}
+    
 	
 }
