@@ -21,8 +21,6 @@ public class TestsView {
     private JButton runButton;
     private JButton resetButton;
     private TestsController controller;
-    
-    // Component registry to track all test UI elements
     private Map<Integer, TestMethodRow> testRowsMap = new HashMap<>();
     
     public TestsView(JScrollPane scrollPane, TestsController controller) {
@@ -36,29 +34,23 @@ public class TestsView {
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.WHITE);
         
-        // Create button panel
+        
         JPanel buttonPanel = createButtonPanel();
         
-        // Create test panels container
         JPanel testPanelContainer = new JPanel(new GridLayout(0, 2, 20, 5));
         testPanelContainer.setBackground(Color.WHITE);
         
-        // Create category panels
         staticTestsPanel = new TestCategoryPanel("Static", controller);
         dynamicTestsPanel = new TestCategoryPanel("Dynamic", controller);
         
-        // Populate the panels with test sections
         populateTestPanels();
         
-        // Add panels to container
         testPanelContainer.add(staticTestsPanel);
         testPanelContainer.add(dynamicTestsPanel);
         
-        // Assemble main panel
         mainPanel.add(testPanelContainer, BorderLayout.CENTER);
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         
-        // Set view in scroll pane
         scrollPane.setViewportView(mainPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
     }
@@ -87,13 +79,11 @@ public class TestsView {
     }
     
     private void populateTestPanels() {
-        // Add static test classes to static panel
         for (TestClass testClass : controller.getStaticTestClasses()) {
             TestClassSection section = new TestClassSection(testClass, true, controller, this);
             staticTestsPanel.addTestSection(section);
         }
         
-        // Add dynamic test classes to dynamic panel
         for (TestClass testClass : controller.getDynamicTestClasses()) {
             TestClassSection section = new TestClassSection(testClass, false, controller, this);
             dynamicTestsPanel.addTestSection(section);
@@ -117,13 +107,10 @@ public class TestsView {
     }
     
     public void refreshView() {
-        // Clear existing components
         testRowsMap.clear();
         
-        // Reinitialize the UI
         initializeUI();
         
-        // Update the scrollPane with the new view
         scrollPane.setViewportView(mainPanel);
     }
 }
