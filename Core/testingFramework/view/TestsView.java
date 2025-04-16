@@ -1,4 +1,4 @@
-package View;
+package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -10,7 +10,8 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import Controller.TestsController;
+
+import controller.TestsController;
 import model.TestClass;
 
 public class TestsView {

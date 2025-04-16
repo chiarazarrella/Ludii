@@ -1,4 +1,4 @@
-package launcher;
+package controller.execution;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,11 +13,11 @@ import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
-import listener.TestSummaryListener;
+import controller.execution.listener.TestSummaryListener;
+import controller.execution.parameter.InputTestProvider;
 import model.TestClass;
 import model.TestMethod;
 import model.TestParameter;
-import parameterResolver.UserInputTestProvider;
 
 public class TestLauncher {
 
@@ -34,7 +34,7 @@ public class TestLauncher {
 
         collectTestMethods(testClasses, testInputs, selectorsList, selectedMethods);
 
-        UserInputTestProvider.setUserInputs(testInputs);
+        InputTestProvider.setUserInputs(testInputs);
 
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(selectorsList)

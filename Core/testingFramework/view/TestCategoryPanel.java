@@ -1,4 +1,4 @@
-package View;
+package view;
 
 import java.awt.Color;
 
@@ -6,7 +6,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import Controller.TestsController;
+import controller.TestsController;
 
 public class TestCategoryPanel extends JPanel {
 	

@@ -1,4 +1,4 @@
-package View;
+package view;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -7,7 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-import Controller.TestsController;
+import controller.TestsController;
 import model.TestMethod;
 
 public class TestMethodRow extends JPanel {

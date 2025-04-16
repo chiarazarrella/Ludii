@@ -1,4 +1,4 @@
-package parameterResolver;
+package controller.execution.parameter;
 
 import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class UserInputTestProvider implements TestTemplateInvocationContextProvider {
+public class InputTestProvider implements TestTemplateInvocationContextProvider {
 
     private static Map<String, List<Object>> testInputs = new HashMap<>(); // Store test-specific inputs
 

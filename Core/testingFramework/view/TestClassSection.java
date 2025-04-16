@@ -1,10 +1,11 @@
-package View;
+package view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 import javax.swing.*;
-import Controller.TestsController;
+
+import controller.TestsController;
 import model.TestClass;
 import model.TestMethod;
 

@@ -1,4 +1,4 @@
-package View;
+package view;
 
 import java.awt.FlowLayout;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Controller.TestsController;
+import controller.TestsController;
 import model.TestMethod;
 import model.TestParameter;
 

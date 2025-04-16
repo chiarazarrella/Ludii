@@ -1,4 +1,4 @@
-package Controller;
+package controller;
 
 
 
@@ -6,15 +6,15 @@ import model.TestClass;
 import model.TestMethod;
 import model.TestsModel;
 import other.context.Context;
-import testCollector.TestCollector;
+import view.TestsView;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
-import View.TestsView;
-import launcher.TestLauncher;
+import collector.TestCollector;
+import controller.execution.TestLauncher;
 
 public class TestsController {
 	

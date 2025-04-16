@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import annotation.DefaultParameter;
+import controller.execution.parameter.InputTestProvider;
 import game.Game;
 import game.equipment.container.board.Board;
 import game.equipment.container.board.Track;
@@ -24,9 +24,9 @@ import other.GameLoader;
 import other.concept.Concept;
 import other.topology.Cell;
 import other.topology.Topology;
-import parameterResolver.UserInputTestProvider;
+import util.DefaultParameter;
 
-@ExtendWith(UserInputTestProvider.class)
+@ExtendWith(InputTestProvider.class)
 public class TrackTest {
 	
 	/**

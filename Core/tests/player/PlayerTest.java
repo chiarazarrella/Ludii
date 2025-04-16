@@ -15,13 +15,13 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import controller.execution.parameter.InputTestProvider;
 import game.Game;
 import game.players.Player;
 import game.players.Players;
 import other.GameLoader;
 import other.concept.Concept;
-import parameterResolver.UserInputTestProvider;
-@ExtendWith(UserInputTestProvider.class)
+@ExtendWith(InputTestProvider.class)
 public class PlayerTest {
 	
 	/**

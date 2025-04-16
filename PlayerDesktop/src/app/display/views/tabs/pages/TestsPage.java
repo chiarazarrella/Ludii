@@ -1,6 +1,5 @@
 package app.display.views.tabs.pages;
 
-import launcher.TestLauncher;
 import model.TestClass;
 import model.TestMethod;
 import model.TestsModel;
@@ -32,20 +31,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import Controller.TestsController;
-import View.TestsView;
 import app.PlayerApp;
 import app.display.views.tabs.TabPage;
 import app.display.views.tabs.TabView;
+import collector.TestCollector;
+import controller.TestsController;
+import controller.execution.TestLauncher;
 import other.context.Context;
-import testCollector.TestCollector;
+import view.TestsView;
 
 public class TestsPage extends TabPage
 {
-	
-	private static String gameName = null;
-	private final Map<Integer, JCheckBox> testCheckBoxes = new HashMap<>();
-	private final List<TestClass> testClasses = TestCollector.collectTestClasses();		
+			
 	private TestsModel model;
     private TestsController controller;
     private TestsView view;

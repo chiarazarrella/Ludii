@@ -1,4 +1,4 @@
-package testCollector;
+package collector;
 
 import java.io.File;
 import java.lang.reflect.Method;

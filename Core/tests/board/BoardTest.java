@@ -18,7 +18,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import annotation.DefaultParameter;
+import controller.execution.parameter.InputTestProvider;
 import game.Game;
 import game.equipment.container.board.Board;
 import game.equipment.container.board.Track;
@@ -31,9 +31,9 @@ import other.concept.ConceptKeyword;
 import other.topology.Topology;
 import other.topology.TopologyElement;
 import other.topology.Vertex;
-import parameterResolver.UserInputTestProvider;
+import util.DefaultParameter;
 
-@ExtendWith(UserInputTestProvider.class)
+@ExtendWith(InputTestProvider.class)
 public class BoardTest {
 
 	
