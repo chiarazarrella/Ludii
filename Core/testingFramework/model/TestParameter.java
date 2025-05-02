@@ -4,7 +4,7 @@ public class TestParameter {
 	
     private final Class<?> type;
     private String value;
-
+    
     public TestParameter(Class<?> type, String defaultValue) {
         this.type = type;
         this.value = defaultValue;

@@ -49,22 +49,27 @@ public class TestCollector {
 
     private static List<TestClass> findTestClassesInDirectory(File directory) {
         List<TestClass> testClasses = new ArrayList<>();
-        File[] files = directory.listFiles();
+        File[] subDirs = directory.listFiles(File::isDirectory);
 
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    testClasses.add(new TestClass(file.getName()));
+        if (subDirs == null) return testClasses;
+
+        for (File subDir : subDirs) {
+            File[] javaFiles = subDir.listFiles(f -> f.getName().endsWith("Test.java"));
+            if (javaFiles != null) {
+                for (File file : javaFiles) {
+                    String className = file.getName().replaceFirst("\\.java$", "");
+                    testClasses.add(new TestClass(subDir.getName(), className));
                 }
             }
         }
+
         return testClasses;
     }
 
     private static void addTestMethods(List<TestClass> testClasses) {
         for (TestClass testClass : testClasses) {
             try {
-                Class<?> clazz = Class.forName(testClass.getFullyClassName());
+                Class<?> clazz = Class.forName(testClass.getFullyQualifiedName());
                 for (Method method : clazz.getDeclaredMethods()) {
                 	
                     if (Modifier.isPublic(method.getModifiers())) {
@@ -72,7 +77,7 @@ public class TestCollector {
                     }
                 }
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException("Test class not found: " + testClass.getFullyClassName(), e);
+                throw new RuntimeException("Test class not found: " + testClass.getFullyQualifiedName(), e);
             }
         }
     }

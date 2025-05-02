@@ -32,10 +32,10 @@ public class TestMethodRow extends JPanel {
     private void createUI() {
         checkBox = new JCheckBox(testMethod.getName());
         checkBox.setBackground(Color.WHITE);
-        checkBox.setSelected(testMethod.isChecked());
+        checkBox.setSelected(testMethod.isSelected());
         
         checkBox.addActionListener(e -> {
-            testMethod.setChecked(checkBox.isSelected());
+        	controller.selectMethod(testMethod, checkBox.isSelected());
         });
         
         add(checkBox);

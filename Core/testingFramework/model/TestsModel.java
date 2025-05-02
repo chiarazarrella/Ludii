@@ -30,13 +30,13 @@ public class TestsModel {
     
     public List<TestClass> getStaticTestClasses() {
         return testClasses.stream()
-            .filter(tc -> tc.hasStaticTest(tc.getPackageName()))
+            .filter(tc -> tc.hasStaticTests(tc.getPackageName()))
             .collect(Collectors.toList());
     }
     
     public List<TestClass> getDynamicTestClasses() {
         return testClasses.stream()
-            .filter(tc -> tc.hasDynamicTest(tc.getPackageName()))
+            .filter(tc -> tc.hasDynamicTests(tc.getPackageName()))
             .collect(Collectors.toList());
     }
     

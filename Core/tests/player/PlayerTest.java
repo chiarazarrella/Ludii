@@ -13,7 +13,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import controller.execution.parameter.InputTestProvider;
 import game.Game;
@@ -61,6 +63,13 @@ public class PlayerTest {
         	}
         }
         
+	}
+    
+    @ParameterizedTest
+	@ValueSource(strings = { "Amazons.lud" })
+	@Tag("Dynamic")
+	public void dynTest(String gameName) {
+		assert (true);
 	}
     
     

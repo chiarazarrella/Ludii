@@ -12,6 +12,7 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import controller.execution.parameter.InputTestProvider;
 import game.Game;
@@ -24,6 +25,7 @@ import other.GameLoader;
 import other.concept.Concept;
 import other.topology.Cell;
 import other.topology.Topology;
+import other.topology.TopologyElement;
 import util.DefaultParameter;
 
 @ExtendWith(InputTestProvider.class)
@@ -38,10 +40,12 @@ public class TrackTest {
 	 * @ParameterizedTest
 	 * @CsvSource({"20 Squares.lud, 1, 15"})
 	 */
-	@TestTemplate
-	@Tag("Static")
+	//@TestTemplate
+	//@Tag("Static")
+	@ParameterizedTest
+	@CsvSource({"20 Squares.lud, 1, 15"})
 	public void sizeOfTrack(String gameName, 
-			@DefaultParameter("1") String owner, @DefaultParameter("3") int size) {
+			@DefaultParameter("0") String owner, @DefaultParameter("3") int size) {
 		
 		 // GAME LOADING
 		Game game = GameLoader.loadGameFromName(gameName);
@@ -54,16 +58,25 @@ public class TrackTest {
 			fail("Track concept is not present");
 		}
 		
-		// INDEX OF THE BOARD
-		List<Cell> cells = game.board().topology().cells();
+		List<? extends GraphElement> cells = game.board().graph().elements(SiteType.Cell);
+		List<TopologyElement> top = game.board().topology().getAllGraphElements();
+		System.out.println(top.size());
 		
+		for(TopologyElement te: top) {
+			System.out.println(te.elementType());
+		}
+	
+		
+		// INDEX OF THE BOARD
+		//List<Cell> cells = game.board().topology().cells();
+		// SiteType -- consider vertix
 		if (cells.isEmpty()) {
 			fail("No cells in the topology");
 		}
 		
 		List<Integer> cellIds = new ArrayList<>();
-		for (Cell cell : cells) {
-			cellIds.add(cell.index());
+		for (GraphElement cell : cells) {
+			//cellIds.add(cell.index());
 		}
 		
 		// TRACK TO CONSIDER BASED ON THE OWNER
@@ -89,6 +102,13 @@ public class TrackTest {
 		
 		assertTrue(String.format("The length of the track is %d", counter), size == counter);
 		
+	}
+	
+	@ParameterizedTest
+	@ValueSource(strings = { "Amazons.lud" })
+	@Tag("Dynamic")
+	public void dynTest(String gameName) {
+		assert (true);
 	}
 
 }

@@ -10,7 +10,7 @@ public class InputTestProvider implements TestTemplateInvocationContextProvider 
 
     private static Map<String, List<Object>> testInputs = new HashMap<>(); // Store test-specific inputs
 
-    // Method to set user inputs before running tests
+    // Method to set inputs before running tests
     /**
      * @param inputs
      */

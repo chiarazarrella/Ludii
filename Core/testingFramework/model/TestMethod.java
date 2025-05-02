@@ -14,10 +14,10 @@ import util.DefaultParameter;
 public class TestMethod {
 	
 	private static int id;
-	private String name;
+	private final String name;
 	private Map<String, TestParameter> parameters;
 	private final Map<String, TestParameter> defaultParameters;
-	private boolean isChecked;
+	private boolean isSelected;
 	private boolean isPassed;
 	private boolean isStatic;
 	private String failureMessage;
@@ -29,7 +29,7 @@ public class TestMethod {
 		
 		this.name = method.getName();
 		setId(name);
-		this.isChecked = false;
+		this.isSelected = false;
 		this.isPassed = false;
 		this.failureMessage = null;
 		this.duration = null;
@@ -50,10 +50,13 @@ public class TestMethod {
 			if(p.isAnnotationPresent(DefaultParameter.class)) {
 				
 				value = p.getAnnotation(DefaultParameter.class).value();
+				parameters.put(p.getName(), new TestParameter(p.getType(), value)); 
+				defaultParameters.put(p.getName(), new TestParameter(p.getType(), value));
+				continue;
+				
 			}
 			
 			parameters.put(p.getName(), new TestParameter(p.getType(), value)); 
-			defaultParameters.put(p.getName(), new TestParameter(p.getType(), value));
 
 		}
 		
@@ -74,12 +77,12 @@ public class TestMethod {
 	}
 
 	
-	public boolean isChecked() {
-		return isChecked;
+	public boolean isSelected() {
+		return isSelected;
 	}
 
-	public void setChecked(boolean isChecked) {
-		this.isChecked = isChecked;
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
 	}
 
 	public boolean isPassed() {
@@ -115,7 +118,7 @@ public class TestMethod {
 	}
 	
 	public boolean hasDefaultParameters() {
-		return defaultParameters.size() > 1;
+		return defaultParameters.size() > 0;
 	}
 	
 	public Map<String, TestParameter> getParameters(){
@@ -143,10 +146,12 @@ public class TestMethod {
 		setDuration(null);
 		setFailureMessage(null);
 		setPassed(false);
-		setChecked(false);
-		this.parameters.clear();
+		setSelected(false);
+		//this.parameters.clear();
 		for(Map.Entry<String, TestParameter> entry: defaultParameters.entrySet()){
+			parameters.remove(entry.getKey());
 			parameters.put(entry.getKey(), new TestParameter(entry.getValue().getType(), entry.getValue().getValue()));
+			
 		}
 	}
 	

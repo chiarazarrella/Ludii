@@ -8,18 +8,24 @@ import java.util.HashMap;
  */
 public class TestClass {
 	
-	private String packageName;
+	private final String packageName;
 	private HashMap<Integer, TestMethod> methods;
+	private final String name;
 	
 	
 	
-	public TestClass(String name) {
-		this.packageName = name;
+	public TestClass(String packageName, String name) {
+		this.packageName = packageName;
 		this.methods = new HashMap<Integer, TestMethod>();
+		this.name = name;
 	}
 
 	public String getPackageName() {
 		return this.packageName;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 	
@@ -39,17 +45,16 @@ public class TestClass {
 	
 	// if the module organization is to be change, then this need to be modified !!!!!!
 	// retrieval example: board.BoardTest
-	public String getFullyClassName() {
-	    String name = getPackageName();
-	    String formattedName = Character.toUpperCase(name.charAt(0)) + name.substring(1).toLowerCase();
-	    return name.toLowerCase() + "." + formattedName + "Test";
+	public String getFullyQualifiedName() {
+		
+		return packageName.toLowerCase() + "." + name;
 	}
 	
 	public boolean hasAtLeastOneMethodChecked() {
 		
 		for(TestMethod method: methods.values()) {
 			
-			if(method.isChecked())
+			if(method.isSelected())
 				return true;
 		}
 		
@@ -60,7 +65,7 @@ public class TestClass {
 	public String getFullyQualifiedNameForMethod(int id) {
 		
 		TestMethod method = this.getMethod(id);
-		return this.getFullyClassName() + "#" + method.getQualifiedName();
+		return this.getFullyQualifiedName() + "#" + method.getQualifiedName();
 	}
 	
 	public void reset() {
@@ -81,7 +86,7 @@ public class TestClass {
 		return sb.toString();
 	}
 	
-	public boolean hasStaticTest(String category) {
+	public boolean hasStaticTests(String category) {
 		
 		for (TestMethod m : this.methods.values()) {
 			if (m.isStatic() && packageName.equals(category))
@@ -91,7 +96,7 @@ public class TestClass {
 		return false;
 	}
 	
-	public boolean hasDynamicTest(String category) {
+	public boolean hasDynamicTests(String category) {
 
 		for (TestMethod m : this.methods.values()) {
 			if (!m.isStatic() && packageName.equals(category))

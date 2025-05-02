@@ -36,11 +36,13 @@ import game.types.play.RoleType;
 import main.collections.ChunkSet;
 import other.GameLoader;
 import other.concept.Concept;
+import other.context.Context;
 import other.move.Move;
 import other.state.State;
 import other.state.container.ContainerState;
 import other.topology.Cell;
 import other.topology.Topology;
+import other.trial.Trial;
 
 @ExtendWith(InputTestProvider.class)
 public class PieceTest {
@@ -254,9 +256,8 @@ public class PieceTest {
 	public void equalNumberOfPieces(String gameName) {
 		
 		Game game = init(gameName);
-		Topology topology = game.board().topology();
-		Players players = game.players();
-		
+		Context context = new Context(game, new Trial(game));
+		game.start(context);
 		
 		
 		List<Cell> cells = game.board().topology().cells();
@@ -270,31 +271,22 @@ public class PieceTest {
 			for (i = 0; i < cells.size(); i++) {
 				
 				Cell c = cells.get(i);
-				System.out.println(c.index());
-				System.out.println(i);
+				/*System.out.println(c.index());
+				System.out.println(i);*/
 				System.out.println("index component: " + cs.whatCell(i) + " owner: " + cs.whoCell(i));
 				
 			}
 			
 		}
-		
-		
-		Component[] components = game.equipment().components();
-		
-		for (Component c : components) {
-			
-			if(c instanceof Piece) {
 				
-			}
-		}
-		
-		
-		
-		
-		
-		
 	}
 	
+	@ParameterizedTest
+	@ValueSource(strings = { "Amazons.lud" })
+	@Tag("Dynamic")
+	public void dynTest(String gameName) {
+		assert (true);
+	}
 	
 	private static Game init(String name) {
 		Game game = GameLoader.loadGameFromName(name);

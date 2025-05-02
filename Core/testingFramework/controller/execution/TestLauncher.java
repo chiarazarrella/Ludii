@@ -54,7 +54,7 @@ public class TestLauncher {
     ) {
         for (TestClass testClass : testClasses) {
             for (TestMethod method : testClass.getMethods().values()) {
-                if (!method.isChecked()) continue;
+                if (!method.isSelected()) continue;
 
                 List<Object> paramValues = parseMethodParameters(method);
                 testInputs.put(method.getName(), paramValues);

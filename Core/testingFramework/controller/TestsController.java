@@ -57,4 +57,9 @@ public class TestsController {
     public void updateTestMethodParameter(TestMethod method, String paramName, String value) {
         method.setValue(paramName, value);
     }
+    
+
+	public void selectMethod(TestMethod method, boolean selected) {
+		method.setSelected(selected);
+	}
 }

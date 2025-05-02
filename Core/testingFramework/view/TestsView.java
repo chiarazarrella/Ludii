@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +54,7 @@ public class TestsView {
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         
         scrollPane.setViewportView(mainPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     }
     
     private JPanel createButtonPanel() {
@@ -62,6 +63,8 @@ public class TestsView {
         
         runButton = new JButton("Run Tests");
         resetButton = new JButton("Reset");
+        runButton.setMargin(new Insets(8, 16, 8, 16)); // top, left, bottom, right
+        resetButton.setMargin(new Insets(8, 16, 8, 16));
         
         runButton.addActionListener(e -> {
             controller.executeTests();
