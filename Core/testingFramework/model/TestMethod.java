@@ -16,7 +16,6 @@ public class TestMethod {
 	private static int id;
 	private final String name;
 	private Map<String, TestParameter> parameters;
-	private final Map<String, TestParameter> defaultParameters;
 	private boolean isSelected;
 	private boolean isPassed;
 	private boolean isStatic;
@@ -34,7 +33,6 @@ public class TestMethod {
 		this.failureMessage = null;
 		this.duration = null;
 		this.parameters = new LinkedHashMap<String, TestParameter>(); // Preserve insertion order, important for order of parameters !
-		this.defaultParameters = new LinkedHashMap<String, TestParameter>();
 		
 		
 		this.isStatic = Optional.ofNullable(method.getAnnotation(Tag.class))
@@ -50,13 +48,12 @@ public class TestMethod {
 			if(p.isAnnotationPresent(DefaultParameter.class)) {
 				
 				value = p.getAnnotation(DefaultParameter.class).value();
-				parameters.put(p.getName(), new TestParameter(p.getType(), value)); 
-				defaultParameters.put(p.getName(), new TestParameter(p.getType(), value));
+				parameters.put(p.getName(), new TestParameter(p.getType(), value, true)); 
 				continue;
 				
 			}
 			
-			parameters.put(p.getName(), new TestParameter(p.getType(), value)); 
+			parameters.put(p.getName(), new TestParameter(p.getType(), value, false)); 
 
 		}
 		
@@ -118,7 +115,14 @@ public class TestMethod {
 	}
 	
 	public boolean hasDefaultParameters() {
-		return defaultParameters.size() > 0;
+		
+		for(TestParameter parameter : parameters.values()) {
+			if(parameter.isDefault()) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public Map<String, TestParameter> getParameters(){
@@ -147,12 +151,12 @@ public class TestMethod {
 		setFailureMessage(null);
 		setPassed(false);
 		setSelected(false);
-		//this.parameters.clear();
-		for(Map.Entry<String, TestParameter> entry: defaultParameters.entrySet()){
-			parameters.remove(entry.getKey());
-			parameters.put(entry.getKey(), new TestParameter(entry.getValue().getType(), entry.getValue().getValue()));
-			
+		
+		
+		for(TestParameter parameter : parameters.values()) {
+			parameter.reset();
 		}
+		
 	}
 	
 }
