@@ -2,14 +2,16 @@ package controller.execution.parameter;
 
 import org.junit.jupiter.api.extension.*;
 
+import model.TestParameter;
+
 import java.util.List;
 
 public class DynamicParameterResolver implements ParameterResolver {
 
-    private final List<Object> parameters; // Parameters specific to one test execution
-
-    public DynamicParameterResolver(List<Object> parameters) {
-        this.parameters = parameters;
+    private final List<TestParameter> listParam;
+    
+    public DynamicParameterResolver(List<TestParameter> listParam) {
+        this.listParam = listParam;
     }
 
     @Override
@@ -19,14 +21,33 @@ public class DynamicParameterResolver implements ParameterResolver {
 
     @Override
     public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-        int index = parameterContext.getIndex(); // Get parameter index
-        //System.out.println(">> resolveParameter called for index " + index);
+    	
+        String paramName = parameterContext.getParameter().getName();
+        Object value = null;
         
-        if (index >= parameters.size()) {
-            throw new IllegalArgumentException("No parameter available for index " + index);
+        for(TestParameter p: listParam) {
+        	if(p.getName().equals(paramName)) {
+        		value = parseValue(p.getValue(), p.getType());
+        		break;
+        	}
         }
+        
+        //System.out.println(">> Value for param " + paramName + " with value " + value);
 
-        return parameters.get(index); // Return the correct parameter for this test method
+        
+        return value;
+    }
+    
+    private Object parseValue(String value, Class<?> type) {
+        // TODO: make this more generic if needed
+        if (type == String.class) {
+            return value;
+        }
+        if (type == int.class || type == Integer.class) {
+            return Integer.parseInt(value);
+        }
+        // Extend this for more types (e.g., boolean, double, etc.)
+        throw new IllegalArgumentException("Unsupported parameter type: " + type);
     }
 }
 

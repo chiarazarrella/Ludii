@@ -28,13 +28,15 @@ public class TestLauncher {
     }
 
     public void run(List<TestClass> testClasses) {
-        Map<String, List<Object>> testInputs = new HashMap<>();
         List<MethodSelector> selectorsList = new ArrayList<>();
         List<TestMethod> selectedMethods = new ArrayList<>();
+        Map<TestMethod, List<TestParameter>> inputs = new HashMap<>();
+        
 
-        collectTestMethods(testClasses, testInputs, selectorsList, selectedMethods);
+        collectTestMethods(testClasses, inputs, selectorsList, selectedMethods);
 
-        InputTestProvider.setUserInputs(testInputs);
+        
+        InputTestProvider.setUserInputs(inputs);
 
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(selectorsList)
@@ -48,7 +50,7 @@ public class TestLauncher {
 
     private void collectTestMethods(
             List<TestClass> testClasses,
-            Map<String, List<Object>> testInputs,
+            Map<TestMethod, List<TestParameter>> testInputs,
             List<MethodSelector> selectors,
             List<TestMethod> selectedMethods
     ) {
@@ -56,9 +58,9 @@ public class TestLauncher {
             for (TestMethod method : testClass.getMethods().values()) {
                 if (!method.isSelected()) continue;
 
-                List<Object> paramValues = parseMethodParameters(method);
-                testInputs.put(method.getName(), paramValues);
-
+                
+                testInputs.put(method, new ArrayList<>(method.getParameters().values()));
+                
                 int methodId = TestMethod.getId(method.getName());
                 String fqMethodName = testClass.getFullyQualifiedNameForMethod(methodId);
                 selectors.add(DiscoverySelectors.selectMethod(fqMethodName));
@@ -68,29 +70,7 @@ public class TestLauncher {
         }
     }
 
-    private List<Object> parseMethodParameters(TestMethod method) {
-        List<Object> paramValues = new ArrayList<>();
-
-        for (TestParameter param : method.getParameters().values()) {
-            Object parsedValue = parseValue(param.getValue(), param.getType());
-            paramValues.add(parsedValue);
-        }
-
-        return paramValues;
-    }
-
-    private Object parseValue(String value, Class<?> type) {
-        // TODO: make this more generic if needed
-        if (type == String.class) {
-            return value;
-        }
-        if (type == int.class || type == Integer.class) {
-            return Integer.parseInt(value);
-        }
-        // Extend this for more types (e.g., boolean, double, etc.)
-        throw new IllegalArgumentException("Unsupported parameter type: " + type);
-    }
-
+   
     private void updateTestResults(List<TestMethod> methods, TestSummaryListener listener) {
         Map<String, Long> durations = listener.getTestDurations();
         Map<String, String> failures = listener.getFailureMessages();

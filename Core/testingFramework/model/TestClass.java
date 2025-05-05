@@ -43,8 +43,7 @@ public class TestClass {
 		return this.methods;
 	}
 	
-	// if the module organization is to be change, then this need to be modified !!!!!!
-	// retrieval example: board.BoardTest
+	
 	public String getFullyQualifiedName() {
 		
 		return packageName.toLowerCase() + "." + name;

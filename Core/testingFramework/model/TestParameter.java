@@ -4,14 +4,16 @@ public class TestParameter {
 	
     private final Class<?> type;
     private String value;
-    private final boolean isDefault;
     private final String defaultValue;
+    private final String name;
     
-    public TestParameter(Class<?> type, String defaultValue, boolean isDefault) {
+    public TestParameter(String name, Class<?> type, String value) {
+    	
+    	this.name = name;
         this.type = type;
-        this.value = defaultValue;
-        this.defaultValue = defaultValue;
-        this.isDefault = isDefault;
+        this.value = value;
+        this.defaultValue = value;
+
     }
 
     public Class<?> getType() {
@@ -22,8 +24,12 @@ public class TestParameter {
         return value;
     }
     
+    public String getName() {
+    	return this.name;
+    }
+    
     public boolean isDefault() {
-    	return this.isDefault;
+    	return defaultValue != null;
     }
 
     public void setValue(String value) {

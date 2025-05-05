@@ -42,18 +42,16 @@ public class TestMethod {
 		
 					
 		for(Parameter p: method.getParameters()) {
-						
-			String value = null;
-			
+		
 			if(p.isAnnotationPresent(DefaultParameter.class)) {
 				
-				value = p.getAnnotation(DefaultParameter.class).value();
-				parameters.put(p.getName(), new TestParameter(p.getType(), value, true)); 
+				String value = p.getAnnotation(DefaultParameter.class).value();
+				parameters.put(p.getName(), new TestParameter(p.getName(), p.getType(), value)); 
 				continue;
 				
 			}
 			
-			parameters.put(p.getName(), new TestParameter(p.getType(), value, false)); 
+			parameters.put(p.getName(), new TestParameter(p.getName(), p.getType(), null)); 
 
 		}
 		

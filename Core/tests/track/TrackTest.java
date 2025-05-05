@@ -40,10 +40,10 @@ public class TrackTest {
 	 * @ParameterizedTest
 	 * @CsvSource({"20 Squares.lud, 1, 15"})
 	 */
-	//@TestTemplate
-	//@Tag("Static")
-	@ParameterizedTest
-	@CsvSource({"20 Squares.lud, 1, 15"})
+	@TestTemplate
+	@Tag("Static")
+	//@ParameterizedTest
+	//@CsvSource({"20 Squares.lud, 1, 15"})
 	public void sizeOfTrack(String gameName, 
 			@DefaultParameter("0") String owner, @DefaultParameter("3") int size) {
 		
