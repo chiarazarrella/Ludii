@@ -26,7 +26,6 @@ public class InputTestProvider implements TestTemplateInvocationContextProvider 
     @Override
     public boolean supportsTestTemplate(ExtensionContext context) {
         String testMethodName = context.getTestMethod().map(method -> method.getName()).orElse("");
-        //boolean hasInputs = testInputs.containsKey(testMethodName);
         boolean hasInputs = false;
         
         for(java.util.Map.Entry<TestMethod, List<TestParameter>> entry: inputs.entrySet()) {

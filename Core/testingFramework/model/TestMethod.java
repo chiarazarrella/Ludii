@@ -3,6 +3,8 @@ package model;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.lang.reflect.Method;
@@ -15,7 +17,7 @@ public class TestMethod {
 	
 	private static int id;
 	private final String name;
-	private Map<String, TestParameter> parameters;
+	private List<TestParameter> parameters;
 	private boolean isSelected;
 	private boolean isPassed;
 	private boolean isStatic;
@@ -32,8 +34,7 @@ public class TestMethod {
 		this.isPassed = false;
 		this.failureMessage = null;
 		this.duration = null;
-		this.parameters = new LinkedHashMap<String, TestParameter>(); // Preserve insertion order, important for order of parameters !
-		
+		this.parameters = new LinkedList<TestParameter>();
 		
 		this.isStatic = Optional.ofNullable(method.getAnnotation(Tag.class))
                 .map(Tag::value)
@@ -46,12 +47,12 @@ public class TestMethod {
 			if(p.isAnnotationPresent(DefaultParameter.class)) {
 				
 				String value = p.getAnnotation(DefaultParameter.class).value();
-				parameters.put(p.getName(), new TestParameter(p.getName(), p.getType(), value)); 
+				parameters.add(new TestParameter(p.getName(), p.getType(), value));
 				continue;
 				
 			}
 			
-			parameters.put(p.getName(), new TestParameter(p.getName(), p.getType(), null)); 
+			parameters.add(new TestParameter(p.getName(), p.getType(), null));
 
 		}
 		
@@ -108,13 +109,19 @@ public class TestMethod {
 		return isStatic;
 	}
 	
+	
 	public void setValue(String parameter, String value) {
-		this.parameters.get(parameter).setValue(value);
+		for(TestParameter p: parameters) {
+			if(p.getName().equals(parameter)){
+				p.setValue(value);
+				break;
+			}
+		}
 	}
 	
 	public boolean hasDefaultParameters() {
 		
-		for(TestParameter parameter : parameters.values()) {
+		for(TestParameter parameter : parameters) {
 			if(parameter.isDefault()) {
 				return true;
 			}
@@ -123,7 +130,7 @@ public class TestMethod {
 		return false;
 	}
 	
-	public Map<String, TestParameter> getParameters(){
+	public List<TestParameter> getParameters(){
 		return parameters;
 	}
 	
@@ -133,7 +140,7 @@ public class TestMethod {
 
 	    if (!parameters.isEmpty()) {
 	        qName.append("(");
-	        for (TestParameter parameter : parameters.values()) {
+	        for (TestParameter parameter : parameters) {
 	            qName.append(parameter.getQualifiedName()).append(",");
 	        }
 	        qName.setLength(qName.length() - 1); // Remove last ","
@@ -151,7 +158,7 @@ public class TestMethod {
 		setSelected(false);
 		
 		
-		for(TestParameter parameter : parameters.values()) {
+		for(TestParameter parameter : parameters) {
 			parameter.reset();
 		}
 		

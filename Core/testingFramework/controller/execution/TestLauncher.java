@@ -59,8 +59,8 @@ public class TestLauncher {
                 if (!method.isSelected()) continue;
 
                 
-                testInputs.put(method, new ArrayList<>(method.getParameters().values()));
-                
+                //testInputs.put(method, new ArrayList<>(method.getParameters().values()));
+                testInputs.put(method, method.getParameters());
                 int methodId = TestMethod.getId(method.getName());
                 String fqMethodName = testClass.getFullyQualifiedNameForMethod(methodId);
                 selectors.add(DiscoverySelectors.selectMethod(fqMethodName));

@@ -36,8 +36,8 @@ public class ParameterDialog extends JDialog {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         
-        for (Map.Entry<String, TestParameter> entry : testMethod.getParameters().entrySet()) {
-            String paramName = entry.getKey();
+        for (TestParameter parameter : testMethod.getParameters()) {
+            String paramName = parameter.getName();
             
             // Skip gameName parameter which is set automatically
             if (paramName.equals("gameName")) continue;
@@ -46,7 +46,7 @@ public class ParameterDialog extends JDialog {
             
             JLabel label = new JLabel(paramName + ": ");
             JTextField textField = new JTextField(15);
-            textField.setText(entry.getValue().getValue());
+            textField.setText(parameter.getValue());
             
             paramRow.add(label);
             paramRow.add(textField);
