@@ -10,17 +10,16 @@ import java.security.KeyStore.Entry;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class InputTestProvider implements TestTemplateInvocationContextProvider {
+public class ParametersContextProvider implements TestTemplateInvocationContextProvider {
 
   
     private static Map<TestMethod, List<TestParameter>> inputs = new HashMap<>();
     
-    // Method to set inputs before running tests
     /**
      * @param inputs
      */
     public static void setUserInputs(Map<TestMethod, List<TestParameter>> inputs) {
-    	InputTestProvider.inputs = inputs;
+    	ParametersContextProvider.inputs = inputs;
     }
 
     @Override

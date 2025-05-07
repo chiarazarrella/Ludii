@@ -14,7 +14,7 @@ import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
 import controller.execution.listener.TestSummaryListener;
-import controller.execution.parameter.InputTestProvider;
+import controller.execution.parameter.ParametersContextProvider;
 import model.TestClass;
 import model.TestMethod;
 import model.TestParameter;
@@ -36,7 +36,7 @@ public class TestLauncher {
         collectTestMethods(testClasses, inputs, selectorsList, selectedMethods);
 
         
-        InputTestProvider.setUserInputs(inputs);
+        ParametersContextProvider.setUserInputs(inputs);
 
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(selectorsList)

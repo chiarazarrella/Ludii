@@ -21,7 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import controller.execution.parameter.InputTestProvider;
+import controller.execution.parameter.ParametersContextProvider;
 import game.Game;
 import game.equipment.component.Component;
 import game.equipment.component.Piece;
@@ -44,7 +44,7 @@ import other.topology.Cell;
 import other.topology.Topology;
 import other.trial.Trial;
 
-@ExtendWith(InputTestProvider.class)
+@ExtendWith(ParametersContextProvider.class)
 public class PieceTest {
 	
 	/**

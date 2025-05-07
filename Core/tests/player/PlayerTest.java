@@ -17,13 +17,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import controller.execution.parameter.InputTestProvider;
+import controller.execution.parameter.ParametersContextProvider;
 import game.Game;
 import game.players.Player;
 import game.players.Players;
 import other.GameLoader;
 import other.concept.Concept;
-@ExtendWith(InputTestProvider.class)
+@ExtendWith(ParametersContextProvider.class)
 public class PlayerTest {
 	
 	/**
