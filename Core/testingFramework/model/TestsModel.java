@@ -8,7 +8,6 @@ import collector.TestCollector;
 public class TestsModel {
     private List<TestClass> testClasses;
     
-    // Constructor and methods
     public TestsModel() {
         this.testClasses = TestCollector.collectTestClasses();
     }
@@ -40,7 +39,7 @@ public class TestsModel {
     
     public List<TestClass> getSelectedTestClasses() {
         return testClasses.stream()
-            .filter(TestClass::hasAtLeastOneMethodSelected)
+            .filter(tc -> tc.getSelectedMethods().size() > 0)
             .collect(Collectors.toList());
     }
     

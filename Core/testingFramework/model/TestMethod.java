@@ -160,5 +160,14 @@ public class TestMethod {
 		}
 		
 	}
+
+
+	public boolean missingParameterValue() {
+		for(TestParameter param: parameters) {
+			if(param.getValue() == null)
+				return true;
+		}
+		return false;
+	}
 	
 }

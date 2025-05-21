@@ -146,10 +146,9 @@ public class PlayerTest {
   				
   	}
     
-    @ParameterizedTest
-	@ValueSource(strings = { "Amazons.lud" })
+    @TestTemplate
 	@Tag("Dynamic")
-	public void dynTest(String gameName) {
+	public void dynTestPlayer(String gameName) {
 		assert (true);
 	}
     

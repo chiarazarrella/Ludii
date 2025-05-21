@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -11,7 +12,6 @@ import java.util.List;
 public class TestClass {
 	
 	private final String packageName;
-	//private HashMap<Integer, TestMethod> methods;
 	private List<TestMethod> methods;
 	private final String name;
 	
@@ -19,7 +19,6 @@ public class TestClass {
 	
 	public TestClass(String packageName, String name) {
 		this.packageName = packageName;
-		//this.methods = new HashMap<Integer, TestMethod>();
 		this.methods = new ArrayList<>();
 		this.name = name;
 	}
@@ -45,7 +44,6 @@ public class TestClass {
 	}
 	
 	public void addMethod(TestMethod method) {
-		//methods.put(TestMethod.getId(method.getName()), method);
 		methods.add(method);
 	}
 	
@@ -53,27 +51,17 @@ public class TestClass {
 		return this.methods;
 	}
 	
-	/*public HashMap<Integer, TestMethod> getMethods(){
-		return this.methods;
-	}*/
-	
-	
+	public List<TestMethod> getSelectedMethods() {
+	    return methods.stream()
+	                  .filter(TestMethod::isSelected)
+	                  .collect(Collectors.toList());
+	}
+
 	public String getFullyQualifiedName() {
 		
 		return packageName.toLowerCase() + "." + name;
 	}
 	
-	public boolean hasAtLeastOneMethodSelected() {
-		
-		for(TestMethod method: methods) {
-			
-			if(method.isSelected())
-				return true;
-		}
-		
-		return false;
-		
-	}
 	
 	public String getFullyQualifiedNameForMethod(int id) {
 		

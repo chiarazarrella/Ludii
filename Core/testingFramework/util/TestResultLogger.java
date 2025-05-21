@@ -28,26 +28,34 @@ public class TestResultLogger {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
         String fileName = baseName + "_" + timestamp + ".txt";
 
-        List<TestResult> staticTests = new ArrayList<>();
-        List<TestResult> dynamicTests = new ArrayList<>();
+        int passedCount = 0;
+        long totalTime = 0;
 
         for (TestResult result : results) {
-            if (result.isStatic) {
-                staticTests.add(result);
-            } else {
-                dynamicTests.add(result);
-            }
+            if (result.passed) passedCount++;
+            totalTime += parseDuration(result.durationMillis);
         }
 
-        try (FileWriter writer = new FileWriter(fileName)) {
-            if (!staticTests.isEmpty()) {
-                writer.write("=== Static Tests ===\n\n");
-                writeTestSection(writer, staticTests);
-            }
+        double successRate = results.isEmpty() ? 0 : 100.0 * passedCount / results.size();
+        long meanTime = results.isEmpty() ? 0 : totalTime / results.size();
 
-            if (!dynamicTests.isEmpty()) {
-                writer.write("=== Dynamic Tests ===\n\n");
-                writeTestSection(writer, dynamicTests);
+        try (FileWriter writer = new FileWriter(fileName)) {
+            writer.write("=== Summary ===\n");
+            writer.write("- Total Tests: " + results.size() + "\n");
+            writer.write("- Success Rate: " + String.format("%.2f", successRate) + " %\n");
+            writer.write("- Mean Execution Time: " + meanTime + " ms\n\n");
+
+            writer.write("=== Test Results ===\n\n");
+
+            for (TestResult result : results) {
+                writer.write("Test Name: " + result.name + "\n");
+                writer.write("Duration: " + result.durationMillis + " ms\n");
+                writer.write("Passed: " + result.passed + "\n");
+                if (!result.passed && result.failureMessage != null && !result.failureMessage.isEmpty()) {
+                    writer.write("Failure Message: " + result.failureMessage + "\n");
+                }
+                writer.write("Type: " + (result.isStatic ? "Static" : "Dynamic") + "\n");
+                writer.write("\n");
             }
 
             System.out.println("Test results saved to " + fileName);
@@ -56,32 +64,7 @@ public class TestResultLogger {
         }
     }
 
-    private static void writeTestSection(FileWriter writer, List<TestResult> results) throws IOException {
-        int passedCount = 0;
-        long totalTime = 0;
-
-        for (TestResult result : results) {
-            writer.write("Test Name: " + result.name + "\n");
-            writer.write("Duration: " + result.durationMillis + " ms\n");
-            writer.write("Passed: " + result.passed + "\n");
-            if (!result.passed && result.failureMessage != null && !result.failureMessage.isEmpty()) {
-                writer.write("Failure Message: " + result.failureMessage + "\n");
-            }
-            writer.write("\n");
-
-            if (result.passed) passedCount++;
-            totalTime += parseDuration(result.durationMillis);
-        }
-
-        double successRate = 100.0 * passedCount / results.size();
-        long meanTime = results.isEmpty() ? 0 : totalTime / results.size();
-
-        writer.write("Summary:\n");
-        writer.write("- Total Tests: " + results.size() + "\n");
-        writer.write("- Success Rate: " + String.format("%.2f", successRate) + " %\n");
-        writer.write("- Mean Execution Time: " + meanTime + " ms\n\n");
-    }
-
+  
     private static long parseDuration(String durationMillis) {
         try {
             return Long.parseLong(durationMillis);

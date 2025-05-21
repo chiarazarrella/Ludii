@@ -18,6 +18,7 @@ public class TestsController {
     private TestsModel model;
     private TestsView view;
     private TestLauncher launcher;
+    private String gameName = null;
     
     public TestsController(TestsModel model) {
         this.model = model;
@@ -29,7 +30,7 @@ public class TestsController {
     }
     
     public void updateGameName(Context context) {
-        String gameName = context.game().name() + ".lud";
+        gameName = context.game().name() + ".lud";
         model.setGameName(gameName);
     }
     
@@ -51,6 +52,24 @@ public class TestsController {
         view.resetTestDisplay();
     }
     
+    public TestMethod methodWithMissingParamValue() {
+    	
+    	for(TestClass tc: model.getSelectedTestClasses()) {
+    		for(TestMethod method: tc.getSelectedMethods()) {
+    			if(method.missingParameterValue()) {
+    				return method;
+    			}
+    		}
+    	}
+    	
+    	return null;
+    }
+    
+    
+    public boolean hasSelectedMethods() {
+    	return model.getSelectedTestClasses().size() > 0;
+    }
+    
     public void updateTestMethodParameter(TestMethod method, String paramName, String value) {
         method.setValue(paramName, value);
     }
@@ -64,10 +83,8 @@ public class TestsController {
 		
 	    List<TestResult> allResults = new ArrayList<>();
 	    for (TestClass testClass : model.getSelectedTestClasses()) {
-	        for (TestMethod method : testClass.getMethods()) {
-	        	if(!method.isSelected()) {
-	        		continue;
-	        	}
+	        for (TestMethod method : testClass.getSelectedMethods()) {
+	  
 	            TestResult result = new TestResult(
 	                method.getName(),
 	                method.getDuration(),
@@ -78,8 +95,8 @@ public class TestsController {
 	            allResults.add(result);
 	        }
 	    }
-
-	    TestResultLogger.saveTestResultsToTimestampedFile("test_results", allResults);
+	    String fileName = this.gameName.replace(".lud", "") + "_test_results";
+	    TestResultLogger.saveTestResultsToTimestampedFile(fileName, allResults);
 
 	}
 }

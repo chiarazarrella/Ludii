@@ -112,10 +112,9 @@ public class TrackTest {
 	}
 		
 	
-	@ParameterizedTest
-	@ValueSource(strings = { "Amazons.lud" })
+	@TestTemplate
 	@Tag("Dynamic")
-	public void dynTest(String gameName) {
+	public void dynTestTrack(String gameName) {
 		assert (true);
 	}
 

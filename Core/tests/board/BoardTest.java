@@ -67,7 +67,7 @@ public class BoardTest {
 	
 	@TestTemplate
 	@Tag("Dynamic")
-	public void dynTest(String gameName) throws InterruptedException {
+	public void dynTestBoard(String gameName) throws InterruptedException {
 		Thread.sleep(2000);
 		
 		assertTrue(true);

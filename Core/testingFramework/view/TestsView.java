@@ -9,11 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import controller.TestsController;
 import model.TestClass;
+import model.TestMethod;
 
 public class TestsView {
     private JPanel mainPanel;
@@ -70,10 +72,32 @@ public class TestsView {
         saveButton.setMargin(new Insets(8, 16, 8, 16));
         
         runButton.addActionListener(e -> {
+            if (!controller.hasSelectedMethods()) {
+                JOptionPane.showMessageDialog(
+                    null,
+                    "You need to select at least one test.",
+                    "No Test Selected",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
+            TestMethod methodWithMissingParams = controller.methodWithMissingParamValue();
+            if (methodWithMissingParams != null) {
+                JOptionPane.showMessageDialog(
+                    null,
+                    String.format("Method '%s' has missing parameter values.", methodWithMissingParams.getName()),
+                    "Missing Parameter Value",
+                    JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+
             controller.executeTests();
             runButton.setEnabled(false);
             saveButton.setVisible(true);
         });
+
         
         resetButton.addActionListener(e -> {
             controller.resetTests();
@@ -83,6 +107,12 @@ public class TestsView {
         
         saveButton.addActionListener(e -> {
         	controller.saveResults();
+        	JOptionPane.showMessageDialog(
+                    null,
+                    "The file has been saved in the folder PlayerDesktop",
+                    "File successful generated",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
         });
         
         buttonPanel.add(saveButton);
