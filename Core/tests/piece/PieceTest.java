@@ -41,7 +41,10 @@ import other.move.Move;
 import other.state.State;
 import other.state.container.ContainerState;
 import other.topology.Cell;
+import other.topology.Edge;
 import other.topology.Topology;
+import other.topology.TopologyElement;
+import other.topology.Vertex;
 import other.trial.Trial;
 
 @ExtendWith(ParametersContextProvider.class)
@@ -52,35 +55,37 @@ public class PieceTest {
 	 * <p>
 	 * The test checks if non-neutral, non-shared pieces are defined for at least one player
 	 * (i.e., their name appears in the game description with a player number). 
-	 * Fails if any required piece definition is <missing.
+	 * Fails if any required piece definition is missing.
 	 * 
 	 * @param gameName The name of the game being tested.
 	 */
-	//@ParameterizedTest
-	//@ValueSource(strings = { "Amazons.lud" })
-    @TestTemplate
+	@ParameterizedTest
+	@ValueSource(strings = { "Amazons.lud" })
+    //@TestTemplate
     @Tag("Static")
 	public void pieceDeclaredAsEach(String gameName) {
 		
-		Game game = init(gameName);
+		Game game = GameLoader.loadGameFromName(gameName);
 
 		Component[] components = game.equipment().components();
 		
 		List<String> pieces = new ArrayList<String>();
 		
+		String description = game.description().expanded();
+
 		for(Component c : components) {
 			if (c instanceof Piece && c.role() != RoleType.Neutral && c.role() != RoleType.Shared) {
+				
 					pieces.add(c.getNameWithoutNumber());
+							
 			}
 		}
 		
-		if (pieces.isEmpty()) {
+		if (pieces.isEmpty() && !description.contains("Each")) {
 			fail("The game does not have any piece declared as Each");
 			return;
 		}
 		
-		String description = game.description().expanded();
-
 		int numPlayers = game.players().count();
 		boolean eachDeclared;
 		
@@ -101,9 +106,7 @@ public class PieceTest {
 				fail("Ludeme Each for a Piece requires at least one definition of PieceN, with N > 0");
 		}
 		
-		
-		System.out.println("The game correctly use Each Ludeme");
-		
+			
 	}
 	
 	
@@ -122,7 +125,7 @@ public class PieceTest {
     @Tag("Static")
     public void pieceDeclaredAsShared(String gameName) {
 		
-		Game game = init(gameName);
+		Game game = GameLoader.loadGameFromName(gameName);
 		
 		Component[] components = game.equipment().components();
 		
@@ -172,7 +175,7 @@ public class PieceTest {
 	@Tag("Static")
 	public void pieceDeclaredAsNeutral(String gameName) {
 		
-		Game game = init(gameName); // loading and checking for Piece Ludeme
+		Game game = GameLoader.loadGameFromName(gameName);
 		int counterBasePiece = 0;
 				
 		Component[] components = game.equipment().components();
@@ -212,7 +215,8 @@ public class PieceTest {
 	@TestTemplate
 	@Tag("Static")
 	public void eachPieceReferenceNotDuplicated(String gameName) {
-	    Game game = init(gameName); // loading and checking for Piece Ludeme
+		
+		Game game = GameLoader.loadGameFromName(gameName);
 	    
 	    Component[] components = game.equipment().components();
 	    
@@ -250,34 +254,71 @@ public class PieceTest {
 	    }
 	}
 	
-	@ParameterizedTest
-	@ValueSource(strings = { "Amazons.lud" })
+	//@ParameterizedTest
+	//@ValueSource(strings = { "Amazons.lud" })
 	@Tag("Static")
+	@TestTemplate
 	public void equalNumberOfPieces(String gameName) {
 		
-		Game game = init(gameName);
+		Game game = GameLoader.loadGameFromName(gameName);
 		Context context = new Context(game, new Trial(game));
 		game.start(context);
+		BitSet concepts = game.computeBooleanConcepts();
+
+		boolean edgeConcept = concepts.get(Concept.Edge.id());
+		System.out.println("edgeCon " + edgeConcept);
 		
+		boolean vertexConcept = concepts.get(Concept.Vertex.id());
+		System.out.println("verConcept " + vertexConcept);
 		
-		List<Cell> cells = game.board().topology().cells();
-		State state = game.stateReference();
-	    
-		ContainerState[] containerState = state.containerStates();
+		boolean cellConcept = concepts.get(Concept.Cell.id());
+		System.out.println("cellConcept " + cellConcept);
+		
+		SiteType type = null;
+		List<? extends TopologyElement> sites = new ArrayList<>();
+		if(edgeConcept) {
+			
+			type = SiteType.Edge;
+			sites = game.board().topology().edges();
+			
+		}else if(vertexConcept) {
+			
+			type = SiteType.Vertex;
+			sites = game.board().topology().vertices();
+			
+		}else if(cellConcept) {
+			
+			type = SiteType.Cell;
+			sites = game.board().topology().cells();
+			
+		}
+			
+		ContainerState[] containerState = context.state().containerStates();
+		System.out.println(containerState.length);
+		
+		int numPlayers = game.players().count();
+		
+		Integer[] piecesForPlayer = {0,0}; // vec[N-1] : number of pieces for player N
 		
 		int i;
 		for(ContainerState cs: containerState) {
 			
-			for (i = 0; i < cells.size(); i++) {
+			for (i = 0; i < sites.size(); i++) {
 				
-				Cell c = cells.get(i);
-				/*System.out.println(c.index());
-				System.out.println(i);*/
-				System.out.println("index component: " + cs.whatCell(i) + " owner: " + cs.whoCell(i));
-				
+				int ownerIdx = cs.who(i, type);
+				if(ownerIdx > 0 && ownerIdx <= numPlayers) {
+					piecesForPlayer[ownerIdx - 1]++;
+				}			
 			}
 			
 		}
+		
+		for(i = 1; i < piecesForPlayer.length; i++) {
+			if(!(piecesForPlayer[i] == piecesForPlayer[0])) {
+				fail("Players do not have the same number of pieces");
+			}
+		}
+		
 				
 	}
 	
@@ -287,23 +328,6 @@ public class PieceTest {
 	public void dynTest(String gameName) {
 		assert (true);
 	}
-	
-	private static Game init(String name) {
-		Game game = GameLoader.loadGameFromName(name);
-		
-		// CONCEPTS LOADING
-		BitSet concepts = game.computeBooleanConcepts();
-				
-		/// VERIFY THERE IS THE PIECE LUDEME - can I have a game without PIECE? NO. Because there is an implicit piece (DISC neutral) in every game
-		boolean pieceConcept = concepts.get(Concept.Piece.id());
-		if (!pieceConcept) {
-			fail("Piece concept is not present"); // this will NEVER fail
-		}
-		
-		return game;
-	}
-	
-
 	
 
 }

@@ -16,16 +16,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import controller.execution.parameter.ParametersContextProvider;
 import game.Game;
-import game.equipment.container.board.Board;
 import game.equipment.container.board.Track;
 import game.equipment.container.board.Track.Elem;
 import game.types.board.SiteType;
 import game.util.graph.GraphElement;
 import other.GameLoader;
 import other.concept.Concept;
-import other.topology.Cell;
-import other.topology.Topology;
-import other.topology.TopologyElement;
 import util.DefaultParameter;
 
 @ExtendWith(ParametersContextProvider.class)
@@ -42,10 +38,10 @@ public class TrackTest {
 	 */
 	@TestTemplate
 	@Tag("Static")
-	//@ParameterizedTest
-	//@CsvSource({"20 Squares.lud, 1, 15"})
+	@ParameterizedTest
+	@CsvSource({"58 Holes.lud, 30"})
 	public void sizeOfTrack(String gameName, 
-			@DefaultParameter("0") String owner, @DefaultParameter("3") int size) {
+			int owner, @DefaultParameter("3") int size) {
 		
 		 // GAME LOADING
 		Game game = GameLoader.loadGameFromName(gameName);
@@ -58,43 +54,54 @@ public class TrackTest {
 			fail("Track concept is not present");
 		}
 		
-		List<? extends GraphElement> cells = game.board().graph().elements(SiteType.Cell);
-		List<TopologyElement> top = game.board().topology().getAllGraphElements();
-		System.out.println(top.size());
+		boolean edgeConcept = concepts.get(Concept.Edge.id());
 		
-		for(TopologyElement te: top) {
-			System.out.println(te.elementType());
-		}
-	
+		boolean vertexConcept = concepts.get(Concept.Vertex.id());
 		
-		// INDEX OF THE BOARD
-		//List<Cell> cells = game.board().topology().cells();
-		// SiteType -- consider vertix
-		if (cells.isEmpty()) {
-			fail("No cells in the topology");
+		boolean cellConcept = concepts.get(Concept.Cell.id());
+		
+		SiteType type = null;
+		
+		if(edgeConcept) {
+			type = SiteType.Edge;
 		}
 		
-		List<Integer> cellIds = new ArrayList<>();
-		for (GraphElement cell : cells) {
-			//cellIds.add(cell.index());
+		if(vertexConcept) {
+			type = SiteType.Vertex;
+		}
+		
+		if(cellConcept) {
+			type = SiteType.Cell;
+		}
+		
+		
+		List<? extends GraphElement> sites = game.board().graph().elements(type);
+
+		List<Integer> siteIds = new ArrayList<>();
+		for (GraphElement site : sites) {
+			siteIds.add(site.id());
 		}
 		
 		// TRACK TO CONSIDER BASED ON THE OWNER
 		List<Track> tracks = game.board().tracks();
-		int ownerIdx = Integer.parseInt(owner);
+		System.out.println(tracks.size());
 		Track track = null;
 		for (Track t : tracks) {
-			if (t.owner() == ownerIdx) {
+			if (t.owner() == owner) {
 				track = t;
 				break;
 			}
+		}
+		
+		if(track == null) {
+			fail(String.format("The owner %d does not have a track", owner));
 		}
 		
 		// ACTUAL LENGTH OF THE TRACK ON THE BOARD
 		int counter = 0;
 		for (Elem e : track.elems()) {
 		    
-			if (cellIds.contains(e.site)) {
+			if (siteIds.contains(e.site)) {
 				counter++;
 			} 
 			
@@ -103,6 +110,7 @@ public class TrackTest {
 		assertTrue(String.format("The length of the track is %d", counter), size == counter);
 		
 	}
+		
 	
 	@ParameterizedTest
 	@ValueSource(strings = { "Amazons.lud" })
