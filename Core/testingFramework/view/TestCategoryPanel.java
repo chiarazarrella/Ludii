@@ -10,12 +10,8 @@ import controller.TestsController;
 
 public class TestCategoryPanel extends JPanel {
 	
-    private String categoryName;
-    private TestsController controller;
     
-    public TestCategoryPanel(String categoryName, TestsController controller) {
-        this.categoryName = categoryName;
-        this.controller = controller;
+    public TestCategoryPanel(String categoryName) {
         
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);

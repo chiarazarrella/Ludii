@@ -6,6 +6,8 @@ import model.TestClass;
 import model.TestMethod;
 import model.TestsModel;
 import other.context.Context;
+import util.TestResultLogger;
+import util.TestResultLogger.TestResult;
 import view.TestsView;
 
 import java.util.ArrayList;
@@ -61,5 +63,16 @@ public class TestsController {
 
 	public void selectMethod(TestMethod method, boolean selected) {
 		method.setSelected(selected);
+	}
+	
+	public void saveResults() {
+		
+	    List<TestResult> allResults = new ArrayList<>();
+	    for (TestClass testClass : model.getStaticTestClasses()) {
+	        
+	    }
+	    
+	    TestResultLogger.saveTestResultsToTimestampedFile("test_results", allResults);
+
 	}
 }

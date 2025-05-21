@@ -1,6 +1,8 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -9,14 +11,16 @@ import java.util.HashMap;
 public class TestClass {
 	
 	private final String packageName;
-	private HashMap<Integer, TestMethod> methods;
+	//private HashMap<Integer, TestMethod> methods;
+	private List<TestMethod> methods;
 	private final String name;
 	
 	
 	
 	public TestClass(String packageName, String name) {
 		this.packageName = packageName;
-		this.methods = new HashMap<Integer, TestMethod>();
+		//this.methods = new HashMap<Integer, TestMethod>();
+		this.methods = new ArrayList<>();
 		this.name = name;
 	}
 
@@ -30,18 +34,28 @@ public class TestClass {
 	
 	
 	public TestMethod getMethod(int id) {
-		return methods.get(id);
+		
+		for(TestMethod method: methods) {
+			if(method.getId() == id) {
+				return method;
+			}
+		}
+		
+		return null;
 	}
 	
 	public void addMethod(TestMethod method) {
-		methods.put(TestMethod.getId(method.getName()), method);
+		//methods.put(TestMethod.getId(method.getName()), method);
+		methods.add(method);
 	}
 	
-	
-	
-	public HashMap<Integer, TestMethod> getMethods(){
+	public List<TestMethod> getMethods(){
 		return this.methods;
 	}
+	
+	/*public HashMap<Integer, TestMethod> getMethods(){
+		return this.methods;
+	}*/
 	
 	
 	public String getFullyQualifiedName() {
@@ -51,7 +65,7 @@ public class TestClass {
 	
 	public boolean hasAtLeastOneMethodChecked() {
 		
-		for(TestMethod method: methods.values()) {
+		for(TestMethod method: methods) {
 			
 			if(method.isSelected())
 				return true;
@@ -68,7 +82,7 @@ public class TestClass {
 	}
 	
 	public void reset() {
-		for(TestMethod m: this.methods.values()) {
+		for(TestMethod m: this.methods) {
 			m.reset();
 		}
 	}
@@ -78,7 +92,7 @@ public class TestClass {
 		sb.append("TestClass: ").append(this.packageName).append("\n");
 		sb.append("Methods:\n");
 
-		for (TestMethod m : this.methods.values()) {
+		for (TestMethod m : this.methods) {
 			sb.append(m.toString()).append("\n");
 		}
 
@@ -87,7 +101,7 @@ public class TestClass {
 	
 	public boolean hasStaticTests(String category) {
 		
-		for (TestMethod m : this.methods.values()) {
+		for (TestMethod m : this.methods) {
 			if (m.isStatic() && packageName.equals(category))
 				return true;
 		}
@@ -97,7 +111,7 @@ public class TestClass {
 	
 	public boolean hasDynamicTests(String category) {
 
-		for (TestMethod m : this.methods.values()) {
+		for (TestMethod m : this.methods) {
 			if (!m.isStatic() && packageName.equals(category))
 				return true;
 		}

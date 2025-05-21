@@ -68,7 +68,7 @@ public class TestClassSection extends JPanel {
         testsContainer.setLayout(new BoxLayout(testsContainer, BoxLayout.Y_AXIS));
         testsContainer.setVisible(false); // Initially collapsed
         
-        testClass.getMethods().values().stream()
+        testClass.getMethods().stream()
             .filter(method -> method.isStatic() == isStatic)
             .forEach(method -> {
                 TestMethodRow row = new TestMethodRow(method, controller, parentView);

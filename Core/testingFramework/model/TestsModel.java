@@ -7,7 +7,6 @@ import collector.TestCollector;
 
 public class TestsModel {
     private List<TestClass> testClasses;
-    private String gameName;
     
     // Constructor and methods
     public TestsModel() {
@@ -15,10 +14,9 @@ public class TestsModel {
     }
     
     public void setGameName(String gameName) {
-        this.gameName = gameName;
         // Update all test methods with the game name
         for(TestClass testClass: testClasses) {
-            for(TestMethod method: testClass.getMethods().values()) {
+            for(TestMethod method: testClass.getMethods()) {
                 method.setValue("gameName", gameName);
             }
         }

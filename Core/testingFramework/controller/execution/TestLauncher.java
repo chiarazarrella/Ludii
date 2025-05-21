@@ -55,13 +55,13 @@ public class TestLauncher {
             List<TestMethod> selectedMethods
     ) {
         for (TestClass testClass : testClasses) {
-            for (TestMethod method : testClass.getMethods().values()) {
+            for (TestMethod method : testClass.getMethods()) {
                 if (!method.isSelected()) continue;
 
                 
                 //testInputs.put(method, new ArrayList<>(method.getParameters().values()));
                 testInputs.put(method, method.getParameters());
-                int methodId = TestMethod.getId(method.getName());
+                int methodId = method.getId();
                 String fqMethodName = testClass.getFullyQualifiedNameForMethod(methodId);
                 selectors.add(DiscoverySelectors.selectMethod(fqMethodName));
 

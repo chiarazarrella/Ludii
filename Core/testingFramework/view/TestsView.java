@@ -22,6 +22,7 @@ public class TestsView {
     private TestCategoryPanel dynamicTestsPanel;
     private JButton runButton;
     private JButton resetButton;
+    private JButton saveButton;
     private TestsController controller;
     private Map<Integer, TestMethodRow> testRowsMap = new HashMap<>();
     
@@ -42,8 +43,8 @@ public class TestsView {
         JPanel testPanelContainer = new JPanel(new GridLayout(0, 2, 20, 5));
         testPanelContainer.setBackground(Color.WHITE);
         
-        staticTestsPanel = new TestCategoryPanel("Static", controller);
-        dynamicTestsPanel = new TestCategoryPanel("Dynamic", controller);
+        staticTestsPanel = new TestCategoryPanel("Static");
+        dynamicTestsPanel = new TestCategoryPanel("Dynamic");
         
         populateTestPanels();
         
@@ -63,21 +64,31 @@ public class TestsView {
         
         runButton = new JButton("Run Tests");
         resetButton = new JButton("Reset");
+        saveButton = new JButton("Save results");
         runButton.setMargin(new Insets(8, 16, 8, 16)); // top, left, bottom, right
         resetButton.setMargin(new Insets(8, 16, 8, 16));
+        saveButton.setMargin(new Insets(8, 16, 8, 16));
         
         runButton.addActionListener(e -> {
             controller.executeTests();
             runButton.setEnabled(false);
+            saveButton.setVisible(true);
         });
         
         resetButton.addActionListener(e -> {
             controller.resetTests();
             runButton.setEnabled(true);
+            saveButton.setVisible(false);
         });
         
+        saveButton.addActionListener(e -> {
+        	controller.saveResults();
+        });
+        
+        buttonPanel.add(saveButton);
         buttonPanel.add(resetButton);
         buttonPanel.add(runButton);
+        saveButton.setVisible(false);
         
         return buttonPanel;
     }

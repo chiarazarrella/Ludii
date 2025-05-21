@@ -15,7 +15,7 @@ import util.DefaultParameter;
 
 public class TestMethod {
 	
-	private static int id;
+	private int id;
 	private final String name;
 	private List<TestParameter> parameters;
 	private boolean isSelected;
@@ -29,7 +29,7 @@ public class TestMethod {
 	public TestMethod(Method method) {
 		
 		this.name = method.getName();
-		setId(name);
+		this.id = name.hashCode();
 		this.isSelected = false;
 		this.isPassed = false;
 		this.failureMessage = null;
@@ -60,12 +60,9 @@ public class TestMethod {
 	}
 	
 	
-	private static int setId(String name) {
-		return id = name.hashCode();
-	}
 	
-	public static int getId(String name) {
-		return setId(name);
+	public int getId() {
+		return id;
 	}
 
 	public String getName() {

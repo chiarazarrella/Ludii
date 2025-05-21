@@ -38,8 +38,8 @@ public class TrackTest {
 	 */
 	@TestTemplate
 	@Tag("Static")
-	@ParameterizedTest
-	@CsvSource({"58 Holes.lud, 30"})
+	//@ParameterizedTest
+	//@CsvSource({"58 Holes.lud, 30"})
 	public void sizeOfTrack(String gameName, 
 			int owner, @DefaultParameter("3") int size) {
 		

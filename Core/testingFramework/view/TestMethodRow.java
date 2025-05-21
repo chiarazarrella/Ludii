@@ -25,7 +25,7 @@ public class TestMethodRow extends JPanel {
         createUI();
         
         // Register with parent view for result updates
-        int methodId = TestMethod.getId(testMethod.getName());
+        int methodId = testMethod.getId();
         parentView.registerTestRow(methodId, this);
     }
     
