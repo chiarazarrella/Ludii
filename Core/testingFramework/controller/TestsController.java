@@ -9,13 +9,8 @@ import other.context.Context;
 import util.TestResultLogger;
 import util.TestResultLogger.TestResult;
 import view.TestsView;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
-
-import collector.TestCollector;
 import controller.execution.TestLauncher;
 
 public class TestsController {
@@ -38,16 +33,16 @@ public class TestsController {
         model.setGameName(gameName);
     }
     
-    public List<TestClass> getStaticTestClasses() {
-        return model.getStaticTestClasses();
+    public List<TestClass> getTestClassesWithStaticTests() {
+        return model.getTestClassesWithStaticTests();
     }
     
-    public List<TestClass> getDynamicTestClasses() {
-        return model.getDynamicTestClasses();
+    public List<TestClass> getTestClassesWithDynamicTests() {
+        return model.getTestClassesWithDynamicTests();
     }
     
     public void executeTests() {
-    	launcher.run(model.getCheckedTestClasses());
+    	launcher.run(model.getSelectedTestClasses());
         view.updateTestResults();
     }
     
@@ -68,10 +63,22 @@ public class TestsController {
 	public void saveResults() {
 		
 	    List<TestResult> allResults = new ArrayList<>();
-	    for (TestClass testClass : model.getStaticTestClasses()) {
-	        
+	    for (TestClass testClass : model.getSelectedTestClasses()) {
+	        for (TestMethod method : testClass.getMethods()) {
+	        	if(!method.isSelected()) {
+	        		continue;
+	        	}
+	            TestResult result = new TestResult(
+	                method.getName(),
+	                method.getDuration(),
+	                method.isPassed(),
+	                method.getFailureMessage(),
+	                method.isStatic()
+	            );
+	            allResults.add(result);
+	        }
 	    }
-	    
+
 	    TestResultLogger.saveTestResultsToTimestampedFile("test_results", allResults);
 
 	}

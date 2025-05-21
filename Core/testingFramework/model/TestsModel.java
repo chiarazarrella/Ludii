@@ -26,21 +26,21 @@ public class TestsModel {
         return testClasses;
     }
     
-    public List<TestClass> getStaticTestClasses() {
+    public List<TestClass> getTestClassesWithStaticTests() {
         return testClasses.stream()
             .filter(tc -> tc.hasStaticTests(tc.getPackageName()))
             .collect(Collectors.toList());
     }
     
-    public List<TestClass> getDynamicTestClasses() {
+    public List<TestClass> getTestClassesWithDynamicTests() {
         return testClasses.stream()
             .filter(tc -> tc.hasDynamicTests(tc.getPackageName()))
             .collect(Collectors.toList());
     }
     
-    public List<TestClass> getCheckedTestClasses() {
+    public List<TestClass> getSelectedTestClasses() {
         return testClasses.stream()
-            .filter(TestClass::hasAtLeastOneMethodChecked)
+            .filter(TestClass::hasAtLeastOneMethodSelected)
             .collect(Collectors.toList());
     }
     

@@ -94,12 +94,12 @@ public class TestsView {
     }
     
     private void populateTestPanels() {
-        for (TestClass testClass : controller.getStaticTestClasses()) {
+        for (TestClass testClass : controller.getTestClassesWithStaticTests()) {
             TestClassSection section = new TestClassSection(testClass, true, controller, this);
             staticTestsPanel.addTestSection(section);
         }
         
-        for (TestClass testClass : controller.getDynamicTestClasses()) {
+        for (TestClass testClass : controller.getTestClassesWithStaticTests()) {
             TestClassSection section = new TestClassSection(testClass, false, controller, this);
             dynamicTestsPanel.addTestSection(section);
         }

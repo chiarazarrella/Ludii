@@ -63,7 +63,7 @@ public class TestClass {
 		return packageName.toLowerCase() + "." + name;
 	}
 	
-	public boolean hasAtLeastOneMethodChecked() {
+	public boolean hasAtLeastOneMethodSelected() {
 		
 		for(TestMethod method: methods) {
 			
