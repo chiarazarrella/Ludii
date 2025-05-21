@@ -34,6 +34,7 @@ import game.rules.play.moves.Moves;
 import game.types.board.SiteType;
 import game.types.play.RoleType;
 import main.collections.ChunkSet;
+import metadata.graphics.util.ContainerStyleType;
 import other.GameLoader;
 import other.concept.Concept;
 import other.context.Context;
@@ -255,10 +256,10 @@ public class PieceTest {
 	}
 	
 	//@ParameterizedTest
-	//@ValueSource(strings = { "Amazons.lud" })
+	//@ValueSource(strings = { "58 Holes.lud" })
 	@Tag("Static")
 	@TestTemplate
-	public void equalNumberOfPieces(String gameName) {
+	public void equalNumberOfPiecesOnTheBoard(String gameName) {
 		
 		Game game = GameLoader.loadGameFromName(gameName);
 		Context context = new Context(game, new Trial(game));
@@ -294,18 +295,21 @@ public class PieceTest {
 		}
 			
 		ContainerState[] containerState = context.state().containerStates();
-		System.out.println(containerState.length);
+		System.out.println("containers:" + containerState.length);
 		
 		int numPlayers = game.players().count();
 		
-		Integer[] piecesForPlayer = {0,0}; // vec[N-1] : number of pieces for player N
+		Integer[] piecesForPlayer = {}; // vec[N-1] : number of pieces for player N
 		
 		int i;
 		for(ContainerState cs: containerState) {
-			
+			if (cs.container().style() != ContainerStyleType.Board) {
+				continue;
+			}
 			for (i = 0; i < sites.size(); i++) {
-				
+				System.out.println("index " + i);
 				int ownerIdx = cs.who(i, type);
+				System.out.println(ownerIdx);
 				if(ownerIdx > 0 && ownerIdx <= numPlayers) {
 					piecesForPlayer[ownerIdx - 1]++;
 				}			
@@ -313,6 +317,11 @@ public class PieceTest {
 			
 		}
 		
+		if(piecesForPlayer.length == 0) {
+			fail("There are no pieces on the board");
+		}
+		
+		System.out.println("outside");
 		for(i = 1; i < piecesForPlayer.length; i++) {
 			if(!(piecesForPlayer[i] == piecesForPlayer[0])) {
 				fail("Players do not have the same number of pieces");

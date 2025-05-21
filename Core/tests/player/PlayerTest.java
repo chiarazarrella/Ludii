@@ -21,8 +21,14 @@ import controller.execution.parameter.ParametersContextProvider;
 import game.Game;
 import game.players.Player;
 import game.players.Players;
+import game.types.board.SiteType;
+import metadata.graphics.util.ContainerStyleType;
 import other.GameLoader;
 import other.concept.Concept;
+import other.context.Context;
+import other.state.container.ContainerState;
+import other.topology.TopologyElement;
+import other.trial.Trial;
 @ExtendWith(ParametersContextProvider.class)
 public class PlayerTest {
 	
@@ -64,6 +70,81 @@ public class PlayerTest {
         }
         
 	}
+    
+    //@ParameterizedTest
+  	//@ValueSource(strings = { "58 Holes.lud" })
+  	@Tag("Static")
+  	@TestTemplate
+  	public void equalNumberOfPiecesOnTheBoard(String gameName) {
+  		
+  		Game game = GameLoader.loadGameFromName(gameName);
+  		Context context = new Context(game, new Trial(game));
+  		game.start(context);
+  		BitSet concepts = game.computeBooleanConcepts();
+
+  		boolean edgeConcept = concepts.get(Concept.Edge.id());
+  		System.out.println("edgeCon " + edgeConcept);
+  		
+  		boolean vertexConcept = concepts.get(Concept.Vertex.id());
+  		System.out.println("verConcept " + vertexConcept);
+  		
+  		boolean cellConcept = concepts.get(Concept.Cell.id());
+  		System.out.println("cellConcept " + cellConcept);
+  		
+  		SiteType type = null;
+  		List<? extends TopologyElement> sites = new ArrayList<>();
+  		if(edgeConcept) {
+  			
+  			type = SiteType.Edge;
+  			sites = game.board().topology().edges();
+  			
+  		}else if(vertexConcept) {
+  			
+  			type = SiteType.Vertex;
+  			sites = game.board().topology().vertices();
+  			
+  		}else if(cellConcept) {
+  			
+  			type = SiteType.Cell;
+  			sites = game.board().topology().cells();
+  			
+  		}
+  			
+  		ContainerState[] containerState = context.state().containerStates();
+  		System.out.println("containers:" + containerState.length);
+  		
+  		int numPlayers = game.players().count();
+  		
+  		Integer[] piecesForPlayer = {}; // vec[N-1] : number of pieces for player N
+  		
+  		for(ContainerState cs: containerState) {
+  			
+  			if (cs.container().style() != ContainerStyleType.Board) {
+  				continue;
+  			}
+  			
+  			for (int i = 0; i < sites.size(); i++) {
+  				
+  				int ownerIdx = cs.who(i, type);
+  				if(ownerIdx > 0 && ownerIdx <= numPlayers) {
+  					piecesForPlayer[ownerIdx - 1]++;
+  				}			
+  			}
+  			
+  		}
+  		
+  		if(piecesForPlayer.length == 0) {
+  			fail("There are no pieces on the board");
+  		}
+  		
+  		for(int i = 1; i < piecesForPlayer.length; i++) {
+  			if(!(piecesForPlayer[i] == piecesForPlayer[0])) {
+  				fail("Players do not have the same number of pieces");
+  			}
+  		}
+  		
+  				
+  	}
     
     @ParameterizedTest
 	@ValueSource(strings = { "Amazons.lud" })
