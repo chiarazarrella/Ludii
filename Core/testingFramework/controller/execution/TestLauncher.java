@@ -59,7 +59,6 @@ public class TestLauncher {
                 if (!method.isSelected()) continue;
 
                 
-                //testInputs.put(method, new ArrayList<>(method.getParameters().values()));
                 testInputs.put(method, method.getParameters());
                 int methodId = method.getId();
                 String fqMethodName = testClass.getFullyQualifiedNameForMethod(methodId);

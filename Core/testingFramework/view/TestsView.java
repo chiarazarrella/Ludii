@@ -106,7 +106,7 @@ public class TestsView {
         });
         
         saveButton.addActionListener(e -> {
-        	controller.saveResults();
+        	controller.saveResultsToFileTxt();
         	JOptionPane.showMessageDialog(
                     null,
                     "The file has been saved in the folder PlayerDesktop",

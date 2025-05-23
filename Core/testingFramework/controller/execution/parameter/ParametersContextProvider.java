@@ -36,7 +36,7 @@ public class ParametersContextProvider implements TestTemplateInvocationContextP
         }
         
         
-        System.out.println(">> supportsTestTemplate called for " + testMethodName + ", has inputs: " + hasInputs);
+        //System.out.println(">> supportsTestTemplate called for " + testMethodName + ", has inputs: " + hasInputs);
         return hasInputs; // Ensure inputs exist for this specific test
     }
 
@@ -44,7 +44,7 @@ public class ParametersContextProvider implements TestTemplateInvocationContextP
     public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(ExtensionContext context) {
         String testMethodName = context.getTestMethod().map(method -> method.getName()).orElse("");
 
-        System.out.println(">> provideTestTemplateInvocationContexts called for " + testMethodName);
+        //System.out.println(">> provideTestTemplateInvocationContexts called for " + testMethodName);
                 
         List<TestParameter> matchedParamList = null;
         for (Map.Entry<TestMethod, List<TestParameter>> entry : inputs.entrySet()) {

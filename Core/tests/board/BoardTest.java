@@ -65,20 +65,14 @@ public class BoardTest {
         assertTrue(lineLength <= side, "Line should be less than or equal to board side");
 	}
 	
-	@TestTemplate
+	/*@TestTemplate
 	@Tag("Dynamic")
 	public void dynTestBoard(String gameName) throws InterruptedException {
 		Thread.sleep(2000);
 		
 		assertTrue(true);
 		
-	}
+	}*/
 	
-	
-	
-
-    
-    
-    
 }
 

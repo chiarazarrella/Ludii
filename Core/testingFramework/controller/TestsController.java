@@ -56,7 +56,7 @@ public class TestsController {
     	
     	for(TestClass tc: model.getSelectedTestClasses()) {
     		for(TestMethod method: tc.getSelectedMethods()) {
-    			if(method.missingParameterValue()) {
+    			if(method.parameterWithoutValue() != null) {
     				return method;
     			}
     		}
@@ -79,7 +79,7 @@ public class TestsController {
 		method.setSelected(selected);
 	}
 	
-	public void saveResults() {
+	public void saveResultsToFileTxt() {
 		
 	    List<TestResult> allResults = new ArrayList<>();
 	    for (TestClass testClass : model.getSelectedTestClasses()) {

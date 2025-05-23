@@ -36,17 +36,22 @@ public class PlayerTest {
 	 * @param gameName
 	 */
     @TestTemplate
+    //@ParameterizedTest
+  	//@ValueSource(strings = { "Camelot.lud" })
     @Tag("Static")
-	public void playerNotDeclared(String gameName) {
+	public void AllPlayerDeclared(String gameName) {
 		
 		Game game = GameLoader.loadGameFromName(gameName);
+		
 		
 		int pDeclared = game.players().count();
 		
 		String description = game.description().rawGameDescription();
 		
-		List<Integer> pUsed = new ArrayList<>();
+		description = description.replaceAll("\"[^\"]*\"|'[^']*'", "");
 
+		List<Integer> pUsed = new ArrayList<>();
+		
         String[] parts = description.split("[\\n(){}\\[\\]]+");
         Pattern pattern = Pattern.compile("P\\d+"); // Pattern for "P" followed by numbers
         
@@ -72,7 +77,7 @@ public class PlayerTest {
 	}
     
     //@ParameterizedTest
-  	//@ValueSource(strings = { "58 Holes.lud" })
+  	//@ValueSource(strings = { "Gale.lud" })
   	@Tag("Static")
   	@TestTemplate
   	public void equalNumberOfPiecesOnTheBoard(String gameName) {
@@ -81,15 +86,15 @@ public class PlayerTest {
   		Context context = new Context(game, new Trial(game));
   		game.start(context);
   		BitSet concepts = game.computeBooleanConcepts();
-
+  		
   		boolean edgeConcept = concepts.get(Concept.Edge.id());
-  		System.out.println("edgeCon " + edgeConcept);
+  		//System.out.println("edgeCon " + edgeConcept);
   		
   		boolean vertexConcept = concepts.get(Concept.Vertex.id());
-  		System.out.println("verConcept " + vertexConcept);
+  		//System.out.println("verConcept " + vertexConcept);
   		
   		boolean cellConcept = concepts.get(Concept.Cell.id());
-  		System.out.println("cellConcept " + cellConcept);
+  		//System.out.println("cellConcept " + cellConcept);
   		
   		SiteType type = null;
   		List<? extends TopologyElement> sites = new ArrayList<>();
@@ -107,15 +112,19 @@ public class PlayerTest {
   			
   			type = SiteType.Cell;
   			sites = game.board().topology().cells();
-  			
+  			//System.out.println("sites length " + sites.size());
   		}
   			
   		ContainerState[] containerState = context.state().containerStates();
-  		System.out.println("containers:" + containerState.length);
+  		//System.out.println("containers size: " + containerState.length);
   		
   		int numPlayers = game.players().count();
   		
-  		Integer[] piecesForPlayer = {}; // vec[N-1] : number of pieces for player N
+  		Integer[] piecesForPlayer = new Integer[numPlayers];// vec[N-1] : number of pieces for player N
+  		
+  		for (int j = 0; j < numPlayers; j++) {
+  			piecesForPlayer[j] = 0;
+  		}
   		
   		for(ContainerState cs: containerState) {
   			
@@ -146,11 +155,11 @@ public class PlayerTest {
   				
   	}
     
-    @TestTemplate
+    /*@TestTemplate
 	@Tag("Dynamic")
 	public void dynTestPlayer(String gameName) {
 		assert (true);
-	}
+	}*/
     
     
     

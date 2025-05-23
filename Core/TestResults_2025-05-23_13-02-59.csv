@@ -1,0 +1,153 @@
+Game;Test Name;Duration (ms);Passed;Failure Message;Type
+"Adugo_test_results";"lineLessOrEqualThanBoardSide";1097;false;"Line concept is not present";Static
+"Adugo_test_results";"pieceDeclaredAsEach";244;true;;Static
+"Adugo_test_results";"pieceDeclaredAsNeutral";56;true;;Static
+"Adugo_test_results";"pieceDeclaredAsShared";54;false;"The game does not have any piece declared as Shared";Static
+"Adugo_test_results";"eachPieceReferenceNotDuplicated";53;true;;Static
+"Adugo_test_results";"playerNotDeclared";39;true;;Static
+"Adugo_test_results";"equalNumberOfPiecesOnTheBoard";169;true;;Static
+"Adugo_test_results";"sizeOfTrack";43;false;"Track concept is not present";Static
+"Asalto_test_results";"lineLessOrEqualThanBoardSide";85;false;"Line concept is not present";Static
+"Asalto_test_results";"pieceDeclaredAsEach";130;true;;Static
+"Asalto_test_results";"pieceDeclaredAsNeutral";51;true;;Static
+"Asalto_test_results";"pieceDeclaredAsShared";52;false;"The game does not have any piece declared as Shared";Static
+"Asalto_test_results";"eachPieceReferenceNotDuplicated";50;true;;Static
+"Asalto_test_results";"playerNotDeclared";53;true;;Static
+"Asalto_test_results";"equalNumberOfPiecesOnTheBoard";159;true;;Static
+"Asalto_test_results";"sizeOfTrack";50;false;"Track concept is not present";Static
+"Bagh Bandi_test_results";"lineLessOrEqualThanBoardSide";86;false;"Line concept is not present";Static
+"Bagh Bandi_test_results";"pieceDeclaredAsEach";116;true;;Static
+"Bagh Bandi_test_results";"pieceDeclaredAsNeutral";58;true;;Static
+"Bagh Bandi_test_results";"pieceDeclaredAsShared";69;false;"The game does not have any piece declared as Shared";Static
+"Bagh Bandi_test_results";"eachPieceReferenceNotDuplicated";53;false;"Ludeme Each for a Piece requires that the reference to Goat2 is not duplicated. Found 4 occurrences.";Static
+"Bagh Bandi_test_results";"playerNotDeclared";58;true;;Static
+"Bagh Bandi_test_results";"equalNumberOfPiecesOnTheBoard";179;true;;Static
+"Bagh Bandi_test_results";"sizeOfTrack";70;false;"Track concept is not present";Static
+"Bagh Batti_test_results";"lineLessOrEqualThanBoardSide";57;false;"Line concept is not present";Static
+"Bagh Batti_test_results";"pieceDeclaredAsEach";88;true;;Static
+"Bagh Batti_test_results";"pieceDeclaredAsNeutral";45;true;;Static
+"Bagh Batti_test_results";"pieceDeclaredAsShared";48;false;"The game does not have any piece declared as Shared";Static
+"Bagh Batti_test_results";"eachPieceReferenceNotDuplicated";45;true;;Static
+"Bagh Batti_test_results";"playerNotDeclared";42;true;;Static
+"Bagh Batti_test_results";"equalNumberOfPiecesOnTheBoard";126;true;;Static
+"Bagh Batti_test_results";"sizeOfTrack";40;false;"Track concept is not present";Static
+"Bagh Guti_test_results";"lineLessOrEqualThanBoardSide";45;false;"Line concept is not present";Static
+"Bagh Guti_test_results";"pieceDeclaredAsEach";82;true;;Static
+"Bagh Guti_test_results";"pieceDeclaredAsNeutral";55;true;;Static
+"Bagh Guti_test_results";"pieceDeclaredAsShared";53;false;"The game does not have any piece declared as Shared";Static
+"Bagh Guti_test_results";"eachPieceReferenceNotDuplicated";48;true;;Static
+"Bagh Guti_test_results";"playerNotDeclared";48;true;;Static
+"Bagh Guti_test_results";"equalNumberOfPiecesOnTheBoard";142;true;;Static
+"Bagh Guti_test_results";"sizeOfTrack";55;false;"Track concept is not present";Static
+"Bagha Guti_test_results";"lineLessOrEqualThanBoardSide";35;false;"Line concept is not present";Static
+"Bagha Guti_test_results";"pieceDeclaredAsEach";83;true;;Static
+"Bagha Guti_test_results";"pieceDeclaredAsNeutral";29;true;;Static
+"Bagha Guti_test_results";"pieceDeclaredAsShared";26;false;"The game does not have any piece declared as Shared";Static
+"Bagha Guti_test_results";"eachPieceReferenceNotDuplicated";24;true;;Static
+"Bagha Guti_test_results";"playerNotDeclared";29;true;;Static
+"Bagha Guti_test_results";"equalNumberOfPiecesOnTheBoard";121;true;;Static
+"Bagha Guti_test_results";"sizeOfTrack";29;false;"Track concept is not present";Static
+"Baghchal_test_results";"lineLessOrEqualThanBoardSide";28;false;"Line concept is not present";Static
+"Baghchal_test_results";"pieceDeclaredAsEach";67;true;;Static
+"Baghchal_test_results";"pieceDeclaredAsNeutral";26;true;;Static
+"Baghchal_test_results";"pieceDeclaredAsShared";27;false;"The game does not have any piece declared as Shared";Static
+"Baghchal_test_results";"eachPieceReferenceNotDuplicated";24;true;;Static
+"Baghchal_test_results";"playerNotDeclared";24;true;;Static
+"Baghchal_test_results";"equalNumberOfPiecesOnTheBoard";115;true;;Static
+"Baghchal_test_results";"sizeOfTrack";24;false;"Track concept is not present";Static
+"Bam Blang Beh Khla_test_results";"lineLessOrEqualThanBoardSide";27;false;"Line concept is not present";Static
+"Bam Blang Beh Khla_test_results";"pieceDeclaredAsEach";59;true;;Static
+"Bam Blang Beh Khla_test_results";"pieceDeclaredAsNeutral";19;true;;Static
+"Bam Blang Beh Khla_test_results";"pieceDeclaredAsShared";15;false;"The game does not have any piece declared as Shared";Static
+"Bam Blang Beh Khla_test_results";"eachPieceReferenceNotDuplicated";11;true;;Static
+"Bam Blang Beh Khla_test_results";"playerNotDeclared";16;true;;Static
+"Bam Blang Beh Khla_test_results";"equalNumberOfPiecesOnTheBoard";89;true;;Static
+"Bam Blang Beh Khla_test_results";"sizeOfTrack";19;false;"Track concept is not present";Static
+"Bouge Shodra_test_results";"lineLessOrEqualThanBoardSide";27;false;"Line concept is not present";Static
+"Bouge Shodra_test_results";"pieceDeclaredAsEach";74;true;;Static
+"Bouge Shodra_test_results";"pieceDeclaredAsNeutral";26;true;;Static
+"Bouge Shodra_test_results";"pieceDeclaredAsShared";28;false;"The game does not have any piece declared as Shared";Static
+"Bouge Shodra_test_results";"eachPieceReferenceNotDuplicated";29;false;"Ludeme Each for a Piece requires that the reference to Marker1 is not duplicated. Found 2 occurrences.";Static
+"Bouge Shodra_test_results";"playerNotDeclared";28;true;;Static
+"Bouge Shodra_test_results";"equalNumberOfPiecesOnTheBoard";104;true;;Static
+"Bouge Shodra_test_results";"sizeOfTrack";26;false;"Track concept is not present";Static
+"Cercar La Liebre_test_results";"lineLessOrEqualThanBoardSide";21;false;"Line concept is not present";Static
+"Cercar La Liebre_test_results";"pieceDeclaredAsEach";58;true;;Static
+"Cercar La Liebre_test_results";"pieceDeclaredAsNeutral";25;true;;Static
+"Cercar La Liebre_test_results";"pieceDeclaredAsShared";24;false;"The game does not have any piece declared as Shared";Static
+"Cercar La Liebre_test_results";"eachPieceReferenceNotDuplicated";20;true;;Static
+"Cercar La Liebre_test_results";"playerNotDeclared";19;true;;Static
+"Cercar La Liebre_test_results";"equalNumberOfPiecesOnTheBoard";106;true;;Static
+"Cercar La Liebre_test_results";"sizeOfTrack";23;false;"Track concept is not present";Static
+"Coyote_test_results";"lineLessOrEqualThanBoardSide";17;false;"Line concept is not present";Static
+"Coyote_test_results";"pieceDeclaredAsEach";54;true;;Static
+"Coyote_test_results";"pieceDeclaredAsNeutral";18;true;;Static
+"Coyote_test_results";"pieceDeclaredAsShared";16;false;"The game does not have any piece declared as Shared";Static
+"Coyote_test_results";"eachPieceReferenceNotDuplicated";19;true;;Static
+"Coyote_test_results";"playerNotDeclared";16;true;;Static
+"Coyote_test_results";"equalNumberOfPiecesOnTheBoard";92;true;;Static
+"Coyote_test_results";"sizeOfTrack";19;false;"Track concept is not present";Static
+"Demala Diviyan Keliya_test_results";"lineLessOrEqualThanBoardSide";16;false;"Line concept is not present";Static
+"Demala Diviyan Keliya_test_results";"pieceDeclaredAsEach";54;true;;Static
+"Demala Diviyan Keliya_test_results";"pieceDeclaredAsNeutral";16;true;;Static
+"Demala Diviyan Keliya_test_results";"pieceDeclaredAsShared";15;false;"The game does not have any piece declared as Shared";Static
+"Demala Diviyan Keliya_test_results";"eachPieceReferenceNotDuplicated";16;true;;Static
+"Demala Diviyan Keliya_test_results";"playerNotDeclared";16;true;;Static
+"Demala Diviyan Keliya_test_results";"equalNumberOfPiecesOnTheBoard";91;true;;Static
+"Demala Diviyan Keliya_test_results";"sizeOfTrack";18;false;"Track concept is not present";Static
+"Diviyan Keliya_test_results";"lineLessOrEqualThanBoardSide";25;false;"Line concept is not present";Static
+"Diviyan Keliya_test_results";"pieceDeclaredAsEach";63;true;;Static
+"Diviyan Keliya_test_results";"pieceDeclaredAsNeutral";27;true;;Static
+"Diviyan Keliya_test_results";"pieceDeclaredAsShared";26;false;"The game does not have any piece declared as Shared";Static
+"Diviyan Keliya_test_results";"eachPieceReferenceNotDuplicated";26;true;;Static
+"Diviyan Keliya_test_results";"playerNotDeclared";25;true;;Static
+"Diviyan Keliya_test_results";"equalNumberOfPiecesOnTheBoard";117;true;;Static
+"Diviyan Keliya_test_results";"sizeOfTrack";29;false;"Track concept is not present";Static
+"El Cazador_test_results";"lineLessOrEqualThanBoardSide";20;false;"Line concept is not present";Static
+"El Cazador_test_results";"pieceDeclaredAsEach";51;true;;Static
+"El Cazador_test_results";"pieceDeclaredAsNeutral";19;true;;Static
+"El Cazador_test_results";"pieceDeclaredAsShared";17;false;"The game does not have any piece declared as Shared";Static
+"El Cazador_test_results";"eachPieceReferenceNotDuplicated";17;true;;Static
+"El Cazador_test_results";"playerNotDeclared";20;true;;Static
+"El Cazador_test_results";"equalNumberOfPiecesOnTheBoard";88;true;;Static
+"El Cazador_test_results";"sizeOfTrack";20;false;"Track concept is not present";Static
+"El Perro_test_results";"lineLessOrEqualThanBoardSide";31;false;"Line concept is not present";Static
+"El Perro_test_results";"pieceDeclaredAsEach";62;true;;Static
+"El Perro_test_results";"pieceDeclaredAsNeutral";27;true;;Static
+"El Perro_test_results";"pieceDeclaredAsShared";29;false;"The game does not have any piece declared as Shared";Static
+"El Perro_test_results";"eachPieceReferenceNotDuplicated";25;true;;Static
+"El Perro_test_results";"playerNotDeclared";30;true;;Static
+"El Perro_test_results";"equalNumberOfPiecesOnTheBoard";97;true;;Static
+"El Perro_test_results";"sizeOfTrack";31;false;"Track concept is not present";Static
+"El Zorro_test_results";"lineLessOrEqualThanBoardSide";24;false;"Line concept is not present";Static
+"El Zorro_test_results";"pieceDeclaredAsEach";57;true;;Static
+"El Zorro_test_results";"pieceDeclaredAsNeutral";22;true;;Static
+"El Zorro_test_results";"pieceDeclaredAsShared";23;false;"The game does not have any piece declared as Shared";Static
+"El Zorro_test_results";"eachPieceReferenceNotDuplicated";26;true;;Static
+"El Zorro_test_results";"playerNotDeclared";24;true;;Static
+"El Zorro_test_results";"equalNumberOfPiecesOnTheBoard";89;true;;Static
+"El Zorro_test_results";"sizeOfTrack";24;false;"Track concept is not present";Static
+"Fox and Geese_test_results";"lineLessOrEqualThanBoardSide";30;false;"Line concept is not present";Static
+"Fox and Geese_test_results";"pieceDeclaredAsEach";60;true;;Static
+"Fox and Geese_test_results";"pieceDeclaredAsNeutral";22;true;;Static
+"Fox and Geese_test_results";"pieceDeclaredAsShared";25;false;"The game does not have any piece declared as Shared";Static
+"Fox and Geese_test_results";"eachPieceReferenceNotDuplicated";23;true;;Static
+"Fox and Geese_test_results";"playerNotDeclared";22;true;;Static
+"Fox and Geese_test_results";"equalNumberOfPiecesOnTheBoard";92;true;;Static
+"Fox and Geese_test_results";"sizeOfTrack";27;false;"Track concept is not present";Static
+"Gala (Buginese)_test_results";"lineLessOrEqualThanBoardSide";28;false;"Line concept is not present";Static
+"Gala (Buginese)_test_results";"pieceDeclaredAsEach";60;true;;Static
+"Gala (Buginese)_test_results";"pieceDeclaredAsNeutral";26;true;;Static
+"Gala (Buginese)_test_results";"pieceDeclaredAsShared";29;false;"The game does not have any piece declared as Shared";Static
+"Gala (Buginese)_test_results";"eachPieceReferenceNotDuplicated";27;true;;Static
+"Gala (Buginese)_test_results";"playerNotDeclared";25;true;;Static
+"Gala (Buginese)_test_results";"equalNumberOfPiecesOnTheBoard";102;true;;Static
+"Gala (Buginese)_test_results";"sizeOfTrack";26;false;"Track concept is not present";Static
+"Gala_test_results";"lineLessOrEqualThanBoardSide";26;false;"Line concept is not present";Static
+"Gala_test_results";"pieceDeclaredAsEach";53;true;;Static
+"Gala_test_results";"pieceDeclaredAsNeutral";20;true;;Static
+"Gala_test_results";"pieceDeclaredAsShared";18;false;"The game does not have any piece declared as Shared";Static
+"Gala_test_results";"eachPieceReferenceNotDuplicated";17;false;"Ludeme Each for a Piece requires that the reference to Marker2 is not duplicated. Found 2 occurrences.";Static
+"Gala_test_results";"playerNotDeclared";17;true;;Static
+"Gala_test_results";"equalNumberOfPiecesOnTheBoard";85;false;"Players do not have the same number of pieces";Static
+"Gala_test_results";"sizeOfTrack";19;false;"Track concept is not present";Static

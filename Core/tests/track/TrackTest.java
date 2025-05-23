@@ -84,7 +84,7 @@ public class TrackTest {
 		
 		// TRACK TO CONSIDER BASED ON THE OWNER
 		List<Track> tracks = game.board().tracks();
-		System.out.println(tracks.size());
+		//System.out.println(tracks.size());
 		Track track = null;
 		for (Track t : tracks) {
 			if (t.owner() == owner) {
@@ -112,10 +112,10 @@ public class TrackTest {
 	}
 		
 	
-	@TestTemplate
+	/*@TestTemplate
 	@Tag("Dynamic")
 	public void dynTestTrack(String gameName) {
 		assert (true);
-	}
+	}*/
 
 }

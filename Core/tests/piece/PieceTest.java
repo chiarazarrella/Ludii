@@ -78,19 +78,27 @@ public class PieceTest {
 			if (c instanceof Piece && c.role() != RoleType.Neutral && c.role() != RoleType.Shared) {
 				
 					pieces.add(c.getNameWithoutNumber());
-							
+					//System.out.println(c.name());	
 			}
 		}
 		
-		if (pieces.isEmpty() && !description.contains("Each")) {
-			fail("The game does not have any piece declared as Each");
-			return;
-		}
 		
+		List<String> validPieces = new ArrayList<>();
+		for (String piece : pieces) {
+		    String regex = "piece\\s+\"" + Pattern.quote(piece) + "\"\\s+Each\\b";
+		    if (Pattern.compile(regex).matcher(description).find()) {
+		        validPieces.add(piece);
+		    }
+		}
+
+		if (validPieces.isEmpty()) {
+		    fail("The game does not have any piece declared as Each");
+		}
+
 		int numPlayers = game.players().count();
 		boolean eachDeclared;
 		
-		for(String piece: pieces) {
+		for(String piece: validPieces) {
 			
 			eachDeclared = false;
 			
@@ -157,8 +165,7 @@ public class PieceTest {
 			
 		}
 		
-		System.out.println("The game correctly use Shared Ludeme");
-		
+				
 	}
 	 
 	
@@ -223,22 +230,29 @@ public class PieceTest {
 	    
 	    List<String> pieces = new ArrayList<String>();
 	    
+	    String description = game.description().expanded();
+	    
 	    for(Component c : components) {
 	        if (c instanceof Piece && c.role() != RoleType.Neutral && c.role() != RoleType.Shared) {
 	            pieces.add(c.name()); // Piece1
 	        }
 	    }
 	    
-	    if (pieces.isEmpty()) {
-	        fail("The game does not have any piece declared as Each");
-	        return;
-	    }
-	    
-	    String description = game.description().expanded();
+	    List<String> validPieces = new ArrayList<>();
+		for (String piece : pieces) {
+		    String regex = "piece\\s+\"" + Pattern.quote(piece) + "\"\\s+Each\\b";
+		    if (Pattern.compile(regex).matcher(description).find()) {
+		        validPieces.add(piece);
+		    }
+		}
+
+		if (validPieces.isEmpty()) {
+		    fail("The game does not have any piece declared as Each");
+		}
 	    
 	    Map<String, Integer> pieceCounts = new HashMap<>();
 	    
-	    for (String piece : pieces) {
+	    for (String piece : validPieces) {
 	    	
 	        pieceCounts.put(piece, 0);
 	        
@@ -256,11 +270,11 @@ public class PieceTest {
 	}
 	
 	
-	@TestTemplate
+	/*@TestTemplate
 	@Tag("Dynamic")
 	public void dynTestPiece(String gameName) {
 		assert (true);
-	}
+	}*/
 	
 
 }

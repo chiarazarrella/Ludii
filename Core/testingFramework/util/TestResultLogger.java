@@ -1,5 +1,6 @@
 package util;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -63,8 +64,33 @@ public class TestResultLogger {
             System.err.println("Error writing file: " + e.getMessage());
         }
     }
+    
+   
+    public static void appendTestResultsToCSV(File file, String gameName, List<TestResult> results) {
+        try (FileWriter writer = new FileWriter(file, true)) {
+            for (TestResult result : results) {
+                writer.write(String.join(";",
+                    escapeCsv(gameName),
+                    escapeCsv(result.name),
+                    String.valueOf(result.durationMillis),
+                    String.valueOf(result.passed),
+                    escapeCsv(result.failureMessage),
+                    result.isStatic ? "Static" : "Dynamic"
+                ));
+                writer.write("\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing file: " + e.getMessage());
+        }
+    }
 
-  
+    // Utility to quote CSV values and handle nulls
+    private static String escapeCsv(String value) {
+        if (value == null) return "";
+        return "\"" + value.replace("\"", "\"\"") + "\"";
+    }
+    
+    
     private static long parseDuration(String durationMillis) {
         try {
             return Long.parseLong(durationMillis);

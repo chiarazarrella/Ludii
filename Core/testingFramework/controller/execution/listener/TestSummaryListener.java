@@ -34,15 +34,6 @@ public class TestSummaryListener extends SummaryGeneratingListener {
             testDurations.put(nameMethod, duration);
         }
         
-        
-        /*System.out.println("UNIQUE ID");
-        System.out.println(testIdentifier.getUniqueId());
-        
-        for(Segment segment: testIdentifier.getUniqueIdObject().getSegments()) {
-        	System.out.println("####");
-        	System.out.println(segment.toString());
-        }*/
-        
         if (nameMethod != null && testExecutionResult.getStatus() == TestExecutionResult.Status.FAILED) {
             Optional<Throwable> throwable = testExecutionResult.getThrowable();
             throwable.ifPresent(ex -> failureMessages.put(nameMethod, ex.getMessage()));
