@@ -3,6 +3,8 @@ package util;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -24,66 +26,9 @@ public class TestResultLogger {
             this.isStatic = isStatic;
         }
     }
-
-    public static void saveTestResultsToTimestampedFile(String baseName, List<TestResult> results) {
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
-        String fileName = baseName + "_" + timestamp + ".txt";
-
-        int passedCount = 0;
-        long totalTime = 0;
-
-        for (TestResult result : results) {
-            if (result.passed) passedCount++;
-            totalTime += parseDuration(result.durationMillis);
-        }
-
-        double successRate = results.isEmpty() ? 0 : 100.0 * passedCount / results.size();
-        long meanTime = results.isEmpty() ? 0 : totalTime / results.size();
-
-        try (FileWriter writer = new FileWriter(fileName)) {
-            writer.write("=== Summary ===\n");
-            writer.write("- Total Tests: " + results.size() + "\n");
-            writer.write("- Success Rate: " + String.format("%.2f", successRate) + " %\n");
-            writer.write("- Mean Execution Time: " + meanTime + " ms\n\n");
-
-            writer.write("=== Test Results ===\n\n");
-
-            for (TestResult result : results) {
-                writer.write("Test Name: " + result.name + "\n");
-                writer.write("Duration: " + result.durationMillis + " ms\n");
-                writer.write("Passed: " + result.passed + "\n");
-                if (!result.passed && result.failureMessage != null && !result.failureMessage.isEmpty()) {
-                    writer.write("Failure Message: " + result.failureMessage + "\n");
-                }
-                writer.write("Type: " + (result.isStatic ? "Static" : "Dynamic") + "\n");
-                writer.write("\n");
-            }
-
-            System.out.println("Test results saved to " + fileName);
-        } catch (IOException e) {
-            System.err.println("Error writing file: " + e.getMessage());
-        }
-    }
     
    
-    public static void appendTestResultsToCSV(File file, String gameName, List<TestResult> results) {
-        try (FileWriter writer = new FileWriter(file, true)) {
-            for (TestResult result : results) {
-                writer.write(String.join(";",
-                    escapeCsv(gameName),
-                    escapeCsv(result.name),
-                    String.valueOf(result.durationMillis),
-                    String.valueOf(result.passed),
-                    escapeCsv(result.failureMessage),
-                    result.isStatic ? "Static" : "Dynamic"
-                ));
-                writer.write("\n");
-            }
-        } catch (IOException e) {
-            System.err.println("Error writing file: " + e.getMessage());
-        }
-    }
-
+    
     // Utility to quote CSV values and handle nulls
     private static String escapeCsv(String value) {
         if (value == null) return "";
@@ -98,4 +43,96 @@ public class TestResultLogger {
             return 0;
         }
     }
+    
+    public static File createFile(String gameName) {
+    	
+    	String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+    	File file;
+    	if(gameName == null)
+    		file = new File("Test_results_" + timestamp + ".csv");
+    	else
+    		file = new File(gameName.replace(".lud", "_") + timestamp + ".csv");
+    	
+    	try (FileWriter writer = new FileWriter(file, false)) {
+            // Header
+            writer.write("Game;Test Name;Duration (ms);Passed;Failure Message;Type;;;;Total Tests;Success Rate;Mean Execution Time\n");
+            writer.write("\n");
+        } catch (IOException e) {
+            System.err.println("Error writing file: " + e.getMessage());
+        }
+    	
+    	return file;
+    }
+    
+    public static void writeSummary(File file, List<TestResult> results) {
+    	
+    	 	int passedCount = 0;
+    	    long totalTime = 0;
+
+    	    for (TestResult result : results) {
+    	        if (result.passed) passedCount++;
+    	        totalTime += parseDuration(result.durationMillis);
+    	    }
+
+    	    double successRate = results.isEmpty() ? 0 : 100.0 * passedCount / results.size();
+    	    long meanTime = results.isEmpty() ? 0 : totalTime / results.size();
+
+    	    try {
+    	        // Read all lines
+    	        List<String> lines = Files.readAllLines(file.toPath());
+
+    	        // Prepare summary row
+    	        String summary = String.join(";",
+    	        		 "", "", "", "", "", "", "", "", "", // empty test-specific fields
+    	                 String.valueOf(results.size()),
+    	                 String.format("%.2f%%", successRate),
+    	                 String.valueOf(meanTime)
+    	        );
+
+    	        // Ensure at least header exists
+    	        if (lines.isEmpty()) {
+    	            System.err.println("CSV file is empty. Aborting.");
+    	            return;
+    	        }
+
+    	        // Insert or replace second line with summary
+    	        if (lines.size() >= 2) {
+    	            lines.set(1, summary); // overwrite existing second line
+    	        } else {
+    	            lines.add(summary); // append if no second line
+    	        }
+
+    	        // Write all lines back
+    	        Files.write(file.toPath(), lines, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+
+    	    } catch (IOException e) {
+    	        System.err.println("Error updating summary row: " + e.getMessage());
+    	    }
+    }
+    
+    public static void appendResults(File file, String gameName, List<TestResult> results) {
+    	
+        try (FileWriter writer = new FileWriter(file, true)) {
+
+            // Individual test results
+            for (TestResult result : results) {
+                writer.write(String.join(";",
+                    escapeCsv(gameName),
+                    escapeCsv(result.name),
+                    String.valueOf(result.durationMillis),
+                    String.valueOf(result.passed),
+                    escapeCsv(result.failureMessage),
+                    result.isStatic ? "Static" : "Dynamic",
+                    "", "", "", // empty summary fields
+                    "", "", ""  // again leave summary fields empty for test lines
+                ));
+                writer.write("\n");
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error writing file: " + e.getMessage());
+        }
+    }
+
+
 }

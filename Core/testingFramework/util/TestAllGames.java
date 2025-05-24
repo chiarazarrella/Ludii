@@ -44,26 +44,27 @@ public class TestAllGames {
 					
 		}
 		
-		String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
-		File csvFile = new File("TestResults_" + timestamp + ".csv");
-
-		// Create the file with header only once
-		try (FileWriter writer = new FileWriter(csvFile)) {
-		    writer.write("Game;Test Name;Duration (ms);Passed;Failure Message;Type\n");
-		} catch (IOException e) {
-		    System.err.println("Failed to initialize CSV file: " + e.getMessage());
+		File file = TestResultLogger.createFile(null);
+		List<TestResult> overallResults = new ArrayList<>();
+		int i = 0;
+		for(final String path: choices) {
+			
+			List<TestClass> testClassWithResults = runAllTests(path);
+			List<TestResult> testResults = createResults(testClassWithResults);
+			TestResultLogger.appendResults(file, extractGameName(path), testResults);
+			overallResults.addAll(testResults);
+			i++;
+			if(i==50)
+				break;
 		}
 		
-		for(final String game: choices) {
-			List<TestClass> results = runAllTests(game);
-			saveResults(csvFile, results, game);
-		}
+		TestResultLogger.writeSummary(file, overallResults);
 		
 	}
 	
 	private static List<TestClass> runAllTests(String gameName) {
 		
-		System.out.println("STARTING ALL TEST FOR: " + gameName);
+		//System.out.println("STARTING ALL TEST FOR: " + gameName);
 		List<TestClass> testClassList = TestCollector.collectTestClasses();
 		
 		for(TestClass testClass: testClassList) {
@@ -86,27 +87,26 @@ public class TestAllGames {
 		return testClassList;
 	}
 	
-	public static void saveResults(File csvFile, List<TestClass> testClassList, String gameName) {
+	private static List<TestResult> createResults(List<TestClass> results){
 		
-	    List<TestResult> allResults = new ArrayList<>();
-	    for (TestClass testClass : testClassList) {
-	        for (TestMethod method : testClass.getSelectedMethods()) {
-	  
-	            TestResult result = new TestResult(
-	                method.getName(),
-	                method.getDuration(),
-	                method.isPassed(),
-	                method.getFailureMessage(),
-	                method.isStatic()
-	            );
-	            allResults.add(result);
-	        }
-	    }
-	    String fileName = extractGameName(gameName) + "_test_results";
-	    TestResultLogger.appendTestResultsToCSV(csvFile, fileName, allResults);
-
+		 List<TestResult> allResults = new ArrayList<>();
+		    for (TestClass testClass : results) {
+		        for (TestMethod method : testClass.getSelectedMethods()) {
+		  
+		            TestResult result = new TestResult(
+		                method.getName(),
+		                method.getDuration(),
+		                method.isPassed(),
+		                method.getFailureMessage(),
+		                method.isStatic()
+		            );
+		            allResults.add(result);
+		        }
+		    }
+		    
+		 return allResults;
 	}
-	
+		
 	private static String extractGameName(String path) {
 	    // Extract the filename (e.g., Adugo.lud)
 	    String fileName = path.substring(path.lastIndexOf("/") + 1);

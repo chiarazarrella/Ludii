@@ -9,6 +9,8 @@ import other.context.Context;
 import util.TestResultLogger;
 import util.TestResultLogger.TestResult;
 import view.TestsView;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import controller.execution.TestLauncher;
@@ -95,8 +97,11 @@ public class TestsController {
 	            allResults.add(result);
 	        }
 	    }
-	    String fileName = this.gameName.replace(".lud", "") + "_test_results";
-	    TestResultLogger.saveTestResultsToTimestampedFile(fileName, allResults);
+	    
+	    File file = TestResultLogger.createFile(gameName);
+	    TestResultLogger.writeSummary(file, allResults);
+	    TestResultLogger.appendResults(file, gameName, allResults);
+	    
 
 	}
 }
