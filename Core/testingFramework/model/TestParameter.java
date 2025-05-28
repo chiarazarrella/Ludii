@@ -36,7 +36,7 @@ public class TestParameter {
         this.value = value;
     }
     
-    public String getQualifiedName() {
+    public String getFullyQualifiedName() {
     	return this.type.getName();
     }
     

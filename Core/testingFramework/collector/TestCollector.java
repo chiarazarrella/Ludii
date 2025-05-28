@@ -7,8 +7,12 @@ import java.lang.reflect.Parameter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.jupiter.api.TestTemplate;
+
 import model.TestClass;
 import model.TestMethod;
+import util.DefaultParameter;
 
 public class TestCollector {
 	
@@ -72,7 +76,7 @@ public class TestCollector {
                 Class<?> clazz = Class.forName(testClass.getFullyQualifiedName());
                 for (Method method : clazz.getDeclaredMethods()) {
                 	
-                    if (Modifier.isPublic(method.getModifiers())) {
+                    if (method.isAnnotationPresent(TestTemplate.class)) {
                         testClass.addMethod(new TestMethod(method));
                     }
                 }

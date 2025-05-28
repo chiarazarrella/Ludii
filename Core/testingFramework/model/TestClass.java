@@ -66,7 +66,7 @@ public class TestClass {
 	public String getFullyQualifiedNameForMethod(int id) {
 		
 		TestMethod method = this.getMethod(id);
-		return this.getFullyQualifiedName() + "#" + method.getQualifiedName();
+		return this.getFullyQualifiedName() + "#" + method.getFullyQualifiedName();
 	}
 	
 	public void reset() {
@@ -87,20 +87,20 @@ public class TestClass {
 		return sb.toString();
 	}
 	
-	public boolean hasStaticTests(String category) {
+	public boolean hasStaticTests(String concept) {
 		
 		for (TestMethod m : this.methods) {
-			if (m.isStatic() && packageName.equals(category))
+			if (m.isStatic() && packageName.equals(concept))
 				return true;
 		}
 		
 		return false;
 	}
 	
-	public boolean hasDynamicTests(String category) {
+	public boolean hasDynamicTests(String concept) {
 
 		for (TestMethod m : this.methods) {
-			if (!m.isStatic() && packageName.equals(category))
+			if (!m.isStatic() && packageName.equals(concept))
 				return true;
 		}
 

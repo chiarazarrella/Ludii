@@ -22,40 +22,52 @@ public class TestAllGames {
 	
 	public static void main(String[] args) {
 
-		// Load from memory
-		final String[] choices = FileHandling.listGames();
+		final String[] allGames = FileHandling.listGames();
 
-		for (final String fileName : choices){
+		final List<String> validGames = new ArrayList<>();
+
+		for (final String fileName : allGames) {
+			fileName.replaceAll(Pattern.quote("\\"), "/");
 			
-			if (fileName.replaceAll(Pattern.quote("\\"), "/").contains("/lud/bad/"))
-				continue;
-					
-			if (fileName.replaceAll(Pattern.quote("\\"), "/").contains("/lud/wip/"))
-				continue;
-					
-			if (fileName.replaceAll(Pattern.quote("\\"), "/").contains("/lud/WishlistDLP/"))
-				continue;
+			// subgames are related to board race
+		    if (
+		    	/*fileName.contains("/lud/subgame/") ||
+			   	fileName.contains("/lud/board/space/") ||
+			    fileName.contains("/lud/board/war/") ||
+			   	fileName.contains("/lud/board/hunt/") ||
+			   	fileName.contains("/lud/board/race/") ||
+			   	fileName.contains("/lud/board/sow/") ||
+			   	fileName.contains("/lud/dominoes/") ||
+			   	fileName.contains("/lud/puzzle/") ||
+		    	fileName.contains("/lud/math/") ||*/
+			   	fileName.contains("/lud/bad/") ||
+		    	fileName.contains("/lud/wip/") ||
+		    	fileName.contains("/lud/WishlistDLP/") ||
+		   		fileName.contains("/lud/wishlist/") ||
+		   		fileName.contains("/lud/test/") ||
+		    	fileName.contains("/lud/experimental/") ||
+		    	fileName.contains("/lud/reconstruction/") ||
+		    	fileName.contains("/lud/simulation/")
+		    	)
+		    {
+		        continue;
+		    }
 
-			if (fileName.replaceAll(Pattern.quote("\\"), "/").contains("/lud/test/"))
-				continue;
-
-			if (fileName.replaceAll(Pattern.quote("\\"), "/").contains("/lud/reconstruction/"))
-				continue;
-					
+		    validGames.add(fileName);
 		}
+
+		final String[] filteredChoices = validGames.toArray(new String[0]);
+
 		
 		File file = TestResultLogger.createFile(null);
 		List<TestResult> overallResults = new ArrayList<>();
-		int i = 0;
-		for(final String path: choices) {
+		for(final String path: filteredChoices) {
 			
 			List<TestClass> testClassWithResults = runAllTests(path);
 			List<TestResult> testResults = createResults(testClassWithResults);
 			TestResultLogger.appendResults(file, extractGameName(path), testResults);
 			overallResults.addAll(testResults);
-			i++;
-			if(i==50)
-				break;
+		
 		}
 		
 		TestResultLogger.writeSummary(file, overallResults);

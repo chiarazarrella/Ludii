@@ -19,6 +19,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import controller.execution.parameter.ParametersContextProvider;
 import game.Game;
+import game.equipment.component.Component;
 import game.players.Player;
 import game.players.Players;
 import game.types.board.SiteType;
@@ -37,14 +38,27 @@ public class PlayerTest {
 	 */
     @TestTemplate
     //@ParameterizedTest
-  	//@ValueSource(strings = { "Camelot.lud" })
+	//@ValueSource(strings = { "Grand Trictrac.lud" })
     @Tag("Static")
-	public void AllPlayerDeclared(String gameName) {
+	public void noUndeclaredPlayerReference(String gameName) {
 		
 		Game game = GameLoader.loadGameFromName(gameName);
 		
-		
+		Context context = null;
 		int pDeclared = game.players().count();
+
+		if(game.hasSubgames()) {
+			
+			context = new Context(game, new Trial(game));
+	  		game.start(context);
+	  		pDeclared = context.state().numPlayers();
+	  		
+		}else {
+			
+			pDeclared = game.players().count();
+
+		}
+		
 		
 		String description = game.description().rawGameDescription();
 		
@@ -77,7 +91,7 @@ public class PlayerTest {
 	}
     
     //@ParameterizedTest
-  	//@ValueSource(strings = { "Gale.lud" })
+	//@ValueSource(strings = { "Amazons.lud" })
   	@Tag("Static")
   	@TestTemplate
   	public void equalNumberOfPiecesOnTheBoard(String gameName) {
@@ -101,24 +115,24 @@ public class PlayerTest {
   		if(edgeConcept) {
   			
   			type = SiteType.Edge;
-  			sites = game.board().topology().edges();
+  			sites = context.board().topology().edges();
   			
   		}else if(vertexConcept) {
   			
   			type = SiteType.Vertex;
-  			sites = game.board().topology().vertices();
+  			sites = context.board().topology().vertices();
   			
   		}else if(cellConcept) {
   			
   			type = SiteType.Cell;
-  			sites = game.board().topology().cells();
+  			sites = context.board().topology().cells();
   			//System.out.println("sites length " + sites.size());
   		}
   			
   		ContainerState[] containerState = context.state().containerStates();
   		//System.out.println("containers size: " + containerState.length);
   		
-  		int numPlayers = game.players().count();
+  		int numPlayers = context.state().numPlayers();
   		
   		Integer[] piecesForPlayer = new Integer[numPlayers];// vec[N-1] : number of pieces for player N
   		

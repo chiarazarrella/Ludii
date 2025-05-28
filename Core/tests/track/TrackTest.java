@@ -22,6 +22,8 @@ import game.types.board.SiteType;
 import game.util.graph.GraphElement;
 import other.GameLoader;
 import other.concept.Concept;
+import other.context.Context;
+import other.trial.Trial;
 import util.DefaultParameter;
 
 @ExtendWith(ParametersContextProvider.class)
@@ -48,6 +50,7 @@ public class TrackTest {
 		
 		// CONCEPTS LOADING
 		BitSet concepts = game.computeBooleanConcepts();
+	
 		
 		boolean trackConcept = concepts.get(Concept.Track.id());
 		if (!trackConcept) {
@@ -74,16 +77,28 @@ public class TrackTest {
 			type = SiteType.Cell;
 		}
 		
+		Context context = null;
+		List<? extends GraphElement> sites = null;
+		List<Track> tracks = null;
+		if(game.hasSubgames()) {
+			
+			context = new Context(game, new Trial(game));
+	  		game.start(context);
+	  		sites = context.board().graph().elements(type);	  
+	  		tracks = context.board().tracks();
+		}else {
+			
+			sites = game.board().graph().elements(type);
+			tracks = game.board().tracks();
+		}
 		
-		List<? extends GraphElement> sites = game.board().graph().elements(type);
-
 		List<Integer> siteIds = new ArrayList<>();
 		for (GraphElement site : sites) {
 			siteIds.add(site.id());
 		}
 		
 		// TRACK TO CONSIDER BASED ON THE OWNER
-		List<Track> tracks = game.board().tracks();
+		
 		//System.out.println(tracks.size());
 		Track track = null;
 		for (Track t : tracks) {

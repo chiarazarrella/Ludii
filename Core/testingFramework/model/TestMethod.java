@@ -132,13 +132,13 @@ public class TestMethod {
 	}
 	
 	
-	public String getQualifiedName() {
+	public String getFullyQualifiedName() {
 	    StringBuilder qName = new StringBuilder(getName());
 
 	    if (!parameters.isEmpty()) {
 	        qName.append("(");
 	        for (TestParameter parameter : parameters) {
-	            qName.append(parameter.getQualifiedName()).append(",");
+	            qName.append(parameter.getFullyQualifiedName()).append(",");
 	        }
 	        qName.setLength(qName.length() - 1); // Remove last ","
 	        qName.append(")");

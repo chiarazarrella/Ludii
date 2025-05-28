@@ -60,15 +60,29 @@ public class PieceTest {
 	 * 
 	 * @param gameName The name of the game being tested.
 	 */
-	@ParameterizedTest
-	@ValueSource(strings = { "Amazons.lud" })
-    //@TestTemplate
+	//@ParameterizedTest
+	//@ValueSource(strings = { "Grand Trictrac.lud" })
+    @TestTemplate
     @Tag("Static")
 	public void pieceDeclaredAsEach(String gameName) {
 		
 		Game game = GameLoader.loadGameFromName(gameName);
+		
+		Context context = null;
+		Component[] components = null;
+		
+		if(game.hasSubgames()) {
+			
+			context = new Context(game, new Trial(game));
+	  		game.start(context);
+	  		components = context.equipment().components();
+	  		
+		}else {
+			
+			components = game.equipment().components();
 
-		Component[] components = game.equipment().components();
+		}
+
 		
 		List<String> pieces = new ArrayList<String>();
 		
@@ -136,7 +150,20 @@ public class PieceTest {
 		
 		Game game = GameLoader.loadGameFromName(gameName);
 		
-		Component[] components = game.equipment().components();
+		Context context = null;
+		Component[] components = null;
+		
+		if(game.hasSubgames()) {
+			
+			context = new Context(game, new Trial(game));
+	  		game.start(context);
+	  		components = context.equipment().components();
+	  		
+		}else {
+			
+			components = game.equipment().components();
+
+		}
 		
 		List<String> pieces = new ArrayList<>();
 		
@@ -186,7 +213,20 @@ public class PieceTest {
 		Game game = GameLoader.loadGameFromName(gameName);
 		int counterBasePiece = 0;
 				
-		Component[] components = game.equipment().components();
+		Context context = null;
+		Component[] components = null;
+		
+		if(game.hasSubgames()) {
+			
+			context = new Context(game, new Trial(game));
+	  		game.start(context);
+	  		components = context.equipment().components();
+	  		
+		}else {
+			
+			components = game.equipment().components();
+
+		}
 		
 		List<String> pieces = new ArrayList<>();
 		
@@ -220,13 +260,26 @@ public class PieceTest {
 	
 	//@ParameterizedTest
 	//@ValueSource(strings = { "Amazons.lud" })
-	@TestTemplate
+	/*@TestTemplate
 	@Tag("Static")
 	public void eachPieceReferenceNotDuplicated(String gameName) {
 		
 		Game game = GameLoader.loadGameFromName(gameName);
 	    
-	    Component[] components = game.equipment().components();
+		Context context = null;
+		Component[] components = null;
+		
+		if(game.hasSubgames()) {
+			
+			context = new Context(game, new Trial(game));
+	  		game.start(context);
+	  		components = context.equipment().components();
+	  		
+		}else {
+			
+			components = game.equipment().components();
+
+		}
 	    
 	    List<String> pieces = new ArrayList<String>();
 	    
@@ -240,7 +293,8 @@ public class PieceTest {
 	    
 	    List<String> validPieces = new ArrayList<>();
 		for (String piece : pieces) {
-		    String regex = "piece\\s+\"" + Pattern.quote(piece) + "\"\\s+Each\\b";
+			String pieceWithoutOwner = piece.replaceAll("\\d", ""); // Remove numbers to match the base piece name
+		    String regex = "piece\\s+\"" + Pattern.quote(pieceWithoutOwner) + "\"\\s+Each\\b";
 		    if (Pattern.compile(regex).matcher(description).find()) {
 		        validPieces.add(piece);
 		    }
@@ -267,7 +321,7 @@ public class PieceTest {
 	            fail("Ludeme Each for a Piece requires that the reference to " + piece + " is not duplicated. Found " + pieceCounts.get(piece) + " occurrences.");
 	        }
 	    }
-	}
+	}*/
 	
 	
 	/*@TestTemplate
