@@ -25,7 +25,9 @@ import controller.execution.parameter.ParametersContextProvider;
 import game.Game;
 import game.equipment.component.Component;
 import game.equipment.component.Piece;
+import game.equipment.container.Container;
 import game.equipment.container.board.Board;
+import game.equipment.container.other.Hand;
 import game.players.Player;
 import game.players.Players;
 import game.rules.Rules;
@@ -60,9 +62,10 @@ public class PieceTest {
 	 * 
 	 * @param gameName The name of the game being tested.
 	 */
-	//@ParameterizedTest
-	//@ValueSource(strings = { "Grand Trictrac.lud" })
-    @TestTemplate
+	@ParameterizedTest
+	@ValueSource(strings = { "Altan Xaraacaj.lud" })
+	//@ValueSource(strings = { "Hermit.lud" })
+    //@TestTemplate
     @Tag("Static")
 	public void pieceDeclaredAsEach(String gameName) {
 		
@@ -70,30 +73,33 @@ public class PieceTest {
 		
 		Context context = null;
 		Component[] components = null;
+		Container[] containers = null;
 		
 		if(game.hasSubgames()) {
 			
 			context = new Context(game, new Trial(game));
 	  		game.start(context);
 	  		components = context.equipment().components();
-	  		
+	  		containers = context.equipment().containers();
 		}else {
 			
 			components = game.equipment().components();
-
+			containers = game.equipment().containers();
 		}
 
 		
 		List<String> pieces = new ArrayList<String>();
 		
 		String description = game.description().expanded();
+		System.out.println(description);
 
 		for(Component c : components) {
 			if (c instanceof Piece && c.role() != RoleType.Neutral && c.role() != RoleType.Shared) {
 				
 					pieces.add(c.getNameWithoutNumber());
-					//System.out.println(c.name());	
+					
 			}
+			
 		}
 		
 		
@@ -107,6 +113,27 @@ public class PieceTest {
 
 		if (validPieces.isEmpty()) {
 		    fail("The game does not have any piece declared as Each");
+		}
+		
+		// check if there is an Hand ludeme
+		BitSet concepts = game.computeBooleanConcepts();
+	
+		boolean validEachHand = false;
+		boolean handConcept = concepts.get(Concept.Hand.id());
+		if (handConcept) {
+			for (Container container : containers) {
+				if (container instanceof Hand) {
+					
+					for (String piece : validPieces) {
+					    String regex = "place\\s+\"" + Pattern.quote(piece) + "\"\\s+Hand\\b";
+					    if (Pattern.compile(regex).matcher(description).find()) {
+					    	validEachHand &= true;
+					        break;
+					    }
+					}
+					
+				}
+			}
 		}
 
 		int numPlayers = game.players().count();
@@ -255,80 +282,6 @@ public class PieceTest {
 			}	
 		}
 		
-
 	}
 	
-	//@ParameterizedTest
-	//@ValueSource(strings = { "Amazons.lud" })
-	/*@TestTemplate
-	@Tag("Static")
-	public void eachPieceReferenceNotDuplicated(String gameName) {
-		
-		Game game = GameLoader.loadGameFromName(gameName);
-	    
-		Context context = null;
-		Component[] components = null;
-		
-		if(game.hasSubgames()) {
-			
-			context = new Context(game, new Trial(game));
-	  		game.start(context);
-	  		components = context.equipment().components();
-	  		
-		}else {
-			
-			components = game.equipment().components();
-
-		}
-	    
-	    List<String> pieces = new ArrayList<String>();
-	    
-	    String description = game.description().expanded();
-	    
-	    for(Component c : components) {
-	        if (c instanceof Piece && c.role() != RoleType.Neutral && c.role() != RoleType.Shared) {
-	            pieces.add(c.name()); // Piece1
-	        }
-	    }
-	    
-	    List<String> validPieces = new ArrayList<>();
-		for (String piece : pieces) {
-			String pieceWithoutOwner = piece.replaceAll("\\d", ""); // Remove numbers to match the base piece name
-		    String regex = "piece\\s+\"" + Pattern.quote(pieceWithoutOwner) + "\"\\s+Each\\b";
-		    if (Pattern.compile(regex).matcher(description).find()) {
-		        validPieces.add(piece);
-		    }
-		}
-
-		if (validPieces.isEmpty()) {
-		    fail("The game does not have any piece declared as Each");
-		}
-	    
-	    Map<String, Integer> pieceCounts = new HashMap<>();
-	    
-	    for (String piece : validPieces) {
-	    	
-	        pieceCounts.put(piece, 0);
-	        
-	        Pattern pattern = Pattern.compile("\\b" + piece + "\\b"); // to find exact word e.g."Piece1"
-	        Matcher matcher = pattern.matcher(description);
-	        
-	        while (matcher.find()) {
-	            pieceCounts.put(piece, pieceCounts.get(piece) + 1);
-	        }
-	        
-	        if (pieceCounts.get(piece) > 1) {
-	            fail("Ludeme Each for a Piece requires that the reference to " + piece + " is not duplicated. Found " + pieceCounts.get(piece) + " occurrences.");
-	        }
-	    }
-	}*/
-	
-	
-	/*@TestTemplate
-	@Tag("Dynamic")
-	public void dynTestPiece(String gameName) {
-		assert (true);
-	}*/
-	
-
 }

@@ -2,8 +2,6 @@ package collector;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +10,6 @@ import org.junit.jupiter.api.TestTemplate;
 
 import model.TestClass;
 import model.TestMethod;
-import util.DefaultParameter;
 
 public class TestCollector {
 	

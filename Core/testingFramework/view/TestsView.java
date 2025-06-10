@@ -2,7 +2,9 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.HashMap;
@@ -17,7 +19,11 @@ import controller.TestsController;
 import model.TestClass;
 import model.TestMethod;
 
+/**
+ * Represents the main view for displaying and managing tests.
+ */
 public class TestsView {
+	
     private JPanel mainPanel;
     private JScrollPane scrollPane;
     private TestCategoryPanel staticTestsPanel;
@@ -71,6 +77,7 @@ public class TestsView {
         resetButton.setMargin(new Insets(8, 16, 8, 16));
         saveButton.setMargin(new Insets(8, 16, 8, 16));
         
+     
         runButton.addActionListener(e -> {
             if (!controller.hasSelectedMethods()) {
                 JOptionPane.showMessageDialog(
