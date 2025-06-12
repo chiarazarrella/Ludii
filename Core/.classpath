@@ -12,8 +12,5 @@
 	<classpathentry kind="lib" path="/Common/lib/Trove4j_ApacheCommonsRNG.jar" sourcepath="/Common/lib/Trove4j_ApacheCommonsRNG-sources.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Language"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="C:/Users/chiar/Downloads/reflections-0.10.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/chiar/Downloads/slf4j-api-1.7.36.jar"/>
-	<classpathentry kind="lib" path="C:/Users/chiar/Downloads/slf4j-simple-1.7.36.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

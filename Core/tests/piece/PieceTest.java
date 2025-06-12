@@ -62,10 +62,10 @@ public class PieceTest {
 	 * 
 	 * @param gameName The name of the game being tested.
 	 */
-	@ParameterizedTest
-	@ValueSource(strings = { "Altan Xaraacaj.lud" })
+	//@ParameterizedTest
+	//@ValueSource(strings = { "Altan Xaraacaj.lud" })
 	//@ValueSource(strings = { "Hermit.lud" })
-    //@TestTemplate
+    @TestTemplate
     @Tag("Static")
 	public void pieceDeclaredAsEach(String gameName) {
 		
@@ -91,7 +91,7 @@ public class PieceTest {
 		List<String> pieces = new ArrayList<String>();
 		
 		String description = game.description().expanded();
-		System.out.println(description);
+		//System.out.println(description);
 
 		for(Component c : components) {
 			if (c instanceof Piece && c.role() != RoleType.Neutral && c.role() != RoleType.Shared) {
@@ -115,26 +115,37 @@ public class PieceTest {
 		    fail("The game does not have any piece declared as Each");
 		}
 		
-		// check if there is an Hand ludeme
+		
 		BitSet concepts = game.computeBooleanConcepts();
 	
-		boolean validEachHand = false;
 		boolean handConcept = concepts.get(Concept.Hand.id());
 		if (handConcept) {
+			// if there is Hand ludeme, we need to check that "Each piece" can be declared for Hand -> usually with the form (place "piece" Hand")
+			List<String> validPieces2 = new ArrayList<>();
+			validPieces2.addAll(validPieces);
+			
 			for (Container container : containers) {
 				if (container instanceof Hand) {
 					
 					for (String piece : validPieces) {
-					    String regex = "place\\s+\"" + Pattern.quote(piece) + "\"\\s+Hand\\b";
+						String regex = "place\\s+\"" + Pattern.quote(piece) + "\"\\s+\"Hand\"";
 					    if (Pattern.compile(regex).matcher(description).find()) {
-					    	validEachHand &= true;
-					        break;
+					    	validPieces2.remove(piece);
 					    }
 					}
 					
 				}
 			}
+			
+			if (validPieces2.isEmpty()) {
+				return;
+			} else {
+				validPieces.clear();
+				validPieces.addAll(validPieces2);
+			}
 		}
+		
+		
 
 		int numPlayers = game.players().count();
 		boolean eachDeclared;
@@ -153,7 +164,7 @@ public class PieceTest {
 			}
 			
 			if(!eachDeclared)
-				fail("Ludeme Each for a Piece requires at least one definition of PieceN, with N > 0");
+				fail(String.format("Ludeme Each for the piece %s requires at least one definition of %sN, with N > 0", piece, piece));
 		}
 		
 			
@@ -170,7 +181,7 @@ public class PieceTest {
      * @param gameName The name of the game being tested.
      */
 	//@ParameterizedTest
-	//@ValueSource(strings = { "Amazons.lud" })
+	//@ValueSource(strings = { "Brood.lud" })
     @TestTemplate
     @Tag("Static")
     public void pieceDeclaredAsShared(String gameName) {
@@ -228,17 +239,16 @@ public class PieceTest {
      * <p>
      * The test checks if neutral pieces are declared and ensures each is referenced 
      * as "piece0" in the game description. Fails if a neutral piece is missing or incorrectly named.
-     * 
+     * It also ensures that the base piece (usually "Disc0") is not counted in the check.
      * @param gameName The name of the game being tested.
      */
 	//@ParameterizedTest
-	//@ValueSource(strings = { "Amazons.lud" })
+	//@ValueSource(strings = { "Brood.lud" })
 	@TestTemplate
 	@Tag("Static")
 	public void pieceDeclaredAsNeutral(String gameName) {
 		
 		Game game = GameLoader.loadGameFromName(gameName);
-		int counterBasePiece = 0;
 				
 		Context context = null;
 		Component[] components = null;
@@ -256,15 +266,16 @@ public class PieceTest {
 		}
 		
 		List<String> pieces = new ArrayList<>();
-		
+		String basePieceName = "Disc"; // each game has Disc0 as the base piece declared as Neutral
 		for(Component c : components) {
 			
 			if (c instanceof Piece && c.role() == RoleType.Neutral) {
-					if(counterBasePiece == 0) {
-						counterBasePiece++;
-						continue;
-					}
-					pieces.add(c.getNameWithoutNumber());
+				
+				if (c.getNameWithoutNumber().equals(basePieceName)) {
+					continue;
+				}
+			
+				pieces.add(c.getNameWithoutNumber());
 			}
 			
 		}
