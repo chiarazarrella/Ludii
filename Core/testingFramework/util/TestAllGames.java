@@ -29,7 +29,7 @@ public class TestAllGames {
 		for (final String fileName : allGames) {
 			fileName.replaceAll(Pattern.quote("\\"), "/");
 			
-			// subgames are related to board race
+			
 		    if (
 		    	/*fileName.contains("/lud/subgame/") ||
 			   	fileName.contains("/lud/board/space/") ||
@@ -76,13 +76,12 @@ public class TestAllGames {
 	
 	private static List<TestClass> runAllTests(String gameName) {
 		
-		//System.out.println("STARTING ALL TEST FOR: " + gameName);
 		List<TestClass> testClassList = TestCollector.collectTestClasses();
 		
 		for(TestClass testClass: testClassList) {
 			for(TestMethod testMethod: testClass.getMethods()) {
 				
-				testMethod.setSelected(true); // to be run by the Launcher
+				testMethod.setSelected(true); // necessary to be ran by the Launcher
 				testMethod.setValue("gameName", gameName);
 				
 				for(TestParameter testParameter: testMethod.getParameters()) {

@@ -281,6 +281,7 @@ public class PieceTest {
 		}
 		
 		if (pieces.isEmpty()) {
+			fail("The game does not have any piece declared as Neutral");
 		    return; 
 		}
 		
