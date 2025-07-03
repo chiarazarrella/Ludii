@@ -26,22 +26,35 @@ import other.context.Context;
 import other.trial.Trial;
 import util.DefaultParameter;
 
+/**
+ * Test suite for validating the properties of Tracks in various games.
+ *
+ */
 @ExtendWith(ParametersContextProvider.class)
 public class TrackTest {
 	
 	/**
-	 * @param gameName
-	 * @param owner
-	 * @param size
-	 * 
-	 * to run the test w/o the dynamic test framework
-	 * @ParameterizedTest
-	 * @CsvSource({"20 Squares.lud, 1, 15"})
-	 */
-	@TestTemplate
-	@Tag("Static")
-	//@ParameterizedTest
-	//@CsvSource({"58 Holes.lud, 30"})
+     * Validates the length of the track owned by a given owner in a specified game.
+     * <p>
+     * The test performs the following steps:
+     * <ol>
+     *   <li>Loads the game specified by the game name.</li>
+     *   <li>Checks if the 'Track' concept is enabled for the game.</li>
+     *   <li>Determines the site type relevant for tracks (Edge, Vertex, or Cell).</li>
+     *   <li>Obtains the current board context and all graph elements of the identified site type.</li>
+     *   <li>Locates the track owned by the specified owner.</li>
+     *   <li>Counts the number of track elements that are valid sites on the board.</li>
+     *   <li>Asserts that the counted length equals the expected size parameter.</li>
+     * </ol>
+     * </p>
+     *
+     * @param gameName The name of the game to load and test.
+     * @param owner The identifier of the track owner to check.
+     * @param size The expected size (length) of the track.
+     * @throws AssertionError if the track concept is missing, the owner does not have a track, or the track length does not match the expected size.
+     */
+    @TestTemplate
+    @Tag("Static")
 	public void sizeOfTrack(String gameName, 
 			int owner, @DefaultParameter("3") int size) {
 		
@@ -127,10 +140,4 @@ public class TrackTest {
 	}
 		
 	
-	/*@TestTemplate
-	@Tag("Dynamic")
-	public void dynTestTrack(String gameName) {
-		assert (true);
-	}*/
-
 }

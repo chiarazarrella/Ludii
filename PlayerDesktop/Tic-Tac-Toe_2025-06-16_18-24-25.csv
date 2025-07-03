@@ -1,3 +1,0 @@
-Game;Test Name;Duration (ms);Passed;Failure Message;Type;;;;Total Tests;Success Rate;Mean Execution Time
-;;;;;;;;;1;100,00%;9
-"Tic-Tac-Toe.lud";"pieceDeclaredAsNeutral";9;true;;Static;;;;;;

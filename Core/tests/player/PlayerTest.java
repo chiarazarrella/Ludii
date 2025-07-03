@@ -3,25 +3,19 @@ package player;
 import static org.junit.Assert.fail;
 
 
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import controller.execution.parameter.ParametersContextProvider;
 import game.Game;
-import game.equipment.component.Component;
-import game.players.Player;
-import game.players.Players;
 import game.types.board.SiteType;
 import metadata.graphics.util.ContainerStyleType;
 import other.GameLoader;
@@ -30,15 +24,28 @@ import other.context.Context;
 import other.state.container.ContainerState;
 import other.topology.TopologyElement;
 import other.trial.Trial;
+
+/**
+ * Test suite focused on validating Player Concept.
+ *
+ */
 @ExtendWith(ParametersContextProvider.class)
 public class PlayerTest {
 	
 	/**
-	 * @param gameName
-	 */
+     * Ensures there are no undeclared player references in the raw game description.
+     * <p>
+     * Parses the game description text to find all player identifiers (e.g., "P1", "P2"),
+     * ignoring quoted strings, and verifies each identifier corresponds to a declared player in the game.
+     * </p>
+     * <p>
+     * Fails the test if any player reference exceeds the number of declared players.
+     * </p>
+     * 
+     * @param gameName The name of the game to load and verify.
+     * @throws AssertionError if an undeclared player reference is found.
+     */
     @TestTemplate
-    //@ParameterizedTest
-	//@ValueSource(strings = { "Grand Trictrac.lud" })
     @Tag("Static")
 	public void noUndeclaredPlayerReference(String gameName) {
 		
@@ -90,10 +97,22 @@ public class PlayerTest {
         
 	}
     
-    //@ParameterizedTest
-	//@ValueSource(strings = { "Amazons.lud" })
-  	@Tag("Static")
-  	@TestTemplate
+    /**
+     * Validates that all players have an equal number of pieces placed on the board.
+     * <p>
+     * Determines the type of sites (Edge, Vertex, Cell) used by the game board,
+     * counts the pieces owned by each player across all board containers,
+     * and verifies that all players have the same number of pieces.
+     * </p>
+     * <p>
+     * Fails the test if no pieces are found on the board or if piece counts differ between players.
+     * </p>
+     * 
+     * @param gameName The name of the game to load and verify.
+     * @throws AssertionError if no pieces exist or players have unequal piece counts.
+     */
+    @TestTemplate
+    @Tag("Static")
   	public void equalNumberOfPiecesOnTheBoard(String gameName) {
   		
   		Game game = GameLoader.loadGameFromName(gameName);
@@ -169,13 +188,4 @@ public class PlayerTest {
   				
   	}
     
-    /*@TestTemplate
-	@Tag("Dynamic")
-	public void dynTestPlayer(String gameName) {
-		assert (true);
-	}*/
-    
-    
-    
-	
 }

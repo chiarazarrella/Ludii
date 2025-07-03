@@ -1,49 +1,43 @@
 package board;
 
 import static org.junit.Assert.*;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.BitSet;
-import java.util.List;
-import java.util.stream.Stream;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestTemplate;
-import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import controller.execution.parameter.ParametersContextProvider;
 import game.Game;
-import game.equipment.container.board.Board;
-import game.equipment.container.board.Track;
-import game.equipment.container.board.Track.Elem;
-import game.players.Players;
-import game.types.board.SiteType;
 import other.GameLoader;
 import other.concept.Concept;
-import other.concept.ConceptKeyword;
-import other.topology.Topology;
-import other.topology.TopologyElement;
-import other.topology.Vertex;
 import util.DefaultParameter;
 
+/**
+ * Test suite focused on the concept Board.
+ * 
+ */
 @ExtendWith(ParametersContextProvider.class)
 public class BoardTest {
 
 	
 	/**
-     * @param lineLength
-     * @param gameName
+     * Checks that the line length defined in the game is less than or equal to
+     * the maximum dimension of one side of the board.
+     * <p>
+     * It also verifies that the "line" concept is active within the game's concept set.
+     * The test fails if the concept is missing or if the line length exceeds the board dimension.
+     * </p>
+     * 
+     * @param gameName  The name of the game to load and test.
+     * @param lineLength The length of the line to check, defaulting to 3 if not specified.
+     * @throws AssertionError if the "line" concept is not present or the line length is too long.
      */
-	//@CsvSource({"test.lud, 3"})
-	@TestTemplate
-	@Tag("Static")
+    @TestTemplate
+    @Tag("Static")
 	public void lineLessOrEqualThanBoardSide(String gameName, 
 			@DefaultParameter("3") int lineLength) {
     	
@@ -64,15 +58,6 @@ public class BoardTest {
 		
         assertTrue(lineLength <= side, "Line should be less than or equal to board side");
 	}
-	
-	/*@TestTemplate
-	@Tag("Dynamic")
-	public void dynTestBoard(String gameName) throws InterruptedException {
-		Thread.sleep(2000);
-		
-		assertTrue(true);
-		
-	}*/
 	
 }
 

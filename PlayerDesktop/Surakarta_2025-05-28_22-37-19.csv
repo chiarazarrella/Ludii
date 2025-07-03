@@ -1,9 +1,0 @@
-Game;Test Name;Duration (ms);Passed;Failure Message;Type;;;;Total Tests;Success Rate;Mean Execution Time
-;;;;;;;;;7;57,14%;96
-"Surakarta.lud";"lineLessOrEqualThanBoardSide";314;false;"Line concept is not present";Static;;;;;;
-"Surakarta.lud";"pieceDeclaredAsShared";76;false;"The game does not have any piece declared as Shared";Static;;;;;;
-"Surakarta.lud";"pieceDeclaredAsEach";69;true;;Static;;;;;;
-"Surakarta.lud";"pieceDeclaredAsNeutral";59;true;;Static;;;;;;
-"Surakarta.lud";"noUndeclaredPlayerReference";50;true;;Static;;;;;;
-"Surakarta.lud";"equalNumberOfPiecesOnTheBoard";51;true;;Static;;;;;;
-"Surakarta.lud";"sizeOfTrack";55;false;"The owner 5 does not have a track";Static;;;;;;

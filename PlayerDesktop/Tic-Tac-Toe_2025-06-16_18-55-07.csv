@@ -1,8 +1,0 @@
-Game;Test Name;Duration (ms);Passed;Failure Message;Type;;;;Total Tests;Success Rate;Mean Execution Time
-;;;;;;;;;6;50,00%;59
-"Tic-Tac-Toe.lud";"lineLessOrEqualThanBoardSide";199;true;;Static;;;;;;
-"Tic-Tac-Toe.lud";"pieceDeclaredAsShared";42;false;"The game does not have any piece declared as Shared";Static;;;;;;
-"Tic-Tac-Toe.lud";"pieceDeclaredAsNeutral";28;false;"The game does not have any piece declared as Neutral";Static;;;;;;
-"Tic-Tac-Toe.lud";"pieceDeclaredAsEach";29;false;"The game does not have any piece declared as Each";Static;;;;;;
-"Tic-Tac-Toe.lud";"equalNumberOfPiecesOnTheBoard";35;true;;Static;;;;;;
-"Tic-Tac-Toe.lud";"noUndeclaredPlayerReference";24;true;;Static;;;;;;

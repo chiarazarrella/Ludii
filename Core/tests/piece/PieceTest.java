@@ -49,22 +49,23 @@ import other.topology.Topology;
 import other.topology.TopologyElement;
 import other.topology.Vertex;
 import other.trial.Trial;
-
+/**
+ * Test suite verifying the Piece Concept.
+ */
 @ExtendWith(ParametersContextProvider.class)
 public class PieceTest {
 	
-	/**
-	 * Verifies that a game correctly uses the "Each" ludeme for its pieces.
-	 * <p>
-	 * The test checks if non-neutral, non-shared pieces are defined for at least one player
-	 * (i.e., their name appears in the game description with a player number). 
-	 * Fails if any required piece definition is missing.
-	 * 
-	 * @param gameName The name of the game being tested.
-	 */
-	//@ParameterizedTest
-	//@ValueSource(strings = { "Altan Xaraacaj.lud" })
-	//@ValueSource(strings = { "Hermit.lud" })
+	 /**
+     * Checks that pieces declared with the "Each" ludeme have appropriate player-specific definitions.
+     * <p>
+     * The test ensures that non-neutral, non-shared pieces appear in the game description 
+     * with player-specific suffixes (e.g., piece1, piece2), verifying that "Each" usage is consistent.
+     * It also verifies compatibility with "Hand" containers if present.
+     * </p>
+     * 
+     * @param gameName The name of the game to load and test.
+     * @throws AssertionError if no pieces declared as Each exist or player-specific piece declarations are missing.
+     */
     @TestTemplate
     @Tag("Static")
 	public void pieceDeclaredAsEach(String gameName) {
@@ -91,7 +92,6 @@ public class PieceTest {
 		List<String> pieces = new ArrayList<String>();
 		
 		String description = game.description().expanded();
-		//System.out.println(description);
 
 		for(Component c : components) {
 			if (c instanceof Piece && c.role() != RoleType.Neutral && c.role() != RoleType.Shared) {
@@ -172,16 +172,15 @@ public class PieceTest {
 	
 	
     /**
-     * Verifies that a game correctly uses the "Shared" ludeme for its pieces.
+     * Validates that pieces declared as "Shared" exist and appear multiple times in the game description.
      * <p>
-     * The test checks if shared pieces are declared and ensures that each appears 
-     * at least twice in the game description (once in the definition and once in the rules).
-     * Fails if a shared piece is missing or incorrectly declared.
+     * Shared pieces must be declared once and referenced again (e.g., in rules or moves).
+     * The test fails if no shared pieces exist or if any shared piece appears less than twice.
+     * </p>
      * 
-     * @param gameName The name of the game being tested.
+     * @param gameName The name of the game to load and test.
+     * @throws AssertionError if shared pieces are missing or incorrectly referenced.
      */
-	//@ParameterizedTest
-	//@ValueSource(strings = { "Brood.lud" })
     @TestTemplate
     @Tag("Static")
     public void pieceDeclaredAsShared(String gameName) {
@@ -235,17 +234,18 @@ public class PieceTest {
 	 
 	
     /**
-     * Verifies that a game correctly uses the "Neutral" ludeme for its pieces.
+     * Ensures that neutral pieces are properly declared and referenced in the game description.
      * <p>
-     * The test checks if neutral pieces are declared and ensures each is referenced 
-     * as "piece0" in the game description. Fails if a neutral piece is missing or incorrectly named.
-     * It also ensures that the base piece (usually "Disc0") is not counted in the check.
-     * @param gameName The name of the game being tested.
+     * Neutral pieces must appear with the "0" suffix (e.g., piece0), excluding the base piece 
+     * (usually "Disc0"), which is ignored.
+     * The test fails if no neutral pieces exist or if any neutral piece is not correctly referenced.
+     * </p>
+     * 
+     * @param gameName The name of the game to load and test.
+     * @throws AssertionError if neutral pieces are missing or improperly referenced.
      */
-	//@ParameterizedTest
-	//@ValueSource(strings = { "Brood.lud" })
-	@TestTemplate
-	@Tag("Static")
+    @TestTemplate
+    @Tag("Static")
 	public void pieceDeclaredAsNeutral(String gameName) {
 		
 		Game game = GameLoader.loadGameFromName(gameName);
